@@ -40,6 +40,7 @@ import com.himmiractivity.request.ModifyNameRequest;
 import com.himmiractivity.request.TaskDetailImageUploadTask;
 import com.himmiractivity.view.CircleImageView;
 import com.himmiractivity.view.ResetNameDialog;
+import com.himmiractivity.view.SlideBackLayout;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -96,6 +97,7 @@ public class SetActivity extends BaseBusActivity implements PopupWindow.OnDismis
     ResetNameDialog dialog;
     ImageBean imageBean;
     private boolean isResult = false;
+//    private SlideBackLayout mSlideBackLayout;
 
     private Handler handler = new Handler(new Handler.Callback() {
         @Override
@@ -130,6 +132,8 @@ public class SetActivity extends BaseBusActivity implements PopupWindow.OnDismis
     protected void initView(Bundle savedInstanceState) {
 //        initTitleBar();
 //        setMidTxt("修改密码");
+//        mSlideBackLayout = new SlideBackLayout(this);
+//        mSlideBackLayout.bind();
         App.getInstance().addActivity(this);
         im.init(ImageLoaderConfiguration
                 .createDefault(SetActivity.this));

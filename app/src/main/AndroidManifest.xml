@@ -166,7 +166,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@android:style/Theme.NoTitleBar">
+        android:theme="@style/AppThemeTwo">
         <activity
             android:name="com.himmiractivity.activity.MainActivity"
             android:launchMode="singleTask"

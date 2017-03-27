@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.FragmentActivity;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -20,6 +21,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.himmiractivity.Utils.AppManager;
 import com.himmiractivity.Utils.SharedPreferencesDB;
 import com.himmiractivity.Utils.ToastUtils;
+import com.himmiractivity.view.SwipeBackLayout;
 
 import org.xutils.x;
 
@@ -46,6 +48,7 @@ public abstract class BaseBusActivity extends FragmentActivity implements View.O
      * See https://g.co/AppIndexing/AndroidStudio for more information.
      */
     private GoogleApiClient client;
+    protected SwipeBackLayout layout;
 
 
     @Override
@@ -53,6 +56,9 @@ public abstract class BaseBusActivity extends FragmentActivity implements View.O
         super.onCreate(savedInstanceState);
         sharedPreferencesDB = SharedPreferencesDB.getInstance(this);
         x.view().inject(this);
+        layout = (SwipeBackLayout) LayoutInflater.from(this).inflate(
+                R.layout.base, null);
+        layout.attachToActivity(this);
         setContentView(this.getContentLayoutId());
         ButterKnife.bind(this);
         AppManager.getAppManager().addActivity(this);

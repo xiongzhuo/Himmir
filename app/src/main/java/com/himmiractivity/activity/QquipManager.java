@@ -1,17 +1,12 @@
 package com.himmiractivity.activity;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
@@ -19,28 +14,21 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.PopupWindow;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.himmiractivity.Adapter.RvcAdapter;
 import com.himmiractivity.Utils.DividerItemDecoration;
-import com.himmiractivity.Utils.ToastUtil;
 import com.himmiractivity.Utils.ToastUtils;
 import com.himmiractivity.base.BaseBusActivity;
 import com.himmiractivity.entity.AllUserDerviceBaen;
 import com.himmiractivity.entity.ImageBean;
-import com.himmiractivity.entity.ModifyNameData;
 import com.himmiractivity.interfaces.StatisConstans;
 import com.himmiractivity.request.AllDeviceInfoRequest;
 import com.himmiractivity.request.DeleteDeviceRequest;
 import com.himmiractivity.request.ModifyRoomNameRequest;
 import com.himmiractivity.view.AlxRefreshLoadMoreRecyclerView;
-import com.himmiractivity.view.PullRefreshLayout;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import activity.hamir.com.himmir.R;
 import butterknife.BindView;
@@ -49,12 +37,12 @@ import butterknife.BindView;
  * 设备管理
  */
 
-public class QquipManager extends BaseBusActivity implements AlxRefreshLoadMoreRecyclerView.LoadMoreListener, AlxRefreshLoadMoreRecyclerView.OnRefreshListener, PopupWindow.OnDismissListener, RvcAdapter.OnItemClickLitener {
+public class QquipManager extends BaseBusActivity implements AlxRefreshLoadMoreRecyclerView.LoadMoreListener, AlxRefreshLoadMoreRecyclerView.OnRefreshListener, RvcAdapter.OnItemClickLitener {
     @BindView(R.id.rv_list)
     AlxRefreshLoadMoreRecyclerView mRecyclerView;
     RvcAdapter rvcAdapter;
     AllUserDerviceBaen allUserDerviceBaen;
-    PopupWindow popupWindow;
+    AlertDialog alertDialog;
     private int navigationHeight;
     @BindView(R.id.btn_add_aqu)
     Button btnAddAqu;
@@ -69,7 +57,7 @@ public class QquipManager extends BaseBusActivity implements AlxRefreshLoadMoreR
                     ImageBean destr = (ImageBean) msg.obj;
                     if (deletePosition != -1) {
                         rvcAdapter.removeData(deletePosition);
-                        popupWindow.dismiss();
+                        alertDialog.dismiss();
                     }
                     break;
                 case StatisConstans.MSG_MODIFY_NAME:
@@ -139,22 +127,22 @@ public class QquipManager extends BaseBusActivity implements AlxRefreshLoadMoreR
                 break;
             case R.id.tv_pick_phone:
                 startActivity(new Intent(this, EditTimeActivity.class));
-                popupWindow.dismiss();
+                alertDialog.dismiss();
                 break;
             case R.id.tv_pick_zone:
                 startActivity(new Intent(this, FixedTimeActivity.class));
-                popupWindow.dismiss();
+                alertDialog.dismiss();
                 break;
             case R.id.tv_cancel:
-                popupWindow.dismiss();
+                alertDialog.dismiss();
                 break;
             case R.id.tv_mode:
                 startActivity(new Intent(this, IntelligenceModeActivity.class));
-                popupWindow.dismiss();
+                alertDialog.dismiss();
                 break;
             case R.id.tv_rename:
                 showinputPassdialog("请输入新的名称", "", "取消", "确定", "rename");
-                popupWindow.dismiss();
+                alertDialog.dismiss();
                 break;
             default:
                 break;
@@ -170,36 +158,29 @@ public class QquipManager extends BaseBusActivity implements AlxRefreshLoadMoreR
         }
     }
 
-    private void openPopupWindow(View v, int pos) {
+    private void openAlertDialog(int pos) {
         deletePosition = pos;
         //防止重复按按钮
-        if (popupWindow != null && popupWindow.isShowing()) {
+        if (alertDialog != null && alertDialog.isShowing()) {
             return;
         }
-        //设置PopupWindow的View
-        View view = LayoutInflater.from(this).inflate(R.layout.view_popupwindow, null);
-        popupWindow = new PopupWindow(view, RelativeLayout.LayoutParams.MATCH_PARENT,
-                RelativeLayout.LayoutParams.WRAP_CONTENT);
-        //设置背景,这个没什么效果，不添加会报错
-        popupWindow.setBackgroundDrawable(new BitmapDrawable());
-        //设置点击弹窗外隐藏自身
-        popupWindow.setFocusable(true);
-        popupWindow.setOutsideTouchable(true);
-        //设置动画
-        popupWindow.setAnimationStyle(R.style.PopupWindow);
-        //设置位置
-        popupWindow.showAtLocation(v, Gravity.BOTTOM, 0, 0);
-        //设置消失监听
-        popupWindow.setOnDismissListener(this);
-
-        //设置PopupWindow的View点击事件
+        //alertDialog
+        LayoutInflater inflater = getLayoutInflater();
+        View view = inflater.inflate(R.layout.view_popupwindow, null);
+        alertDialog = new AlertDialog.Builder(QquipManager.this)
+                .create();
         setOnPopupViewClick(view);
-        //设置背景色
-        setBackgroundAlpha(0.5f);
+        Window w = alertDialog.getWindow();
+        w.setWindowAnimations(R.style.AnimBottom);
+        alertDialog.show();
+        alertDialog.getWindow().setContentView(view);
+        alertDialog.getWindow().setLayout(LayoutParams.MATCH_PARENT,
+                LayoutParams.MATCH_PARENT);
     }
 
     private void setOnPopupViewClick(View view) {
         TextView tv_pick_phone, tv_pick_zone, tv_cancel, tv_rename, tv_mode, tv_delete;
+        LinearLayout ll_dimis = (LinearLayout) view.findViewById(R.id.ll_dimis);
         tv_pick_phone = (TextView) view.findViewById(R.id.tv_pick_phone);
         tv_pick_zone = (TextView) view.findViewById(R.id.tv_pick_zone);
         tv_cancel = (TextView) view.findViewById(R.id.tv_cancel);
@@ -210,7 +191,13 @@ public class QquipManager extends BaseBusActivity implements AlxRefreshLoadMoreR
             @Override
             public void onClick(View v) {
                 showinputPassdialog("您确定要删除该设备吗？", "删除后将无法控制设备", "暂不", "删除", "delete");
-                popupWindow.dismiss();
+                alertDialog.dismiss();
+            }
+        });
+        ll_dimis.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
             }
         });
         tv_mode.setOnClickListener(this);
@@ -218,13 +205,6 @@ public class QquipManager extends BaseBusActivity implements AlxRefreshLoadMoreR
         tv_pick_zone.setOnClickListener(this);
         tv_cancel.setOnClickListener(this);
         tv_rename.setOnClickListener(this);
-    }
-
-    //设置屏幕背景透明效果
-    public void setBackgroundAlpha(float alpha) {
-        WindowManager.LayoutParams lp = getWindow().getAttributes();
-        lp.alpha = alpha;
-        getWindow().setAttributes(lp);
     }
 
     // 重命名
@@ -303,14 +283,8 @@ public class QquipManager extends BaseBusActivity implements AlxRefreshLoadMoreR
     }
 
     @Override
-    public void onDismiss() {
-        setBackgroundAlpha(1f);
-    }
-
-
-    @Override
     public void onItemClick(View view, int position) {
-        openPopupWindow(view, position);
+        openAlertDialog(position);
     }
 
     @Override
