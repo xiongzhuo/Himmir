@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/title_bar"
+        layout="@layout/title_top_view"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="15dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="输入旧密码"
+            android:textColor="@android:color/black" />
+
+        <com.himmiractivity.view.ClearEditText
+            android:id="@+id/et_old_pass"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/edittext_bg"
+            android:hint="输入旧密码"
+            android:inputType="textPassword"
+            android:maxLength="16"
+            android:paddingBottom="10dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:paddingTop="10dp"
+            android:textColorHint="@android:color/darker_gray" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text="设置新密码"
+            android:textColor="@android:color/black" />
+
+        <com.himmiractivity.view.ClearEditText
+            android:id="@+id/et_new_pass"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/edittext_bg"
+            android:hint="新密码至少6位，不超过16位"
+            android:inputType="textPassword"
+            android:maxLength="16"
+            android:paddingBottom="10dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:paddingTop="10dp"
+            android:textColorHint="@android:color/darker_gray" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text="确认新密码"
+            android:textColor="@android:color/black" />
+
+        <com.himmiractivity.view.ClearEditText
+            android:id="@+id/et_pass_new_comit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/edittext_bg"
+            android:hint="确认新密码"
+            android:inputType="textPassword"
+            android:maxLength="16"
+            android:paddingBottom="10dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:paddingTop="10dp"
+            android:textColorHint="@android:color/darker_gray" />
+
+        <Button
+            android:id="@+id/btn_revise_comit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="60dp"
+            android:background="@drawable/loding_bg_sel"
+            android:padding="10dp"
+            android:text="确定"
+            android:textColor="@color/white" />
+    </LinearLayout>
+</LinearLayout>

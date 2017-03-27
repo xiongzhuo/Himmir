@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/title_bar"
+        layout="@layout/title_top_view"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="@color/ll_gray"
+        android:orientation="vertical">
+
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingLeft="40dp">
+
+            <RadioButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:button="@drawable/cb_mode_sel"
+                android:padding="15dp"
+                android:text="每天"
+                android:textColor="@color/black" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_marginLeft="5dp"
+                android:background="@color/bar_gray"></View>
+
+            <RadioButton
+                android:id="@+id/checkBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:button="@drawable/cb_mode_sel"
+                android:padding="15dp"
+                android:text="即一次"
+                android:textColor="@color/black" />
+
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_marginLeft="5dp"
+                android:background="@color/gray"></View>
+
+            <RadioButton
+                android:id="@+id/radioButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:button="@drawable/cb_mode_sel"
+                android:padding="15dp"
+                android:text="工作日"
+                android:textColor="@color/black" />
+        </RadioGroup>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginLeft="5dp"
+            android:background="@color/bar_gray"></View>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="20dp">
+
+            <CheckBox
+                android:id="@+id/cb_time_one"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:button="@drawable/cb_mode_sel"
+                android:paddingBottom="20dp"
+                android:paddingLeft="15dp"
+                android:paddingTop="20dp"
+                android:text="7:10 - 3:50"
+                android:textColor="@color/black" />
+
+            <ImageView
+                android:id="@+id/iv_time_one"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_marginLeft="5dp"
+                android:padding="15dp"
+                android:src="@drawable/set_time" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/bar_gray"></View>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="20dp">
+
+            <CheckBox
+                android:id="@+id/cb_time_two"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:button="@drawable/cb_mode_sel"
+                android:paddingBottom="20dp"
+                android:paddingLeft="15dp"
+                android:paddingTop="20dp"
+                android:text="2:10 - 3:10"
+                android:textColor="@color/black" />
+
+            <ImageView
+                android:id="@+id/iv_time_two"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:padding="15dp"
+                android:src="@drawable/set_time" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/bar_gray"></View>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="20dp">
+
+            <CheckBox
+                android:id="@+id/cb_time_three"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:button="@drawable/cb_mode_sel"
+                android:paddingBottom="20dp"
+                android:paddingLeft="15dp"
+                android:paddingTop="20dp"
+                android:text="22:10 - 3:20"
+                android:textColor="@color/black" />
+
+            <ImageView
+                android:id="@+id/iv_time_three"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:padding="15dp"
+                android:src="@drawable/set_time" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

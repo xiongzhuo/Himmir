@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/btn_register_selector"
+    android:orientation="vertical">
+
+    <Button
+        android:id="@+id/radio1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/btn_draw_camera_bg"
+        android:button="@null"
+        android:gravity="left|center_vertical"
+        android:padding="15dp"
+        android:text="拍照" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.3dp"
+        android:background="#5fcccccc" />
+
+    <Button
+        android:id="@+id/radio2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/btn_draw_camera_bg"
+        android:button="@null"
+        android:gravity="left|center_vertical"
+        android:padding="15dp"
+        android:text="相册" />
+
+</LinearLayout>
