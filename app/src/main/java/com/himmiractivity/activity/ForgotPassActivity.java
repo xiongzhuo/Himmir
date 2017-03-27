@@ -16,7 +16,6 @@ import com.himmiractivity.entity.ModifyNameData;
 import com.himmiractivity.entity.PhoneCode;
 import com.himmiractivity.interfaces.StatisConstans;
 import com.himmiractivity.request.CodeRequest;
-import com.himmiractivity.request.RegisterRequest;
 import com.himmiractivity.request.ResetPwdRequest;
 import com.himmiractivity.view.ClearEditText;
 

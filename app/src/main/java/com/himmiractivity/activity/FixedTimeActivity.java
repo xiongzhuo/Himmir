@@ -15,12 +15,8 @@ import com.himmiractivity.interfaces.StatisConstans;
 import java.util.List;
 
 import activity.hamir.com.himmir.R;
-import butterknife.BindView;
 import butterknife.BindViews;
 
-/**
- * Created by Administrator on 2017/3/13.
- */
 
 public class FixedTimeActivity extends BaseBusActivity {
     @BindViews({R.id.iv_time_one, R.id.iv_time_two, R.id.iv_time_three})

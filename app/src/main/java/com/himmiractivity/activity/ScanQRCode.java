@@ -1,7 +1,6 @@
 package com.himmiractivity.activity;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -13,19 +12,14 @@ import android.widget.ImageView;
 import com.hiflying.smartlink.SmartLinkedModule;
 import com.himmiractivity.Utils.ToastUtil;
 import com.himmiractivity.base.BaseBusActivity;
-import com.himmiractivity.entity.DataServerBean;
 import com.himmiractivity.entity.DeviceInfoBean;
 import com.himmiractivity.interfaces.StatisConstans;
-import com.himmiractivity.request.DataServerConfigRequest;
 import com.himmiractivity.request.DeviceInfoRequest;
 import com.himmiractivity.view.ClearEditText;
 
 import activity.hamir.com.himmir.R;
 import butterknife.BindView;
 
-/**
- * Created by Administrator on 2017/3/17.
- */
 
 public class ScanQRCode extends BaseBusActivity {
     private final int SCANNIN_GREQUEST_CODE = 1;

@@ -9,9 +9,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.himmiractivity.Utils.CheckMobileAndEmail;
 import com.himmiractivity.Utils.ToastUtil;
 import com.himmiractivity.base.BaseBusActivity;
 import com.himmiractivity.entity.DafalutUserRoom;
@@ -20,22 +18,15 @@ import com.himmiractivity.entity.DeviceInfoBean;
 import com.himmiractivity.entity.ImageBean;
 import com.himmiractivity.interfaces.StatisConstans;
 import com.himmiractivity.request.DataServerConfigRequest;
-import com.himmiractivity.request.LodingRequest;
 import com.himmiractivity.request.ReceiveUserDeviceInfoRequest;
 import com.himmiractivity.view.ChangeAddressDialog;
 import com.himmiractivity.view.ClearEditText;
-import com.himmiractivity.view.HomeDialog;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 import activity.hamir.com.himmir.R;
 import butterknife.BindView;
-
-/**
- * Created by Administrator on 2017/3/17.
- */
 
 public class InformationComitActivity extends BaseBusActivity {
     @BindView(R.id.et_username)

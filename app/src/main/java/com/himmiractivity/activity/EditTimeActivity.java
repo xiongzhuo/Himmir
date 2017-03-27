@@ -14,14 +14,11 @@ import android.widget.TextView;
 import com.himmiractivity.App;
 import com.himmiractivity.Utils.StringUtil;
 import com.himmiractivity.base.BaseBusActivity;
-import com.himmiractivity.interfaces.StatisConstans;
 import com.himmiractivity.view.widget.NumericwheelTwoAdapter;
 import com.himmiractivity.view.widget.WheelView;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringTokenizer;
 
 import activity.hamir.com.himmir.R;
 import butterknife.BindView;
@@ -39,7 +36,6 @@ public class EditTimeActivity extends BaseBusActivity {
     TextView tvOnTime;
     @BindView(R.id.tv_off_time)
     TextView tvOffTime;
-    List<String> list = new ArrayList<>();
     private WheelView hour;
     private WheelView mins;
     String time;

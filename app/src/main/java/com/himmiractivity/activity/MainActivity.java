@@ -4,8 +4,6 @@ package com.himmiractivity.activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -19,11 +17,8 @@ import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,7 +36,6 @@ import com.himmiractivity.base.BaseBusActivity;
 import com.himmiractivity.entity.UserData;
 import com.himmiractivity.interfaces.StatisConstans;
 import com.himmiractivity.request.LodingRequest;
-import com.himmiractivity.util.ThreadPoolUtils;
 import com.himmiractivity.view.PercentView;
 import com.himmiractivity.view.SelectorImageView;
 
@@ -85,7 +79,6 @@ public class MainActivity extends BaseBusActivity {
     @BindView(R.id.tv_room)
     TextView tvRoom;
     private Double aimPercent = (24d / 225d) * 100d;
-    String imei;
     Bundle bundle;
     UserData userData;
     public static MainActivity instans;

@@ -6,18 +6,14 @@ import android.os.Message;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.himmiractivity.Utils.ToastUtil;
 import com.himmiractivity.Utils.ToastUtils;
 import com.himmiractivity.base.BaseBusActivity;
-import com.himmiractivity.entity.PhoneCode;
 import com.himmiractivity.interfaces.StatisConstans;
 import com.himmiractivity.request.ModifyPwdRequest;
 import com.himmiractivity.view.ClearEditText;
-
-import java.util.TimerTask;
 
 import activity.hamir.com.himmir.R;
 import butterknife.BindView;

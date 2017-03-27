@@ -4,30 +4,18 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
-import com.google.common.reflect.TypeToken;
-import com.himmiractivity.Constant.Configuration;
 import com.himmiractivity.Utils.CheckMobileAndEmail;
-import com.himmiractivity.Utils.JsonUtils;
 import com.himmiractivity.Utils.ToastUtil;
 import com.himmiractivity.Utils.ToastUtils;
 import com.himmiractivity.base.BaseBusActivity;
-import com.himmiractivity.entity.JsonResult;
 import com.himmiractivity.entity.PhoneCode;
 import com.himmiractivity.interfaces.StatisConstans;
 import com.himmiractivity.request.CodeRequest;
-import com.himmiractivity.request.LodingRequest;
 import com.himmiractivity.request.RegisterRequest;
 import com.himmiractivity.view.ClearEditText;
-
-import org.xutils.common.Callback;
-import org.xutils.common.util.LogUtil;
-import org.xutils.http.RequestParams;
-import org.xutils.x;
 
 import java.util.Timer;
 import java.util.TimerTask;

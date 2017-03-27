@@ -58,7 +58,6 @@ public class SetActivity extends BaseBusActivity {
     private ImageLoader im = ImageLoader.getInstance();
     public final String IMAGE_UNSPECIFIED = "image/*";
     private List<File> files;// 图片文件集合
-    public static final int P_NONE = 0;
     public static final int P_CAMERA = 1;
     public static final int P_ZOOM = 2;
     public static final int P_RESULT = 3;
@@ -187,12 +186,14 @@ public class SetActivity extends BaseBusActivity {
                 break;
             //联系客服
             case R.id.ll_phone:
-                openPopupWindow(v);
+                openPopupWindow();
                 break;
             case R.id.tv_title:
                 dialog = new ResetNameDialog(SetActivity.this);
                 Window w = dialog.getWindow();
-                w.setWindowAnimations(R.style.mystyle1);
+                if (w != null) {
+                    w.setWindowAnimations(R.style.mystyle1);
+                }
                 dialog.show();
                 //只用下面这一行弹出对话框时需要点击输入框才能弹出软键盘
                 dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
@@ -275,7 +276,7 @@ public class SetActivity extends BaseBusActivity {
         }
     }
 
-    private void openPopupWindow(View v) {
+    private void openPopupWindow() {
         //防止重复按按钮
         if (alertDialog != null && alertDialog.isShowing()) {
             return;
@@ -312,8 +313,6 @@ public class SetActivity extends BaseBusActivity {
 
     /**
      * 裁剪头像
-     *
-     * @param uri
      */
     public void startPhotoZoom(Uri uri) {
         Intent intent = new Intent("com.android.camera.action.CROP");

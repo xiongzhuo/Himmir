@@ -9,25 +9,16 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.himmiractivity.App;
 import com.himmiractivity.Utils.CheckMobileAndEmail;
-import com.himmiractivity.Utils.SharedPreferencesDB;
 import com.himmiractivity.Utils.ToastUtil;
 import com.himmiractivity.base.BaseBusActivity;
 import com.himmiractivity.entity.UserData;
 import com.himmiractivity.interfaces.StatisConstans;
 import com.himmiractivity.request.LodingRequest;
 import com.himmiractivity.view.ClearEditText;
-import com.himmiractivity.view.DialogView;
-
-import java.util.Set;
 
 import activity.hamir.com.himmir.R;
 import butterknife.BindView;
-
-/**
- * Created by Administrator on 2017/3/9.
- */
 
 public class LodingActivity extends BaseBusActivity {
     @BindView(R.id.et_password)

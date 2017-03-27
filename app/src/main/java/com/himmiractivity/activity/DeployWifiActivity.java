@@ -26,9 +26,6 @@ import com.himmiractivity.view.DialogView;
 import activity.hamir.com.himmir.R;
 import butterknife.BindView;
 
-/**
- * Created by Administrator on 2017/3/10.
- */
 
 public class DeployWifiActivity extends BaseBusActivity implements OnSmartLinkListener {
     public final String EXTRA_SMARTLINK_VERSION = "EXTRA_SMARTLINK_VERSION";

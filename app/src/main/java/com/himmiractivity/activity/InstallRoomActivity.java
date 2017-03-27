@@ -149,7 +149,9 @@ public class InstallRoomActivity extends BaseBusActivity {
                     homeDialog = new HomeDialog(InstallRoomActivity.this);
                 }
                 Window w = homeDialog.getWindow();
-                w.setWindowAnimations(R.style.mystyle1);
+                if (w != null) {
+                    w.setWindowAnimations(R.style.mystyle1);
+                }
                 homeDialog.show();
                 //只用下面这一行弹出对话框时需要点击输入框才能弹出软键盘
                 homeDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);

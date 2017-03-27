@@ -30,11 +30,6 @@ import java.util.Vector;
 
 import activity.hamir.com.himmir.R;
 
-/**
- * Initial the camera
- *
- * @author Ryan.Tang
- */
 public class MipcaActivityCaptureActivity extends Activity implements Callback {
 
     private CaptureActivityHandler handler;
@@ -48,9 +43,6 @@ public class MipcaActivityCaptureActivity extends Activity implements Callback {
     private static final float BEEP_VOLUME = 0.10f;
     private boolean vibrate;
 
-    /**
-     * Called when the activity is first created.
-     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -112,12 +104,6 @@ public class MipcaActivityCaptureActivity extends Activity implements Callback {
         super.onDestroy();
     }
 
-    /**
-     * ����ɨ����
-     *
-     * @param result
-     * @param barcode
-     */
     public void handleDecode(Result result, Bitmap barcode) {
         inactivityTimer.onActivity();
         playBeepSoundAndVibrate();
