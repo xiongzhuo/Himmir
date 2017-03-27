@@ -1,17 +1,16 @@
 package com.himmiractivity.activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,8 +18,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.PopupWindow;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,7 +37,6 @@ import com.himmiractivity.request.ModifyNameRequest;
 import com.himmiractivity.request.TaskDetailImageUploadTask;
 import com.himmiractivity.view.CircleImageView;
 import com.himmiractivity.view.ResetNameDialog;
-import com.himmiractivity.view.SlideBackLayout;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -58,7 +54,7 @@ import butterknife.BindView;
  * 设置页面
  */
 
-public class SetActivity extends BaseBusActivity implements PopupWindow.OnDismissListener {
+public class SetActivity extends BaseBusActivity {
     private ImageLoader im = ImageLoader.getInstance();
     public final String IMAGE_UNSPECIFIED = "image/*";
     private List<File> files;// 图片文件集合
@@ -85,7 +81,7 @@ public class SetActivity extends BaseBusActivity implements PopupWindow.OnDismis
     LinearLayout llChanagePass;
     @BindView(R.id.ll_exit)
     LinearLayout llExit;
-    PopupWindow popupWindow;
+    AlertDialog alertDialog;
     @BindView(R.id.tv_title)
     TextView tvTitle;
     @BindView(R.id.cir_image)
@@ -255,14 +251,14 @@ public class SetActivity extends BaseBusActivity implements PopupWindow.OnDismis
                 break;
             case R.id.tv_sell_phone:
                 IntentUtilsTwo.intentToCall(this, tv_sell_phone.getText().toString().trim());
-                popupWindow.dismiss();
+                alertDialog.dismiss();
                 break;
             case R.id.tv_service_phone:
                 IntentUtilsTwo.intentToCall(this, tv_service_phone.getText().toString().trim());
-                popupWindow.dismiss();
+                alertDialog.dismiss();
                 break;
             case R.id.tv_cancel:
-                popupWindow.dismiss();
+                alertDialog.dismiss();
                 break;
             default:
                 break;
@@ -281,38 +277,37 @@ public class SetActivity extends BaseBusActivity implements PopupWindow.OnDismis
 
     private void openPopupWindow(View v) {
         //防止重复按按钮
-        if (popupWindow != null && popupWindow.isShowing()) {
+        if (alertDialog != null && alertDialog.isShowing()) {
             return;
         }
-        //设置PopupWindow的View
-        View view = LayoutInflater.from(this).inflate(R.layout.pop_phone, null);
-        popupWindow = new PopupWindow(view, RelativeLayout.LayoutParams.MATCH_PARENT,
-                RelativeLayout.LayoutParams.WRAP_CONTENT);
-        //设置背景,这个没什么效果，不添加会报错
-        popupWindow.setBackgroundDrawable(new BitmapDrawable());
-        //设置点击弹窗外隐藏自身
-        popupWindow.setFocusable(true);
-        popupWindow.setOutsideTouchable(true);
-        //设置动画
-        popupWindow.setAnimationStyle(R.style.PopupWindow);
-        //设置位置
-        popupWindow.showAtLocation(v, Gravity.BOTTOM, 0, 0);
-        //设置消失监听
-        popupWindow.setOnDismissListener(this);
-
+        LayoutInflater inflater = getLayoutInflater();
+        View view = inflater.inflate(R.layout.pop_phone, null);
+        alertDialog = new AlertDialog.Builder(SetActivity.this)
+                .create();
         //设置PopupWindow的View点击事件
         setOnPopupViewClick(view);
-        //设置背景色
-        setBackgroundAlpha(0.5f);
+        Window w = alertDialog.getWindow();
+        w.setWindowAnimations(R.style.AnimBottom);
+        alertDialog.show();
+        alertDialog.getWindow().setContentView(view);
+        alertDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT);
     }
 
     private void setOnPopupViewClick(View view) {
+        LinearLayout ll_dimis = (LinearLayout) view.findViewById(R.id.ll_dimis);
         tv_sell_phone = (TextView) view.findViewById(R.id.tv_sell_phone);
         tv_service_phone = (TextView) view.findViewById(R.id.tv_service_phone);
         TextView tv_cancel = (TextView) view.findViewById(R.id.tv_cancel);
         tv_sell_phone.setOnClickListener(this);
         tv_sell_phone.setOnClickListener(this);
         tv_cancel.setOnClickListener(this);
+        ll_dimis.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+            }
+        });
     }
 
     /**
@@ -334,13 +329,6 @@ public class SetActivity extends BaseBusActivity implements PopupWindow.OnDismis
                 UiUtil.dip2px(SetActivity.this, 75));
         intent.putExtra("return-data", true);
         startActivityForResult(intent, P_RESULT);
-    }
-
-    //设置屏幕背景透明效果
-    public void setBackgroundAlpha(float alpha) {
-        WindowManager.LayoutParams lp = getWindow().getAttributes();
-        lp.alpha = alpha;
-        getWindow().setAttributes(lp);
     }
 
     @Override
@@ -412,8 +400,4 @@ public class SetActivity extends BaseBusActivity implements PopupWindow.OnDismis
         }
     }
 
-    @Override
-    public void onDismiss() {
-        setBackgroundAlpha(1f);
-    }
 }
