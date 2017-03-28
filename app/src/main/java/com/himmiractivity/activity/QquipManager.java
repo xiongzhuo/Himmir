@@ -68,7 +68,7 @@ public class QquipManager extends BaseBusActivity implements AlxRefreshLoadMoreR
                     }
                     break;
                 //成功
-                case StatisConstans.MSG_RECEIVED_REGULAR:
+                case StatisConstans.MSG_QQUIP:
                     allUserDerviceBaen = (AllUserDerviceBaen) msg.obj;
 //                    mRecyclerView.setLayoutManager(new LinearLayoutManager(QquipManager.this));
                     rvcAdapter = new RvcAdapter(allUserDerviceBaen.getSpace(), R.layout.list_item, true);

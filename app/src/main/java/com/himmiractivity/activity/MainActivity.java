@@ -1,9 +1,11 @@
 package com.himmiractivity.activity;
 
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -14,6 +16,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -33,12 +38,17 @@ import com.himmiractivity.Utils.ToastUtils;
 import com.himmiractivity.Utils.UiUtil;
 import com.himmiractivity.Utils.WifiUtils;
 import com.himmiractivity.base.BaseBusActivity;
+import com.himmiractivity.entity.AllUserDerviceBaen;
+import com.himmiractivity.entity.Space;
 import com.himmiractivity.entity.UserData;
 import com.himmiractivity.interfaces.StatisConstans;
+import com.himmiractivity.request.AllDeviceInfoRequest;
 import com.himmiractivity.request.LodingRequest;
+import com.himmiractivity.view.ListPopupWindow;
 import com.himmiractivity.view.PercentView;
 import com.himmiractivity.view.SelectorImageView;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -81,6 +91,9 @@ public class MainActivity extends BaseBusActivity {
     private Double aimPercent = (24d / 225d) * 100d;
     Bundle bundle;
     UserData userData;
+    //获取设备
+    private List<String> list;
+    private List<Space> space;
     public static MainActivity instans;
     private Handler handler = new Handler(new Handler.Callback() {
         @Override
@@ -89,6 +102,18 @@ public class MainActivity extends BaseBusActivity {
                 //成功
                 case StatisConstans.MSG_RECEIVED_REGULAR:
                     userData = (UserData) msg.obj;
+                    initRechclerView();
+                    break;
+                case StatisConstans.MSG_QQUIP:
+                    AllUserDerviceBaen allUserDerviceBaen = (AllUserDerviceBaen) msg.obj;
+                    if (allUserDerviceBaen.getSpace() != null && allUserDerviceBaen.getSpace().size() > 0) {
+                        space = allUserDerviceBaen.getSpace();
+                        list = new ArrayList<>();
+                        for (int i = 0; i < space.size(); i++) {
+                            list.add(space.get(i).getUserRoom().getRoom_name());
+                        }
+                    }
+
                     break;
                 case StatisConstans.MSG_RECEIVED_BOUND:
                     startActivity(new Intent(MainActivity.this, LodingActivity.class));
@@ -140,7 +165,17 @@ public class MainActivity extends BaseBusActivity {
         Log.i("aimPercent", aimPercent + "=-------");
         percentView.setAngel(aimPercent);
         percentView.setRankText("PM2.5室内", "24");
-        mlocation = getLocation();
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.CALL_PHONE},
+                    StatisConstans.MY_PERMISSIONS_REQUEST_LOCATION);
+        } else {
+            mlocation = getLocation();
+        }
     }
 
     @Override
@@ -152,20 +187,18 @@ public class MainActivity extends BaseBusActivity {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tv_room:
-                UiUtil.showPopDown(tvRoom, MainActivity.this, new UiUtil.downOnclick() {
-                    @Override
-                    public void onTvkClick() {
-                        ToastUtil.show(MainActivity.this, "onTvkClick");
-                    }
-
-                    @Override
-                    public void onTvcClick() {
-                        ToastUtil.show(MainActivity.this, "onTvcClick");
-                    }
-                });
+                if (list != null && list.size() > 0) {
+                    ListPopupWindow popupWindow = new ListPopupWindow(MainActivity.this, tvRoom, list, new ListPopupWindow.downOnclick() {
+                        @Override
+                        public void onDownItemClick(int position) {
+                            ToastUtil.show(MainActivity.this, "你点击了ITEM" + position);
+                        }
+                    });
+                } else {
+                    ToastUtil.show(MainActivity.this, "暂无房间");
+                }
                 break;
             case R.id.iv_add:
-//                startActivity(new Intent(MainActivity.this, InformationComitActivity.class));
                 //判断是否开启了WI-FI
                 if (WifiUtils.isWifiConnected(MainActivity.this)) {
                     startActivity(new Intent(MainActivity.this, DeployWifiActivity.class));
@@ -273,6 +306,20 @@ public class MainActivity extends BaseBusActivity {
         }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == StatisConstans.MY_PERMISSIONS_REQUEST_LOCATION) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                mlocation = getLocation();
+            } else {
+                // Permission Denied
+                Toast.makeText(MainActivity.this, "请允许才能进行定位", Toast.LENGTH_SHORT).show();
+            }
+            return;
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
     private void GPSLocation() {
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
         try {
@@ -349,4 +396,12 @@ public class MainActivity extends BaseBusActivity {
         client.disconnect();
     }
 
+    private void initRechclerView() {
+        AllDeviceInfoRequest allDeviceInfoRequest = new AllDeviceInfoRequest(sharedPreferencesDB, this, handler);
+        try {
+            allDeviceInfoRequest.requestCode();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

@@ -5,6 +5,10 @@ package com.himmiractivity.interfaces;
  */
 
 public interface StatisConstans {
+    //定位权限
+    int MY_PERMISSIONS_REQUEST_CALL_PHONE = 10086;
+    //定位权限
+    int MY_PERMISSIONS_REQUEST_LOCATION = 24;
     int MSG_IMAGE_REQUEST = 24;
     /**
      * 时间request
@@ -34,4 +38,5 @@ public interface StatisConstans {
     int ImgLimit = 30;// 75
     // 获取服务器配置信息成功
     int CONFIG_REGULAR = 109;
+    int MSG_QQUIP = 110;
 }

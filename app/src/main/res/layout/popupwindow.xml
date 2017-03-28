@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/lv_gray_bg"
+    android:orientation="vertical">
+
+    <com.himmiractivity.view.MyMaxHeightListView
+        android:id="@+id/card_ListView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:divider="@android:color/darker_gray"
+        android:dividerHeight="1dp"
+        android:minHeight="10dp"></com.himmiractivity.view.MyMaxHeightListView>
+
+</LinearLayout>

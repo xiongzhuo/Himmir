@@ -6,10 +6,17 @@ import android.graphics.drawable.BitmapDrawable;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.MeasureSpec;
+import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import activity.hamir.com.himmir.R;
 
@@ -17,11 +24,6 @@ import activity.hamir.com.himmir.R;
  * Created by Administrator on 2016/3/9.
  */
 public class UiUtil {
-    public interface downOnclick {
-        void onTvkClick();
-
-        void onTvcClick();
-    }
 
     public static void Toast(Context context, String str) {
         Toast.makeText(context, str, Toast.LENGTH_SHORT).show();
@@ -35,48 +37,32 @@ public class UiUtil {
         return (int) (dpValue * scale + 0.5f);
     }
 
-    public static void showPopDown(View v, Context context, final downOnclick downOnclick) {
+    public static void showPopDown(View v, Context context, List<String> list) {
+        WindowManager wm = (WindowManager) context.getApplicationContext()
+                .getSystemService(Context.WINDOW_SERVICE);
+        int height = wm.getDefaultDisplay().getHeight();
         LinearLayout layout = new LinearLayout(context);
-        layout.setBackgroundColor(context.getResources().getColor(R.color.gray));
+        layout.setBackgroundColor(context.getResources().getColor(R.color.lv_gray_bg));
         layout.setOrientation(LinearLayout.VERTICAL);
-        TextView tvk = new TextView(context);
+        ListView listView = new ListView(context);
         LinearLayout.LayoutParams paramsk = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        tvk.setGravity(Gravity.CENTER);
-        tvk.setPadding(0, 15, 0, 15);
-        tvk.setLayoutParams(paramsk);
-        tvk.setText("客厅");
-        tvk.setTextColor(Color.WHITE);
-        TextView tvc = new TextView(context);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        tvc.setGravity(Gravity.CENTER);
-        tvc.setPadding(0, 15, 0, 15);
-        tvc.setLayoutParams(params);
-        tvc.setText("厨房");
-        tvc.setTextColor(Color.WHITE);
-        layout.addView(tvc);
-        layout.addView(tvk);
+        listView.setLayoutParams(paramsk);
+        ArrayAdapter<String> array = new ArrayAdapter<>(context,
+                R.layout.lv_textview_item, list);
+        listView.setAdapter(array);
+        layout.addView(listView);
 
-        final PopupWindow popupWindow = new PopupWindow(layout, 200, LinearLayout.LayoutParams.WRAP_CONTENT, true);
-
+        final PopupWindow popupWindow = new PopupWindow(layout, 300, height / 3, true);
         popupWindow.setFocusable(true);
         popupWindow.setOutsideTouchable(true);
         popupWindow.setBackgroundDrawable(new BitmapDrawable());
         popupWindow.getContentView().measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
         int[] location = new int[2];
         v.getLocationOnScreen(location);
-        popupWindow.showAsDropDown(v, v.getWidth() / 2 - 100, 0, Gravity.NO_GRAVITY);
-        tvk.setOnClickListener(new View.OnClickListener() {
+        popupWindow.showAsDropDown(v, v.getWidth() / 2 - 150, 0, Gravity.NO_GRAVITY);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onClick(View v) {
-                downOnclick.onTvkClick();
-                popupWindow.dismiss();
-            }
-        });
-        tvc.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                downOnclick.onTvcClick();
-                popupWindow.dismiss();
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             }
         });
     }

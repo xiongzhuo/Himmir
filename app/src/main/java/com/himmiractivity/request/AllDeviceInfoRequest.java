@@ -58,13 +58,10 @@ public class AllDeviceInfoRequest {
                     result = JsonUtils.parseJson(json,
                             new TypeToken<AllUserDerviceBaen>() {
                             }.getType());
-                    //手机号码已经被其它账号绑定
                     if (!result.isFlag()) {
                         ToastUtil.show(context, result.getMsg());
-                    }
-                    //手机号码正常
-                    else {
-                        handler.sendMessage(handler.obtainMessage(StatisConstans.MSG_RECEIVED_REGULAR, result.getData()));
+                    } else {
+                        handler.sendMessage(handler.obtainMessage(StatisConstans.MSG_QQUIP, result.getData()));
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

@@ -27,7 +27,7 @@ public class IntentUtilsTwo {
         }
         Intent intent = new Intent();
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.setAction(Intent.ACTION_DIAL);
+        intent.setAction(Intent.ACTION_CALL);
         intent.setData(Uri.parse("tel:" + phone));
         context.startActivity(intent);
     }

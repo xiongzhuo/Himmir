@@ -1,8 +1,10 @@
 package com.himmiractivity.activity;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -10,6 +12,9 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -165,6 +170,23 @@ public class SetActivity extends BaseBusActivity {
 
     }
 
+    public void testCall(View view) {
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.CALL_PHONE)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.CALL_PHONE},
+                    StatisConstans.MY_PERMISSIONS_REQUEST_CALL_PHONE);
+        } else {
+            callPhone();
+        }
+    }
+
+    public void callPhone() {
+        IntentUtilsTwo.intentToCall(this, tv_sell_phone.getText().toString().trim());
+        alertDialog.dismiss();
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -251,8 +273,7 @@ public class SetActivity extends BaseBusActivity {
                 }
                 break;
             case R.id.tv_sell_phone:
-                IntentUtilsTwo.intentToCall(this, tv_sell_phone.getText().toString().trim());
-                alertDialog.dismiss();
+                testCall(tv_sell_phone);
                 break;
             case R.id.tv_service_phone:
                 IntentUtilsTwo.intentToCall(this, tv_service_phone.getText().toString().trim());
@@ -274,6 +295,20 @@ public class SetActivity extends BaseBusActivity {
         } else {
             finish();
         }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == StatisConstans.MY_PERMISSIONS_REQUEST_CALL_PHONE) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                callPhone();
+            } else {
+                // Permission Denied
+                Toast.makeText(SetActivity.this, "Permission Denied", Toast.LENGTH_SHORT).show();
+            }
+            return;
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     private void openPopupWindow() {
