@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/transparent"
     android:orientation="vertical">
 
     <LinearLayout
@@ -9,13 +10,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
+        android:background="@android:color/transparent"
         android:orientation="horizontal"></LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:background="@drawable/popup_shape"
+        android:background="@android:color/transparent"
         android:orientation="vertical">
 
 
@@ -23,6 +25,7 @@
             android:id="@+id/tv_sell_phone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/white"
             android:gravity="center"
             android:padding="16dp"
             android:text="销售：0731-88797508"
@@ -33,6 +36,7 @@
             android:id="@+id/tv_service_phone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/white"
             android:gravity="center"
             android:padding="16dp"
             android:text="服务：400-990-4018"
@@ -46,12 +50,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:background="@drawable/popup_shape">
+        android:background="@android:color/transparent">
 
         <TextView
             android:id="@+id/tv_cancel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/white"
             android:gravity="center"
             android:padding="16dp"
             android:text="取消"

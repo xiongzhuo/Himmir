@@ -5,10 +5,13 @@ package com.himmiractivity.interfaces;
  */
 
 public interface StatisConstans {
+    //相册权限
+    int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 10;
     //定位权限
     int MY_PERMISSIONS_REQUEST_CALL_PHONE = 10086;
     //定位权限
     int MY_PERMISSIONS_REQUEST_LOCATION = 24;
+    int MY_PERMISSIONS_REQUEST_READ_PHONE_STATE = 23;
     int MSG_IMAGE_REQUEST = 24;
     /**
      * 时间request

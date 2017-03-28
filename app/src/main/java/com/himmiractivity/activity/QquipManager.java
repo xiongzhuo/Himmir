@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
@@ -167,15 +168,25 @@ public class QquipManager extends BaseBusActivity implements AlxRefreshLoadMoreR
         //alertDialog
         LayoutInflater inflater = getLayoutInflater();
         View view = inflater.inflate(R.layout.view_popupwindow, null);
-        alertDialog = new AlertDialog.Builder(QquipManager.this)
+        alertDialog = new AlertDialog.Builder(QquipManager.this, R.style.Theme_Light_Dialog)
                 .create();
         setOnPopupViewClick(view);
+        alertDialog.show();
         Window w = alertDialog.getWindow();
         w.setWindowAnimations(R.style.AnimBottom);
-        alertDialog.show();
-        alertDialog.getWindow().setContentView(view);
-        alertDialog.getWindow().setLayout(LayoutParams.MATCH_PARENT,
-                LayoutParams.MATCH_PARENT);
+        w.setGravity(Gravity.BOTTOM);
+        w.getDecorView().setPadding(0, 0, 0, 0);
+        //获得window窗口的属性
+        android.view.WindowManager.LayoutParams lp = w.getAttributes();
+        //设置窗口宽度为充满全屏
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        //设置窗口高度为包裹内容
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        //将设置好的属性set回去
+        w.setAttributes(lp);
+        w.setContentView(view);
+//        w.setLayout(LayoutParams.MATCH_PARENT,
+//                LayoutParams.MATCH_PARENT);
     }
 
     private void setOnPopupViewClick(View view) {

@@ -1,16 +1,9 @@
 package com.himmiractivity.view;
 
-/**
- * Created by li
- */
-
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.ListView;
 
-/**
- * Created by liguoqing on 2016/3/9.
- */
 public class MyMaxHeightListView extends ListView {
 
     /**

@@ -1,10 +1,17 @@
 package com.himmiractivity.base;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.ContextCompat;
+import android.telephony.TelephonyManager;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -21,6 +28,8 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.himmiractivity.Utils.AppManager;
 import com.himmiractivity.Utils.SharedPreferencesDB;
 import com.himmiractivity.Utils.ToastUtils;
+import com.himmiractivity.activity.MainActivity;
+import com.himmiractivity.interfaces.StatisConstans;
 import com.himmiractivity.view.SwipeBackLayout;
 
 import org.xutils.x;
@@ -60,6 +69,18 @@ public abstract class BaseBusActivity extends FragmentActivity implements View.O
                 R.layout.base, null);
         layout.attachToActivity(this);
         setContentView(this.getContentLayoutId());
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.READ_PHONE_STATE)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.READ_PHONE_STATE},
+                    StatisConstans.MY_PERMISSIONS_REQUEST_READ_PHONE_STATE);
+        } else {
+            if (TextUtils.isEmpty(sharedPreferencesDB.getString("userDeviceUuid", ""))) {
+                String imei = ((TelephonyManager) this.getSystemService(TELEPHONY_SERVICE)).getDeviceId();
+                sharedPreferencesDB.setString("userDeviceUuid", imei);
+            }
+        }
         ButterKnife.bind(this);
         AppManager.getAppManager().addActivity(this);
         mContext = this;
@@ -244,6 +265,24 @@ public abstract class BaseBusActivity extends FragmentActivity implements View.O
         if (mMidView != null) {
             mMidView.setText(strTxt);
         }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == StatisConstans.MY_PERMISSIONS_REQUEST_READ_PHONE_STATE) {
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (TextUtils.isEmpty(sharedPreferencesDB.getString("userDeviceUuid", ""))) {
+                    String imei = ((TelephonyManager) this.getSystemService(TELEPHONY_SERVICE)).getDeviceId();
+                    sharedPreferencesDB.setString("userDeviceUuid", imei);
+                }
+            } else {
+                // Permission Denied
+                Toast.makeText(this, "请允许才能获得设备ID", Toast.LENGTH_SHORT).show();
+            }
+            return;
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     /**

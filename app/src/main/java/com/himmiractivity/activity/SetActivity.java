@@ -16,6 +16,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -97,6 +98,8 @@ public class SetActivity extends BaseBusActivity {
     ResetNameDialog dialog;
     ImageBean imageBean;
     private boolean isResult = false;
+    //电话号码
+    String phone = "";
 //    private SlideBackLayout mSlideBackLayout;
 
     private Handler handler = new Handler(new Handler.Callback() {
@@ -130,10 +133,6 @@ public class SetActivity extends BaseBusActivity {
 
     @Override
     protected void initView(Bundle savedInstanceState) {
-//        initTitleBar();
-//        setMidTxt("修改密码");
-//        mSlideBackLayout = new SlideBackLayout(this);
-//        mSlideBackLayout.bind();
         App.getInstance().addActivity(this);
         im.init(ImageLoaderConfiguration
                 .createDefault(SetActivity.this));
@@ -182,8 +181,26 @@ public class SetActivity extends BaseBusActivity {
         }
     }
 
+    public void getPhoto() {
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this,
+                Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.CAMERA},
+                    StatisConstans.MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    StatisConstans.MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
+        } else {
+            ChangePhotosUtils
+                    .changePhotos(SetActivity.this);
+        }
+    }
+
     public void callPhone() {
-        IntentUtilsTwo.intentToCall(this, tv_sell_phone.getText().toString().trim());
+        IntentUtilsTwo.intentToCall(this, phone);
         alertDialog.dismiss();
     }
 
@@ -197,8 +214,7 @@ public class SetActivity extends BaseBusActivity {
                 startActivity(intentEq);
                 break;
             case R.id.cir_image:
-                ChangePhotosUtils
-                        .changePhotos(SetActivity.this);
+                getPhoto();
                 break;
             //我的消息
             case R.id.ll_message:
@@ -273,11 +289,12 @@ public class SetActivity extends BaseBusActivity {
                 }
                 break;
             case R.id.tv_sell_phone:
+                phone = tv_sell_phone.getText().toString().trim();
                 testCall(tv_sell_phone);
                 break;
             case R.id.tv_service_phone:
-                IntentUtilsTwo.intentToCall(this, tv_service_phone.getText().toString().trim());
-                alertDialog.dismiss();
+                phone = tv_service_phone.getText().toString().trim();
+                testCall(tv_service_phone);
                 break;
             case R.id.tv_cancel:
                 alertDialog.dismiss();
@@ -300,13 +317,21 @@ public class SetActivity extends BaseBusActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == StatisConstans.MY_PERMISSIONS_REQUEST_CALL_PHONE) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 callPhone();
             } else {
-                // Permission Denied
-                Toast.makeText(SetActivity.this, "Permission Denied", Toast.LENGTH_SHORT).show();
+                Toast.makeText(SetActivity.this, "请你允许才能打电话", Toast.LENGTH_SHORT).show();
             }
             return;
+        } else if (requestCode == StatisConstans.MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE) {
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                ChangePhotosUtils
+                        .changePhotos(SetActivity.this);
+            } else {
+                Toast.makeText(SetActivity.this, "请你允许才能选取图片或者拍照", Toast.LENGTH_SHORT).show();
+            }
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
@@ -318,16 +343,26 @@ public class SetActivity extends BaseBusActivity {
         }
         LayoutInflater inflater = getLayoutInflater();
         View view = inflater.inflate(R.layout.pop_phone, null);
-        alertDialog = new AlertDialog.Builder(SetActivity.this)
+        alertDialog = new AlertDialog.Builder(SetActivity.this, R.style.Theme_Light_Dialog)
                 .create();
         //设置PopupWindow的View点击事件
         setOnPopupViewClick(view);
+        alertDialog.show();
         Window w = alertDialog.getWindow();
         w.setWindowAnimations(R.style.AnimBottom);
-        alertDialog.show();
-        alertDialog.getWindow().setContentView(view);
-        alertDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT);
+        w.setGravity(Gravity.BOTTOM);
+        w.getDecorView().setPadding(0, 0, 0, 0);
+        //获得window窗口的属性
+        android.view.WindowManager.LayoutParams lp = w.getAttributes();
+        //设置窗口宽度为充满全屏
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        //设置窗口高度为包裹内容
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        //将设置好的属性set回去
+        w.setAttributes(lp);
+        w.setContentView(view);
+//        alertDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT,
+//                ViewGroup.LayoutParams.MATCH_PARENT);
     }
 
     private void setOnPopupViewClick(View view) {

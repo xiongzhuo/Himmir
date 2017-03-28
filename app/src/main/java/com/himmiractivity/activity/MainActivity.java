@@ -139,22 +139,17 @@ public class MainActivity extends BaseBusActivity {
     @Override
     protected void initView(Bundle savedInstanceState) {
         instans = this;
-        String imei = ((TelephonyManager) this.getSystemService(TELEPHONY_SERVICE)).getDeviceId();
         if (getIntent().getExtras() != null) {
             bundle = getIntent().getExtras();
             if (bundle.getSerializable("userData") != null) {
                 userData = (UserData) bundle.getSerializable("userData");
-            }
-        } else {
-            if (TextUtils.isEmpty(sharedPreferencesDB.getString("userpwd", "")) || TextUtils.isEmpty(sharedPreferencesDB.getString("username", ""))) {
-                startActivity(new Intent(this, LodingActivity.class));
-                finish();
             } else {
                 LodingRequest();
             }
+        } else {
+            LodingRequest();
         }
         App.getInstance().addActivity(this);
-        sharedPreferencesDB.setString("userDeviceUuid", imei);
         tvCity.setOnClickListener(this);
         btnSpeedSemll.setOnClickListener(this);
         btnSpeedAdd.setOnClickListener(this);
@@ -171,10 +166,17 @@ public class MainActivity extends BaseBusActivity {
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.CALL_PHONE},
+                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                    StatisConstans.MY_PERMISSIONS_REQUEST_LOCATION);
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     StatisConstans.MY_PERMISSIONS_REQUEST_LOCATION);
         } else {
-            mlocation = getLocation();
+            try {
+                mlocation = getLocation();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -253,7 +255,7 @@ public class MainActivity extends BaseBusActivity {
         }
     }
 
-    public Location getLocation() {
+    public Location getLocation() throws Exception {
         mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         mlocation = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         if (mlocation == null) {
@@ -290,11 +292,16 @@ public class MainActivity extends BaseBusActivity {
     };
 
     public void LodingRequest() {
-        LodingRequest lodingRequest = new LodingRequest(sharedPreferencesDB, this, sharedPreferencesDB.getString("userpwd", ""), sharedPreferencesDB.getString("username", ""), sharedPreferencesDB.getString("userDeviceUuid", ""), handler);
-        try {
-            lodingRequest.requestCode();
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (TextUtils.isEmpty(sharedPreferencesDB.getString("userpwd", "")) || TextUtils.isEmpty(sharedPreferencesDB.getString("username", ""))) {
+            startActivity(new Intent(this, LodingActivity.class));
+            finish();
+        } else {
+            LodingRequest lodingRequest = new LodingRequest(sharedPreferencesDB, this, sharedPreferencesDB.getString("userpwd", ""), sharedPreferencesDB.getString("username", ""), sharedPreferencesDB.getString("userDeviceUuid", ""), handler);
+            try {
+                lodingRequest.requestCode();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -309,8 +316,13 @@ public class MainActivity extends BaseBusActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == StatisConstans.MY_PERMISSIONS_REQUEST_LOCATION) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                mlocation = getLocation();
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                try {
+                    mlocation = getLocation();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             } else {
                 // Permission Denied
                 Toast.makeText(MainActivity.this, "请允许才能进行定位", Toast.LENGTH_SHORT).show();

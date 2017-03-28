@@ -1,32 +1,22 @@
 package com.himmiractivity.view;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
-
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-
 import android.widget.PopupWindow;
-import android.widget.TextView;
 
-import com.himmiractivity.Utils.UiUtil;
 import com.himmiractivity.activity.MainActivity;
 
 import java.util.List;
 
 import activity.hamir.com.himmir.R;
 
-/**
- * Created by liguoqing on 2016/4/28.
- */
 public class ListPopupWindow extends PopupWindow {
     public interface downOnclick {
         void onDownItemClick(int position);
@@ -77,8 +67,6 @@ public class ListPopupWindow extends PopupWindow {
 
     /**
      * 设置添加屏幕的背景透明度
-     *
-     * @param bgAlpha
      */
     public void backgroundAlpha(float bgAlpha) {
         WindowManager.LayoutParams lp = ((MainActivity) mContext).getWindow().getAttributes();
