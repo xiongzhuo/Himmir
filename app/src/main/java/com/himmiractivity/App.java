@@ -5,6 +5,8 @@ import android.app.Application;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
+
 import org.xutils.x;
 
 import java.util.LinkedList;
@@ -26,6 +28,7 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        Fresco.initialize(this);
         x.Ext.init(this);
     }
 

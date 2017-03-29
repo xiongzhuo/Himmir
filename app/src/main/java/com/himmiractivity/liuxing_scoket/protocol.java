@@ -1,0 +1,1145 @@
+package com.himmiractivity.liuxing_scoket;
+
+import java.util.Arrays;
+
+import javax.crypto.Cipher;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
+
+import java.io.DataOutputStream;
+import java.nio.*;
+import java.io.IOException;
+import java.net.Socket;
+import java.lang.Thread;
+
+
+public class protocol {
+
+    public static interface MsgType {
+        public static final byte DEV_SERVER_CMD_LOGIN = (byte) 0;
+        public static final byte SERVER_DEV_ACK_LOGIN = (byte) 1;
+        public static final byte DEV_SERVER_CMD_HEARTBEAT = (byte) 2;
+        public static final byte SERVER_DEV_ACK_HEARTBEAT = (byte) 3;
+        public static final byte DEV_SERVER_CMD_REPORT = (byte) 4;
+        public static final byte SERVER_DEV_CMD_CONTROL = (byte) 5;
+        public static final byte DEV_SERVER_ACK_CONTROL = (byte) 6;
+        public static final byte SERVER_DEV_CMD_SETUP = (byte) 7;
+        public static final byte DEV_SERVER_ACK_SETUP = (byte) 8;
+        public static final byte SERVER_DEV_CMD_DEMAND = (byte) 9;
+        public static final byte DEV_SERVER_ACK_DEMAND = (byte) 10;
+        public static final byte APP_DEV_CMD_ACTIVATE = (byte) 11;
+        public static final byte DEV_APP_ACK_ACTIVATE = (byte) 12;
+        public static final byte SERVER_DEV_CMD_READY = (byte) 13;
+        public static final byte APP_DEV_CMD_CONFIG = (byte) 14;
+        public static final byte DEV_APP_ACK_CONFIG = (byte) 15;
+        public static final byte APP_DEV_CMD_SETUP = (byte) 16;
+        public static final byte DEV_APP_ACK_SETUP = (byte) 17;
+        public static final byte APP_DEV_CMD_DEMAND = (byte) 18;
+        public static final byte DEV_APP_ACK_DEMAND = (byte) 19;
+        public static final byte DEV_SERVER_CMD_HISTORY = (byte) 20;
+        public static final byte APP_SERVER_CMD_DEMAND = (byte) 21;  //21 ：app 向服务器查询
+        public static final byte SERVER_APP_ACK_DEMAND = (byte) 22;  //22 ：服务器回 app 回查询
+        public static final byte APP_SERVER_CMD_CONTROL = (byte) 23; //23 ：app 向服务器 发控制命令
+        public static final byte SERVER_APP_ACK_CONTROL = (byte) 24; //24 ：服务器
+    }
+
+    public static interface PayloardKey {
+        public static final byte D_POWER = (byte) 0x10;// 开关机
+        public static final byte D_MODE = (byte) 0x20; // 模式
+        public static final byte D_EXHAUST_MODE = (byte) 0x22;// 新排风模式
+        public static final byte D_EXHAUST_RATIO = (byte) 0x23; // 排风比例
+        public static final byte D_LCD_BACKLIGHT = (byte) 0x21; // 背光时间
+        public static final byte D_AUX_HEATING = (byte) 0x24; // 辅热温度值
+        public static final byte D_CONST_TEMP_MODE = (byte) 0x25; // 恒温模式
+        public static final byte D_CONST_HUMI_MODE = (byte) 0x26; // 恒湿模式
+        public static final byte D_CONST_TEMP_PARA = (byte) 0x27; // 恒温参数
+        public static final byte D_CONST_HUMI_PARA = (byte) 0x28; // 恒湿参数
+        public static final byte D_FAN_FREQ = (byte) 0x31; // 风机频率
+        public static final byte D_BLOWER_SPEED = (byte) 0x32; // 送风机转速
+        public static final byte D_EXHAUST_SPEED = (byte) 0x33; // 排风机转速
+        public static final byte D_BLOWING_RATE = (byte) 0x34; // 风量
+        public static final byte D_THAW_START_TEMP = (byte) 0x41; // 融冰启动温度
+        public static final byte D_THAW_STOP_TEMP = (byte) 0x42; // 融冰停止温度
+        public static final byte D_THAW_TIME = (byte) 0x43; // 融冰时间
+        public static final byte D_THAW_INV = (byte) 0x44; // 融冰间隔时间
+        public static final byte D_DUSTWIPER_CLEAR_PERIOD = (byte) 0x45; // 除尘器清洗周期
+        public static final byte D_DUSTWIPER_CLEAR_REMAIN = (byte) 0x46; // 除尘器清洗周期剩余时间
+        public static final byte D_TIME_MODE = (byte) 0x50; // 定时模式
+        public static final byte D_TIMER1 = (byte) 0x51; // 定时器1
+        public static final byte D_TIMER2 = (byte) 0x52; // 定时器2
+        public static final byte D_TIMER3 = (byte) 0x53; // 定时器3
+        public static final byte D_CO2_ADJ = (byte) 0x61; // CO2调节值
+        public static final byte D_FUNC_STATUS = (byte) 0x62; // 功能状态
+        public static final byte D_PM_ADJ = (byte) 0x63; // PM调节
+
+        public static final byte D_SENSOR_INDOOR_TEMP = (byte) 0x71; // 室内温度
+        public static final byte D_SENSOR_OUTDOOR_TEMP = (byte) 0x72; // 室外温度
+        public static final byte D_SENSOR_FAN_TEMP = (byte) 0x73; // 新风温度
+        public static final byte D_SENSOR_EXHAUST_TEMP = (byte) 0x74; // 排风温度
+        public static final byte D_CO2_THICKNESS = (byte) 0x75; // CO2浓度
+        public static final byte D_INDOOR_PM_THICKNESS = (byte) 0x76; // 室内颗粒物浓度
+        public static final byte D_OUTDOOR_PM_THICKNESS = (byte) 0x77; // 室外颗粒物浓度
+        public static final byte D_INDOOR_HUMI = (byte) 0x78; // 室内湿度
+        public static final byte D_SYSTEM_CLOCK = (byte) 0x01; // 系统时间校准
+        public static final byte D_FAULT_STATUS = (byte) 0x0f; // 故障状态
+
+    }
+
+    public static interface Key_IV {
+        public static final byte[] Public_Key = {0x3a, 0x46, 0x72, 0x2b, 0x45, 0x5d, 0x4b, 0x73, 0x7e, 0x65, 0x21,
+                0x42, 0x6e, 0x6c, 0x46, 0x3d};
+        public static final byte[] Public_IV = {0x4f, 0x3c, 0x64, 0x39, 0x3a, 0x76, 0x2a, 0x32, 0x45, 0x3f, 0x41, 0x22,
+                0x2e, 0x37, 0x2b, 0x5e};
+        public static final byte[] Private_KEY = {0x3a, 0x46, 0x72, 0x2b, 0x45, 0x5d, 0x4b, 0x73, 0x7e, 0x65, 0x21,
+                0x42, 0x6e, 0x6c, 0x46, 0x3d};
+        public static final byte[] Private_IV = {0x4f, 0x3c, 0x64, 0x39, 0x3a, 0x76, 0x2a, 0x32, 0x45, 0x3f, 0x41,
+                0x22, 0x2e, 0x37, 0x2b, 0x5e};
+    }
+
+    private static interface Packe_Def {
+        public static final String ConstHeader = "smart.hnliuxing.com";
+        public static final byte ConstHeaderLength = 15;
+        public static final byte ConstSaveDataLength = 4;
+        public static final byte DEV_OFF_ON = (byte) 0xea; // 设备在线状态
+        public static final byte DEV_Q_DATA = (byte) 0xda; // 设备所有状态
+        //包类型
+        public static final short DIR_SVR_DEV = (short) 0xab00; // 服务器至设备
+        public static final short DIR_DEV_SVR = (short) 0xba00; // 设备至服务器
+        public static final short DIR_APP_DEV = (short) 0xcb00; // app至设备
+        public static final short DIR_DEV_APP = (short) 0xbc00; // 设备至app
+        public static final short DIR_APP_SVR = (short) 0xae00;// app至服务器
+        public static final short DIR_SVR_APP = (short) 0xea00;// 服务器至app
+        public static final short DIR_MASK = (short) 0xff00;
+
+        public static final short PACKET_TYPE_CMD = (short) 0x0000; // 命令包
+        public static final short PACKET_TYPE_ACK = (short) 0x0080; // 回应包
+        public static final short PACKET_TYPE_MASK = (short) 0x00f0;
+        public static final short ENCRYPT_TYPE_PUBLIC = (short) 0x0000; // 公钥加密
+        public static final short ENCRYPT_TYPE_ACTIVATE = (short) 0x0002; // 激活用密钥
+        public static final short ENCRYPT_TYPE_MASK = (short) 0x000f; // 密码MASK
+
+        //包类型
+        //1.Serverto Dev
+        public static final short ptype_Server_Dev_Cmd_Pub = (short) (DIR_SVR_DEV | PACKET_TYPE_CMD | ENCRYPT_TYPE_PUBLIC);
+        public static final short ptype_Server_Dev_Cmd_Act = (short) (DIR_SVR_DEV | PACKET_TYPE_CMD | ENCRYPT_TYPE_ACTIVATE);
+        public static final short ptype_Server_Dev_Ack_Pub = (short) (DIR_SVR_DEV | PACKET_TYPE_ACK | ENCRYPT_TYPE_ACTIVATE);
+        public static final short ptyte_App_Dev_Act_Act = (short) (DIR_APP_DEV | PACKET_TYPE_CMD | ENCRYPT_TYPE_ACTIVATE);
+
+        //2.Dev to Server
+        public static final short ptype_Dev_Server_Ack_Pub = (short) (DIR_DEV_SVR | PACKET_TYPE_ACK | ENCRYPT_TYPE_PUBLIC); //上报用什么？
+        public static final short ptype_Dev_Server_Cmd_Pub = (short) (DIR_DEV_SVR | PACKET_TYPE_CMD | ENCRYPT_TYPE_PUBLIC); //上报用什么？
+        //3.server to app
+        public static final short ptype_Server_App_Ack_Pub = (short) (DIR_SVR_APP | PACKET_TYPE_ACK | ENCRYPT_TYPE_PUBLIC);
+        public static final short ptype_App_Server_Cmd_Pub = (short) (DIR_APP_SVR | PACKET_TYPE_ACK | ENCRYPT_TYPE_PUBLIC);
+
+    }
+
+    private static void test003() {
+        ByteBuffer buffer = ByteBuffer.allocate(16);
+        System.out.println("ByteBuffer :");
+        System.out.println("capacity:" + buffer.capacity());
+        buffer.put(new byte[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
+                14, 15});
+        System.out.println("put byte[]{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15} into buffer.");
+        System.out.println("limit:" + buffer.limit());
+        System.out.println("position:" + buffer.position());
+        buffer.flip();// 数据由写转为读取  
+        System.out.println("ByteBuffer 执行flip，转为读取");
+        byte[] dst = new byte[10];
+        buffer.get(dst, 0, dst.length);
+        System.out.println(String.format(
+                "byte[]:%s,%s,%s,%s,%s,%s,%s,%s,%s,%s", dst[0], dst[1], dst[2],
+                dst[3], dst[4], dst[5], dst[6], dst[7], dst[8], dst[9]));
+        System.out.println("读取完10个字节的数据后:");
+        System.out.println("limit:" + buffer.limit());
+        System.out.println("position:" + buffer.position());
+        buffer.rewind();
+        System.out.println("执行rewind，重新读取数据");
+        System.out.println("limit:" + buffer.limit());
+        System.out.println("position:" + buffer.position());
+        byte[] dt = new byte[10];
+        buffer.get(dt, 0, dst.length);
+        System.out.println(String.format(
+                "byte[]:%s,%s,%s,%s,%s,%s,%s,%s,%s,%s", dt[0], dt[1], dt[2],
+                dt[3], dt[4], dt[5], dt[6], dt[7], dt[8], dt[9]));
+        System.out.println("读取完10个字节的数据后:");
+        System.out.println("limit:" + buffer.limit());
+        System.out.println("position:" + buffer.position());
+        System.out.println("在当前位置做标记mark");
+        buffer.mark();
+        buffer.get();
+        buffer.get();
+        buffer.get();
+        System.out.println("读取3个字节后position:" + buffer.position());
+        // buffer.rewind();  
+        buffer.reset();
+        System.out.println("执行reset后position的位置:" + buffer.position());
+        // buffer.clear();  
+        // System.out.println(buffer.get(3));  
+        buffer.compact();
+        System.out.println("取出10个字节后，执行完compact后ByteBuffer第一个字节:" + buffer.get(0));
+    }
+    //login 回包
+
+    public static byte[] LoginAckPacket(byte[] time_stamp) {
+        byte[] data = new byte[]{0x01};
+        byte[] loginAckData = Packet_t(Packe_Def.ptype_Server_Dev_Ack_Pub, MsgType.SERVER_DEV_ACK_LOGIN, time_stamp, data);
+        return loginAckData;
+    }
+
+    //取开关机payload
+    public static byte[] getPowerSwitchPayload(boolean isOn) {
+        if (isOn == true) {
+            byte[] rett = {0x10, 0x01};
+            return rett;
+        } else {
+            byte[] retf = {0x10, 0x00};
+            return retf;
+        }
+    }
+
+    //取开关机payload
+    public static byte[] getPowerSwitchPayloadBymac(boolean isOn, String Mac) {
+        if (Mac.length() > 12) {
+            return null;
+        }
+        byte[] macCmdBytes = new byte[14];
+        byte[] mac = DigitalTrans.stringToAsciiBytes(Mac);
+        System.arraycopy(mac, 0, macCmdBytes, 0, Mac.length() - 1);
+        if (isOn == true) {
+            byte[] cmd = {0x10, 0x01};
+            System.arraycopy(cmd, 0, macCmdBytes, 12, 2);
+            return macCmdBytes;
+        } else {
+            byte[] cmd = {0x10, 0x00};
+            System.arraycopy(cmd, 0, macCmdBytes, 12, 2);
+            return macCmdBytes;
+        }
+    }
+
+    //开关机数据包
+    public static byte[] PowerSwitchByMac(boolean isOn, String Mac) {
+        byte[] plBytes = getPowerSwitchPayloadBymac(isOn, Mac);
+        System.out.println(DigitalTrans.byte2hex(plBytes));
+        byte[] sendBytes = Packet(Packe_Def.ptype_Server_Dev_Cmd_Pub, (byte) MsgType.SERVER_DEV_CMD_CONTROL, plBytes);
+        return sendBytes;
+    }
+
+    //开关机数据包
+    public static byte[] PowerSwitch(boolean isOn) {
+        byte[] plBytes = getPowerSwitchPayload(isOn);
+        System.out.println(DigitalTrans.byte2hex(plBytes));
+        byte[] sendBytes = Packet(Packe_Def.ptype_Server_Dev_Cmd_Pub, (byte) MsgType.SERVER_DEV_CMD_CONTROL, plBytes);
+        return sendBytes;
+    }
+
+    //数据打包
+    public static byte[] Packet_t(short packTpe, byte cmdType, byte[] timeStamp, byte[] payLoadSrc) {
+        //数据组包--时间戳  命令类型  playload
+        ByteBuffer buffer = ByteBuffer.allocate(1024);
+        byte[] cmdBytes = {cmdType};
+        buffer.put(timeStamp);
+        buffer.put(cmdBytes);
+        buffer.put(payLoadSrc);
+
+        //取校验码
+        buffer.flip();
+        byte[] tmpBytes = new byte[buffer.remaining()];
+        buffer.get(tmpBytes);
+        byte xorByte = xor(tmpBytes);
+        //存校验码
+        buffer.clear();
+        buffer.put(tmpBytes);
+        buffer.put(xorByte);
+
+        //取数据加密码
+        buffer.flip();
+        byte[] inEncryptBytes = new byte[buffer.remaining()];
+        buffer.get(inEncryptBytes);
+        byte[] encrypOutBytes = encrypt_CRT(Key_IV.Public_Key, Key_IV.Public_IV, inEncryptBytes);
+
+        //取数据加密数据长度
+        int len = encrypOutBytes.length;
+        //最后组包
+        ByteBuffer Endbuffer = ByteBuffer.allocate(1024);
+        byte[] cmdTypeBytes = DigitalTrans.unsignedShortToByte2_Litte(packTpe);
+        byte[] lenBytes = DigitalTrans.unsignedShortToByte2_Litte(len);
+        Endbuffer.put(cmdTypeBytes);
+        Endbuffer.put(lenBytes);
+        Endbuffer.put(encrypOutBytes);
+
+        //取完成处理的包
+        Endbuffer.flip();
+        byte[] SendBytes = new byte[Endbuffer.remaining()];
+        Endbuffer.get(SendBytes);
+        return SendBytes;
+    }
+
+    //数据打包
+    public static byte[] Packet(short packTpe, byte cmdType, byte[] payLoadSrc) {
+        //数据组包--时间戳  命令类型  playload
+        ByteBuffer buffer = ByteBuffer.allocate(1024);
+        //long time_stamp =System.currentTimeMillis();
+        long time_stamp = 123456;
+        byte[] timeStampBytes = DigitalTrans.unsignedIntToByte4_Litte(time_stamp);
+        byte[] cmdBytes = {cmdType};
+        buffer.put(timeStampBytes);
+        buffer.put(cmdBytes);
+        buffer.put(payLoadSrc);
+
+        //取校验码
+        buffer.flip();
+        int len = buffer.remaining();
+        byte[] tmpBytes = new byte[len];
+        buffer.get(tmpBytes);
+        byte xorByte = xor(tmpBytes);
+
+        //存校验码
+        buffer.clear();
+        buffer.put(tmpBytes);
+        buffer.put(xorByte);
+
+        //取数据加密码
+        buffer.flip();
+        byte[] inEncryptBytes = new byte[buffer.remaining()];
+        buffer.get(inEncryptBytes);
+        byte[] encrypOutBytes = encrypt_CRT(Key_IV.Public_Key, Key_IV.Public_IV, inEncryptBytes);
+
+        //取数据加密数据长度
+        int len1 = encrypOutBytes.length;
+        //最后组包
+        ByteBuffer Endbuffer = ByteBuffer.allocate(1024);
+        byte[] cmdTypeBytes = DigitalTrans.unsignedShortToByte2_Litte(packTpe);
+        byte[] lenBytes = DigitalTrans.unsignedShortToByte2_Litte(len1);
+        Endbuffer.put(cmdTypeBytes);
+        Endbuffer.put(lenBytes);
+        Endbuffer.put(encrypOutBytes);
+
+        //取完成处理的包
+        Endbuffer.flip();
+        byte[] SendBytes = new byte[Endbuffer.remaining()];
+        Endbuffer.get(SendBytes);
+        return SendBytes;
+    }
+
+    //粘包处理
+    //private static final byte[]
+    public static byte[] DataUnPacket(byte[] inBytes) {
+        int dataLen = inBytes.length;
+        int todataLen = dataLen;
+        int end = dataLen;
+        int pos = 0;
+        ByteBuffer buffer = ByteBuffer.allocate(todataLen);
+        while (pos < end) {
+            if (dataLen > 4) {
+                buffer.clear();
+                //取包类型信息
+                buffer.rewind();
+                buffer.put(inBytes, pos, 2);
+                //buffer.order(ByteOrder.BIG_ENDIAN);
+                //buffer.order(ByteOrder.LITTLE_ENDIAN);//java 默认为BIG_ENDIAN，arm为小端，所以ByteOrder.LITTLE_ENDIAN反转
+                buffer.flip();
+                byte[] head = new byte[2];
+                buffer.get(head);
+
+                //取包数据大小
+                buffer.rewind();
+                buffer.put(inBytes, pos + 2, 2);
+                // buffer.order(ByteOrder.LITTLE_ENDIAN);//java 默认为BIG_ENDIAN，arm为小端，所以ByteOrder.LITTLE_ENDIAN反转
+                buffer.flip();
+                byte[] keyDatalen = new byte[2];
+                buffer.get(keyDatalen);
+
+                short inhead = DigitalTrans.byte2ToShort_LittetoBig(head);
+                short iKeylen = DigitalTrans.byte2ToShort_LittetoBig(keyDatalen);
+
+                System.out.println("head小端序：" + DigitalTrans.byte2hex(head));
+                System.out.println("head 传输方向：" + DigitalTrans.byte2hex(DigitalTrans.unsignedShortToByte2(inhead & 0xff00)));
+                System.out.println("head 命令类型：" + DigitalTrans.byte2hex(DigitalTrans.unsignedShortToByte2(inhead & 0x00f0)));
+                System.out.println("head 秘钥类型：" + DigitalTrans.byte2hex(DigitalTrans.unsignedShortToByte2(inhead & 0x000f)));
+                System.out.println("head 包的长度：" + Integer.toString(iKeylen));
+
+                //头检查
+                if (((short) (inhead & 0xff00) == Packe_Def.DIR_DEV_SVR || (short) (inhead & 0xff00) == Packe_Def.DIR_DEV_APP || (short) (inhead & 0xff00) == Packe_Def.DIR_APP_SVR || (short) (inhead & 0xff00) == Packe_Def.DIR_SVR_APP)
+                        && ((short) (inhead & 0x00f0) == (short) 0x0000 || (short) (inhead & 0x00f0) == (short) 0x0080) && ((short) (inhead & 0x00f) == (short) 0x0000 || (short) (inhead & 0x00f) == (short) 0x0001 || (short) (inhead & 0x00f) == (short) 0x0002)) {
+
+                    if (todataLen - pos >= iKeylen) {
+                        //数据解密
+                        byte[] packData = new byte[iKeylen];
+                        System.arraycopy(inBytes, pos + 4, packData, 0, iKeylen);
+                        byte[] deData = decrypt_CTR(Key_IV.Public_Key, Key_IV.Public_IV, packData);
+
+                        if (xor(deData) == 0x00) {
+                            //数据分析
+                            int playlen = deData.length - 1;
+                            byte[] playData = new byte[playlen];
+                            System.arraycopy(deData, 0, playData, 0, playlen);//去校验码
+                            payloadAnalysis(playData);
+                        }
+                        if (iKeylen == 0) {
+                            iKeylen = 1;
+                        }
+                        pos = pos + 4 + iKeylen;
+                        dataLen = todataLen - pos;
+                    } else {
+                        // EndTmp = recoverData[pos:]
+                        byte[] tmpData = new byte[todataLen - pos];
+                        System.arraycopy(inBytes, pos, tmpData, 0, todataLen - pos);
+                        return tmpData;
+                    }
+
+                } else {
+                    pos++;
+                    dataLen = todataLen - pos;
+                }
+
+            } else {
+                byte[] tmpData = new byte[todataLen - pos];
+                System.arraycopy(inBytes, pos, tmpData, 0, todataLen - pos);
+                return tmpData;
+            }
+        }
+        return new byte[]{};
+    }
+
+    //粘包处理
+    //private static final byte[]
+    public static byte[] DataUnPacket_Server(byte[] inBytes, Socket devSocket) throws IOException, InterruptedException {
+        int dataLen = inBytes.length;
+        int todataLen = dataLen;
+        int end = dataLen;
+        int pos = 0;
+        ByteBuffer buffer = ByteBuffer.allocate(todataLen);
+        while (pos < end) {
+            if (dataLen > 4) {
+                buffer.clear();
+                //取包类型信息
+//			   buffer.rewind();
+//			   buffer.put(inBytes, pos, 2);			  
+//			   buffer.flip();
+//			   byte[] head =new byte[2];			   
+//			   buffer.get(head);
+                byte[] head = new byte[2];
+                System.arraycopy(inBytes, pos, head, 0, 2);
+
+
+                //取包数据大小
+//			   buffer.rewind();
+//			   buffer.put(inBytes, pos+2, 2);
+//			   buffer.flip();
+//			   byte[] keyDatalen =new byte[2];
+//			   buffer.get(keyDatalen);
+                byte[] keyDatalen = new byte[2];
+                System.arraycopy(inBytes, pos + 2, keyDatalen, 0, 2);
+
+                short inhead = DigitalTrans.byte2ToShort_LittetoBig(head);
+                short iKeylen = DigitalTrans.byte2ToShort_LittetoBig(keyDatalen);
+
+                System.out.println("head小端序：" + DigitalTrans.byte2hex(head));
+                System.out.println("head 传输方向：" + DigitalTrans.byte2hex(DigitalTrans.unsignedShortToByte2(inhead & 0xff00)));
+                System.out.println("head 命令类型：" + DigitalTrans.byte2hex(DigitalTrans.unsignedShortToByte2(inhead & 0x00f0)));
+                System.out.println("head 秘钥类型：" + DigitalTrans.byte2hex(DigitalTrans.unsignedShortToByte2(inhead & 0x000f)));
+                System.out.println("head 包的长度：" + Integer.toString(iKeylen));
+
+                //头检查
+                if (((short) (inhead & 0xff00) == Packe_Def.DIR_DEV_SVR || (short) (inhead & 0xff00) == Packe_Def.DIR_DEV_APP || (short) (inhead & 0xff00) == Packe_Def.DIR_APP_SVR || (short) (inhead & 0xff00) == Packe_Def.DIR_SVR_APP)
+                        && ((short) (inhead & 0x00f0) == (short) 0x0000 || (short) (inhead & 0x00f0) == (short) 0x0080) && ((short) (inhead & 0x00f) == (short) 0x0000 || (short) (inhead & 0x00f) == (short) 0x0001 || (short) (inhead & 0x00f) == (short) 0x0002)) {
+
+                    if (todataLen - pos >= iKeylen) {
+                        //数据解密
+                        byte[] packData = new byte[iKeylen];
+                        System.arraycopy(inBytes, pos + 4, packData, 0, iKeylen);
+                        byte[] deData = decrypt_CTR(Key_IV.Public_Key, Key_IV.Public_IV, packData);
+
+                        if (xor(deData) == 0x00) {
+                            //数据分析
+                            int playlen = deData.length - 1;
+                            byte[] playData = new byte[playlen];
+                            System.arraycopy(deData, 0, playData, 0, playlen);// 去校验码
+                            try {
+                                payloadAnalysis_server(playData, devSocket);
+                            } catch (Exception e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                            }
+                        }
+                        if (iKeylen == 0) {
+                            iKeylen = 1;
+                        }
+                        pos = pos + 4 + iKeylen;
+                        dataLen = todataLen - pos;
+                    } else {
+                        // EndTmp = recoverData[pos:]
+                        byte[] tmpData = new byte[todataLen - pos];
+                        System.arraycopy(inBytes, pos, tmpData, 0, todataLen - pos);
+                        return tmpData;
+                    }
+
+                } else {
+                    pos++;
+                    dataLen = todataLen - pos;
+                }
+
+            } else {
+                byte[] tmpData = new byte[todataLen - pos];
+                System.arraycopy(inBytes, pos, tmpData, 0, todataLen - pos);
+                return tmpData;
+            }
+        }
+        return new byte[]{};
+    }
+
+    public static void payloadAnalysis(byte[] deData) {
+        if (deData.length < 7) {
+            return;
+        }
+        byte cmd = deData[4];
+        switch (cmd) {
+            case MsgType.DEV_SERVER_CMD_LOGIN:
+
+                break;
+            case MsgType.DEV_SERVER_CMD_REPORT:
+                int playlen = deData.length - 5;
+                byte[] playload = new byte[playlen];
+                System.arraycopy(deData, 5, playload, 0, playlen);
+                PayloadUnPacket(playload);
+                break;
+            case MsgType.SERVER_APP_ACK_DEMAND:
+                byte demandType = deData[5];
+                if (demandType == Packe_Def.DEV_OFF_ON) {
+                    if (deData[6] == 0x00) {
+                        System.out.println("设备离线");
+                    } else {
+                        System.out.println("设备在线");
+                    }
+                } else if (demandType == Packe_Def.DEV_Q_DATA) {
+                    int plen = deData.length - 5;
+                    byte[] pload = new byte[plen];
+                    System.arraycopy(deData, 5, pload, 0, plen);
+                    PayloadUnPacket(pload);
+                }
+                break;
+        }
+    }
+
+    public static void payloadAnalysis_server(byte[] deData, Socket devSocket) throws InterruptedException {
+        if (deData.length < 7) {
+            return;
+        }
+        byte cmd = deData[4];
+        switch (cmd) {
+            case MsgType.DEV_SERVER_CMD_LOGIN:
+                DataOutputStream out;
+                try {
+                    out = new DataOutputStream(devSocket.getOutputStream());
+                    byte[] time_stamp = new byte[4];
+                    System.arraycopy(deData, 0, time_stamp, 0, 4);
+                    byte[] ackData = LoginAckPacket(time_stamp);
+                    out.write(ackData);
+//		    	 byte[] PowerSwitchData=PowerSwitch(false);
+//		    	 out.write(PowerSwitch(false));
+//		    	 Thread.sleep(5);
+//		    	 out.close();
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+
+                break;
+            case MsgType.DEV_SERVER_CMD_REPORT:
+                int playlen = deData.length - 5;
+                byte[] playload = new byte[playlen];
+                System.arraycopy(deData, 5, playload, 0, playlen);
+                PayloadUnPacket(playload);
+                break;
+            case MsgType.SERVER_APP_ACK_DEMAND:
+                byte demandType = deData[5];
+                if (demandType == Packe_Def.DEV_OFF_ON) {
+                    if (deData[6] == 0x00) {
+                        System.out.println("设备离线");
+                    } else {
+                        System.out.println("设备在线");
+                    }
+                } else if (demandType == Packe_Def.DEV_Q_DATA) {
+                    int plen = deData.length - 5;
+                    byte[] pload = new byte[plen];
+                    System.arraycopy(deData, 5, pload, 0, plen);
+                    PayloadUnPacket(pload);
+                }
+                break;
+        }
+
+    }
+
+    //Payload解包
+    public static void PayloadUnPacket(byte[] payLoadBody) {
+
+        int end = payLoadBody.length;
+        int pos = 0;
+        while (pos < end) {
+            byte key = payLoadBody[pos];
+            switch (key) {
+//		   case:
+//			   break;
+                case PayloardKey.D_POWER: //开关机
+                    pos++;
+                    if (payLoadBody[pos] == (byte) 0x01) {
+                        System.out.println("开关状态：开启\r\n");
+                    } else {
+                        System.out.println("开关状态：关机\r\n");
+                        //devInfo.IsOpen = false
+                    }
+                    break;
+                case PayloardKey.D_MODE: //模式
+                    pos++;
+                    //devInfo.SmartModel = uint8(payLoadBody[pos])
+                    //System.out.println("开机模式:")
+                    if (((byte) payLoadBody[pos] & (byte) (0x01)) == (byte) (0x01)) {
+                        System.out.println("静音");
+                    }
+
+                    if (((byte) payLoadBody[pos] & (byte) (0x01 << 1)) == (0x01 << 1)) {
+                        System.out.println("co2模式");
+                    }
+
+                    if (((byte) payLoadBody[pos] & (byte) (0x01 << 2)) == 0x01 << 2) {
+                        System.out.println("粉尘模式");
+                    }
+                    System.out.println("\r\n");
+                    break;
+                case PayloardKey.D_EXHAUST_MODE: //新排风模式
+                    pos++;
+                    System.out.println("新排风模式:");
+                    switch ((byte) (payLoadBody[pos])) {
+                        case 1:
+                            System.out.println("单新风");
+                        case 2:
+                            System.out.println("单排风");
+                        case 3:
+                            System.out.println("新排风");
+                    }
+                    System.out.println("\r\n");
+                    break;
+
+                case PayloardKey.D_EXHAUST_RATIO: //排风比例
+                    pos++;
+                    //System.out.println(pos)
+                    byte[] pBytes = new byte[2];
+                    System.arraycopy(payLoadBody, pos, pBytes, 0, 2);
+                    System.out.printf("排风比例:%d", DigitalTrans.byte2ToUnsignedShort(pBytes));
+                    System.out.println("\r\n");
+                    pos++;
+                    break;
+                case PayloardKey.D_LCD_BACKLIGHT: //背光时间
+
+                    pos++;
+                    System.out.println("背光时间:");
+                    switch (payLoadBody[pos]) {
+                        case 0:
+                            System.out.println("10s");
+                            break;
+                        case 1:
+                            System.out.println("30s");
+                            break;
+                        case 2:
+                            System.out.println("60");
+                            break;
+                        case 3:
+                            System.out.println("常亮");
+                            break;
+                    }
+                    System.out.println("\r\n");
+                    break;
+
+                case PayloardKey.D_AUX_HEATING: //辅热温度值
+
+                    pos++;
+                    System.out.printf("辅热温度:%d", payLoadBody[pos]);
+                    System.out.println("\r\n");
+                    break;
+
+                case PayloardKey.D_CONST_TEMP_MODE: //恒温模式
+                    pos++;
+                    System.out.println("恒温模式:");
+                    if (payLoadBody[pos] == 0) {
+                        System.out.println("关");
+                    } else {
+                        System.out.println("开");
+                    }
+                    System.out.println("\r\n");
+                    break;
+
+                case PayloardKey.D_CONST_HUMI_MODE: //恒湿模式
+
+                    pos++;
+                    System.out.println("恒湿模式:");
+                    if (payLoadBody[pos] == 0) {
+                        System.out.println("关");
+                    } else {
+                        System.out.println("开");
+                    }
+                    System.out.println("\r\n");
+                    break;
+
+                case PayloardKey.D_CONST_TEMP_PARA: //恒温参数
+                    pos++;
+                    System.out.printf("恒温参数:%d", payLoadBody[pos]);
+                    System.out.println("\r\n");
+                    break;
+                case PayloardKey.D_CONST_HUMI_PARA: //恒湿参数
+
+                    pos++;
+                    System.out.printf("恒湿参数:%d", payLoadBody[pos]);
+                    System.out.println("\r\n");
+                    break;
+                case PayloardKey.D_FAN_FREQ: //风机频率
+                    pos++;
+                    System.out.printf("风机频率:%d", (payLoadBody[pos]));
+                    System.out.println("\r\n");
+                    break;
+                case PayloardKey.D_BLOWER_SPEED: //送风机转速
+                    pos++;
+                    byte[] sBytes = new byte[2];
+                    System.arraycopy(payLoadBody, pos, sBytes, 0, 2);
+                    System.out.printf("送风机转速:%d", DigitalTrans.byte2ToUnsignedShort(sBytes));
+                    System.out.println("\r\n");
+                    pos++;
+                    break;
+                case PayloardKey.D_EXHAUST_SPEED: //排风机转速
+
+                    pos++;
+                    byte[] prBytes = new byte[2];
+                    System.arraycopy(payLoadBody, pos, prBytes, 0, 2);
+                    System.out.printf("排风机转速:%d", DigitalTrans.byte2ToUnsignedShort(prBytes));
+                    System.out.println("\r\n");
+                    pos++;
+                    break;
+                case PayloardKey.D_BLOWING_RATE: //风量
+                    pos++;
+                    byte[] zBytes = new byte[2];
+                    System.arraycopy(payLoadBody, pos, zBytes, 0, 2);
+                    System.out.printf("风量:%d", DigitalTrans.byte2ToUnsignedShort(zBytes));
+                    System.out.println("\r\n");
+                    pos++;
+                    break;
+                case PayloardKey.D_THAW_START_TEMP: //融冰启动温度
+                    pos++;
+                    System.out.printf("融冰启动温度:%d", payLoadBody[pos]);
+                    System.out.println("\r\n");
+                    break;
+                case PayloardKey.D_THAW_STOP_TEMP://融冰停止温度
+
+                    pos++;
+                    System.out.printf("融冰停止温度:%d", payLoadBody[pos]);
+                    System.out.println("\r\n");
+                    break;
+                case PayloardKey.D_THAW_TIME: //融冰时间
+
+                    pos++;
+                    System.out.printf("融冰时间:%d分钟", payLoadBody[pos]);
+                    System.out.println("\r\n");
+                    break;
+                case PayloardKey.D_THAW_INV: //融冰间隔时间
+
+                    pos++;
+                    System.out.printf("融冰间隔时间:%d分钟", payLoadBody[pos]);
+                    System.out.println("\r\n");
+                    break;
+                case PayloardKey.D_DUSTWIPER_CLEAR_PERIOD: //除尘器清洗周期
+                    pos++;
+                    byte[] clBytes = new byte[2];
+                    System.arraycopy(payLoadBody, pos, clBytes, 0, 2);
+                    System.out.printf("除尘器清洗周期:%d小时", DigitalTrans.byte2ToUnsignedShort(clBytes));
+                    System.out.println("\r\n");
+                    pos++;
+                    break;
+                case PayloardKey.D_DUSTWIPER_CLEAR_REMAIN://除尘器清洗周期剩余时间
+                    pos++;
+                    byte[] dlBytes = new byte[2];
+                    System.arraycopy(payLoadBody, pos, dlBytes, 0, 2);
+                    System.out.printf("除尘器清洗周期剩余时间:%d小时", DigitalTrans.byte2ToUnsignedShort(dlBytes));
+                    System.out.println("\r\n");
+                    pos++;
+                    break;
+                case PayloardKey.D_TIME_MODE: //定时模式
+                    pos++;
+                    if (((byte) (payLoadBody[pos]) & (byte) (0x01)) != 0) {
+                        System.out.println("定时模式1开启:每天");
+                        System.out.println("\r\n");
+                    }
+                    if (((byte) (payLoadBody[pos]) & (byte) (0x02)) != 0) {
+                        System.out.println("定时模式2开启:仅一次");
+                        System.out.println("\r\n");
+                    }
+                    if (((byte) (payLoadBody[pos]) & (byte) (0x04)) != 0) {
+                        System.out.println("定时模式3开启:工作日");
+                        System.out.println("\r\n");
+                    }
+
+                    if (((byte) (payLoadBody[pos]) & (byte) (0x08)) != 0) {
+                        System.out.println("定时器1状态:开");
+                        System.out.println("\r\n");
+                    }
+                    if (((byte) (payLoadBody[pos]) & (byte) (0x10)) != 0) {
+                        System.out.println("定时器2状态:开");
+                        System.out.println("\r\n");
+                    }
+                    if (((byte) (payLoadBody[pos]) & (byte) (0x20)) != 0) {
+                        System.out.println("定时器3状态:开");
+                        System.out.println("\r\n");
+                    }
+
+                case PayloardKey.D_TIMER1: //定时器1
+                    pos++;
+                    System.out.println("定时器1:");
+                    System.out.printf("开始时间小时值:%d", payLoadBody[pos]);
+                    System.out.printf("开始时间分钟值:%d", payLoadBody[pos + 1]);
+                    System.out.printf("结束时间小时值:%d", payLoadBody[pos + 2]);
+                    System.out.printf("结束时间分钟值:%d", payLoadBody[pos + 3]);
+                    System.out.println("\r\n");
+                    pos += 3;
+
+                case PayloardKey.D_TIMER2: //定时器2
+                    pos++;
+                    System.out.println("定时器2:");
+                    System.out.printf("开始时间小时值:%d", payLoadBody[pos]);
+                    System.out.printf("开始时间分钟值:%d", payLoadBody[pos + 1]);
+                    System.out.printf("结束时间小时值:%d", payLoadBody[pos + 2]);
+                    System.out.printf("结束时间分钟值:%d", payLoadBody[pos + 3]);
+                    System.out.println("\r\n");
+                    pos += 3;
+
+                case PayloardKey.D_TIMER3: //定时器3
+                    pos++;
+                    System.out.println("定时器3:");
+                    System.out.printf("开始时间小时值:%d", payLoadBody[pos]);
+                    System.out.printf("开始时间分钟值:%d", payLoadBody[pos + 1]);
+                    System.out.printf("结束时间小时值:%d", payLoadBody[pos + 2]);
+                    System.out.printf("结束时间分钟值:%d", payLoadBody[pos + 3]);
+                    System.out.println("\r\n");
+                    pos += 3;
+                    break;
+                case PayloardKey.D_CO2_ADJ: //CO2调节值
+                    pos++;
+                    byte[] cBytes = new byte[2];
+                    System.arraycopy(payLoadBody, pos, cBytes, 0, 2);
+                    System.out.printf("CO2调节值:%d", DigitalTrans.byte2ToUnsignedShort(cBytes));
+                    System.out.println("\r\n");
+                    pos++;
+                    break;
+                case PayloardKey.D_FUNC_STATUS: //功能状态
+                    pos++;
+                    if (((byte) (payLoadBody[pos]) & (byte) (0x01)) != 0) {
+                        System.out.println("集尘器开启");
+                        System.out.println("\r\n");
+                    } else {
+                        System.out.println("集尘器关闭");
+                        System.out.println("\r\n");
+                    }
+
+                    if (((byte) (payLoadBody[pos]) & (byte) (0x02)) != 0) {
+                        System.out.println("负离子开启");
+                        System.out.println("\r\n");
+                    } else {
+                        System.out.println("集尘器关闭");
+                        System.out.println("\r\n");
+                    }
+                    System.out.println("\r\n");
+                    break;
+                case PayloardKey.D_PM_ADJ: //PM调节
+                    pos++;
+                    byte[] pmBytes = new byte[2];
+                    System.arraycopy(payLoadBody, pos, pmBytes, 0, 2);
+                    System.out.printf("PM调节值:%d", DigitalTrans.byte2ToUnsignedShort(pmBytes));
+                    System.out.println("\r\n");
+                    pos++;
+                    break;
+
+                case PayloardKey.D_SENSOR_INDOOR_TEMP: //室内温度
+                    pos++;
+                    byte[] co2Bytes = new byte[2];
+                    System.arraycopy(payLoadBody, pos, co2Bytes, 0, 2);
+                    System.out.printf("室内温度:%d", DigitalTrans.byte2ToUnsignedShort(co2Bytes));
+                    System.out.println("\r\n");
+                    pos++;
+                    break;
+                case PayloardKey.D_SENSOR_OUTDOOR_TEMP: //室外温度
+                    pos++;
+                    byte[] ico2Bytes = new byte[2];
+                    System.arraycopy(payLoadBody, pos, ico2Bytes, 0, 2);
+                    System.out.printf("室外温度:%d", DigitalTrans.byte2ToUnsignedShort(ico2Bytes));
+                    System.out.println("\r\n");
+                    pos++;
+                    break;
+                case PayloardKey.D_SENSOR_FAN_TEMP: //新风温度
+                    pos++;
+                    byte[] newBytes = new byte[2];
+                    System.arraycopy(payLoadBody, pos, newBytes, 0, 2);
+                    System.out.printf("新风温度:%d", DigitalTrans.byte2ToUnsignedShort(newBytes));
+                    System.out.println("\r\n");
+                    pos++;
+                    break;
+                case PayloardKey.D_SENSOR_EXHAUST_TEMP: //排风温度
+                    pos++;
+                    byte[] pwBytes = new byte[2];
+                    System.arraycopy(payLoadBody, pos, pwBytes, 0, 2);
+                    System.out.printf("排风温度:%d", DigitalTrans.byte2ToUnsignedShort(pwBytes));
+                    System.out.println("\r\n");
+                    pos++;
+                    break;
+                case PayloardKey.D_CO2_THICKNESS: //CO2浓度
+                    pos++;
+                    byte[] co2lBytes = new byte[2];
+                    System.arraycopy(payLoadBody, pos, co2lBytes, 0, 2);
+                    System.out.printf("CO2浓度:%d", DigitalTrans.byte2ToUnsignedShort(co2lBytes));
+                    System.out.println("\r\n");
+                    pos++;
+                    break;
+                case PayloardKey.D_INDOOR_PM_THICKNESS: //室内颗粒物浓度
+                    pos++;
+                    byte[] ipmBytes = new byte[2];
+                    System.arraycopy(payLoadBody, pos, ipmBytes, 0, 2);
+                    System.out.printf("室内颗粒物浓度:%d", DigitalTrans.byte2ToUnsignedShort(ipmBytes));
+                    System.out.println("\r\n");
+                    pos++;
+                    break;
+                case PayloardKey.D_OUTDOOR_PM_THICKNESS: //室外颗粒物浓度
+                    pos++;
+                    byte[] outRoomPMBytes = new byte[2];
+                    System.arraycopy(payLoadBody, pos, outRoomPMBytes, 0, 2);
+                    System.out.printf("室外颗粒物浓度:%d", DigitalTrans.byte2ToUnsignedShort(outRoomPMBytes));
+                    System.out.println("\r\n");
+                    pos++;
+                    break;
+                case PayloardKey.D_INDOOR_HUMI: //室内湿度
+                    pos++;
+                    byte[] inRoomHumPMBytes = new byte[2];
+                    System.arraycopy(payLoadBody, pos, inRoomHumPMBytes, 0, 2);
+                    System.out.printf("室内湿度:%d", DigitalTrans.byte2ToUnsignedShort(inRoomHumPMBytes));
+                    System.out.println("\r\n");
+                    pos++;
+                case PayloardKey.D_SYSTEM_CLOCK: //系统时间校准
+                    pos++;
+                    byte[] stBytes = new byte[2];
+                    System.arraycopy(payLoadBody, pos, stBytes, 0, 2);
+                    System.out.printf("系统时间年:%d", DigitalTrans.byte2ToUnsignedShort(stBytes));
+                    System.out.printf("系统时间月:%d", payLoadBody[pos + 2]);
+                    System.out.printf("系统时间日:%d", payLoadBody[pos + 3]);
+                    System.out.printf("系统时间时:%d", payLoadBody[pos + 4]);
+                    System.out.printf("系统时间分:%d", payLoadBody[pos + 5]);
+                    System.out.println("\r\n");
+                    pos += 5;
+                    break;
+                case PayloardKey.D_FAULT_STATUS: //故障状态
+                    pos++;
+                    if (((byte) (payLoadBody[pos]) & (byte) (0x01)) == (0x01)) {
+                        System.out.println("CO2传感器故障");
+                        System.out.println("\r\n");
+                    }
+                    if (((byte) (payLoadBody[pos]) & (byte) (0x01 << 1)) == (0x01 << 1)) {
+                        System.out.println("室内温度探头故障");
+                        System.out.println("\r\n");
+                    }
+                    if (((byte) (payLoadBody[pos]) & (byte) (0x01 << 2)) == (0x01 << 2)) {
+                        System.out.println("室外温度探头故障");
+                        System.out.println("\r\n");
+                    }
+                    if (((byte) (payLoadBody[pos]) & (byte) (0x01 << 3)) == (0x01 << 3)) {
+                        System.out.println("新风温度探头故障");
+                        System.out.println("\r\n");
+                    }
+                    if (((byte) (payLoadBody[pos]) & (byte) (0x01 << 4)) == (0x01 << 4)) {
+                        System.out.println("排风温度探头故障");
+                        System.out.println("\r\n");
+                    }
+                    if (((byte) (payLoadBody[pos]) & (byte) (0x01 << 5)) == (0x01 << 5)) {
+                        System.out.println("室内粉尘传感器故障");
+                        System.out.println("\r\n");
+                    }
+                    if (((byte) (payLoadBody[pos]) & (byte) (0x01 << 6)) == (0x01 << 6)) {
+                        System.out.println("室外粉尘传感器故障");
+                        System.out.println("\r\n");
+                    }
+                    if (((byte) (payLoadBody[pos]) & (byte) (0x01 << 7)) == (0x01 << 7)) {
+                        System.out.println("湿度传感器故障");
+                        System.out.println("\r\n");
+                    }
+
+                    byte[] errBytes = new byte[2];
+                    System.arraycopy(payLoadBody, pos, errBytes, 0, 2);
+                    if (DigitalTrans.byte2ToUnsignedShort(errBytes) == 0xFFFF) {
+                        System.out.println("未知的故障");
+                        System.out.println("\r\n");
+
+                    }
+                    pos++;
+                    break;
+
+            }
+            pos++;
+        }
+    }
+
+    //字节异或处理
+    public static byte xor(byte[] inBytes) {
+        byte retB;
+        int max = inBytes.length;
+        if (max > 0) {
+            retB = inBytes[0];
+            for (int i = 1; i < max; i++) {
+                retB ^= inBytes[i];
+            }
+        } else {
+            retB = (byte) 0xff;
+        }
+        return retB;
+    }
+
+    //AES CTR加密
+    public static byte[] encrypt_CRT(byte[] key, byte[] initVector, byte[] value) {
+        try {
+            System.out.println("key:\t" + Arrays.toString(key));
+            System.out.println("iv:\t" + Arrays.toString(initVector));//UTF-8 ,GBK,ISO8859-1
+            IvParameterSpec iv = new IvParameterSpec(initVector);
+            SecretKeySpec skeySpec = new SecretKeySpec(key, "AES");
+
+            //Cipher cipher = Cipher.getInstance("AES/CBC/NoPadding");
+            Cipher cipher = Cipher.getInstance("AES/CTR/NOPADDING");
+            cipher.init(Cipher.ENCRYPT_MODE, skeySpec, iv);
+
+            byte[] encrypted = cipher.doFinal(value);
+            System.out.println(Arrays.toString(encrypted));
+            //System.out.println("encrypted string: "
+            //        + Base64.encodeBase64String(encrypted));
+
+            //return byte2HexStr(encrypted);
+            //return Base64.encodeBase64String(encrypted);
+            System.out.println(DigitalTrans.byte2hex(encrypted));
+            return encrypted;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return null;
+    }
+
+    //AES CTR 解密
+    public static byte[] decrypt_CTR(byte[] key, byte[] initVector, byte[] encrypted) {
+        try {
+            IvParameterSpec iv = new IvParameterSpec(initVector);
+            SecretKeySpec skeySpec = new SecretKeySpec(key, "AES");
+
+            Cipher cipher = Cipher.getInstance("AES/CTR/NOPADDING");
+            cipher.init(Cipher.DECRYPT_MODE, skeySpec, iv);
+
+            //byte[] original = cipher.doFinal(Base64.decodeBase64(encrypted));
+            byte[] original = cipher.doFinal(encrypted);
+            System.out.println(DigitalTrans.byte2hex(original));
+            return original;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * 字符串转换成十六进制字符串
+     */
+    public static String str2HexStr(String str) {
+
+        char[] chars = "0123456789ABCDEF".toCharArray();
+        StringBuilder sb = new StringBuilder("");
+        byte[] bs = str.getBytes();
+        int bit;
+        for (int i = 0; i < bs.length; i++) {
+            bit = (bs[i] & 0x0f0) >> 4;
+            sb.append(chars[bit]);
+            bit = bs[i] & 0x0f;
+            sb.append(chars[bit]);
+        }
+        return sb.toString();
+    }
+
+    /**
+     * 十六进制转换字符串
+     */
+
+    public static byte[] hexStr2Bytes(String hexStr) {
+        System.out.println("in len :" + hexStr.length());
+        String str = "0123456789ABCDEF";
+        char[] hexs = hexStr.toCharArray();
+        byte[] bytes = new byte[hexStr.length() / 2];
+        int n;
+        for (int i = 0; i < bytes.length; i++) {
+            n = str.indexOf(hexs[2 * i]) * 16;
+            n += str.indexOf(hexs[2 * i + 1]);
+            bytes[i] = (byte) (n & 0xff);
+        }
+        System.out.println("out len :" + bytes.length);
+        System.out.println("ddd" + Arrays.toString(bytes));
+        return bytes;
+    }
+
+    /**
+     * bytes转换成十六进制字符串
+     */
+    public static String byte2HexStr(byte[] b) {
+        String hs = "";
+        String stmp = "";
+        for (int n = 0; n < b.length; n++) {
+            stmp = (Integer.toHexString(b[n] & 0XFF));
+            if (stmp.length() == 1)
+                hs = hs + "0" + stmp;
+            else
+                hs = hs + stmp;
+            // if (n<b.length-1) hs=hs+":";
+        }
+        return hs.toUpperCase();
+    }
+
+    public static String encrypt_CBC(String key, String initVector, String value) {
+        try {
+            System.out.println("key:\t" + Arrays.toString(key.getBytes("UTF-8")));
+            System.out.println("iv:\t" + Arrays.toString(initVector.getBytes("UTF-8")));
+            IvParameterSpec iv = new IvParameterSpec(initVector.getBytes("UTF-8"));
+            SecretKeySpec skeySpec = new SecretKeySpec(key.getBytes("UTF-8"), "AES");
+
+            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
+            //Cipher cipher = Cipher.getInstance("AES/CBC/NoPadding");
+            cipher.init(Cipher.ENCRYPT_MODE, skeySpec, iv);
+
+            byte[] encrypted = cipher.doFinal(value.getBytes());
+            System.out.println(Arrays.toString(encrypted));
+            //System.out.println("encrypted string: "
+            //        + Base64.encodeBase64String(encrypted));
+
+            return byte2HexStr(encrypted);
+            //return Base64.encodeBase64String(encrypted);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public static String decrypt_CBC(String key, String initVector, String encrypted) {
+        try {
+            IvParameterSpec iv = new IvParameterSpec(initVector.getBytes("UTF-8"));
+            SecretKeySpec skeySpec = new SecretKeySpec(key.getBytes("UTF-8"), "AES");
+
+            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
+            cipher.init(Cipher.DECRYPT_MODE, skeySpec, iv);
+
+            //byte[] original = cipher.doFinal(Base64.decodeBase64(encrypted));
+            byte[] original = cipher.doFinal(hexStr2Bytes(encrypted));
+
+            return new String(original);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return null;
+    }
+
+
+}

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white"
@@ -37,7 +37,7 @@
                 android:textSize="18sp" />
         </RelativeLayout>
 
-        <com.himmiractivity.view.CircleImageView
+        <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/cir_image"
             android:layout_width="100dp"
             android:layout_height="100dp"
@@ -45,9 +45,18 @@
             android:layout_marginBottom="15dp"
             android:contentDescription="@null"
             android:scaleType="centerCrop"
-            android:src="@drawable/overlay"
-            app:border_color="#00000000"
-            app:border_width="2dp"></com.himmiractivity.view.CircleImageView>
+            fresco:failureImage="@drawable/error"
+            fresco:failureImageScaleType="centerInside"
+            fresco:placeholderImage="@drawable/placeholder_image"
+            fresco:placeholderImageScaleType="fitCenter"
+            fresco:progressBarAutoRotateInterval="5000"
+            fresco:progressBarImage="@drawable/progress_image"
+            fresco:progressBarImageScaleType="centerInside"
+            fresco:retryImage="@drawable/error"
+            fresco:retryImageScaleType="centerCrop"
+            fresco:roundAsCircle="true"
+            fresco:roundingBorderColor="@color/colorAccent"
+            fresco:roundingBorderWidth="0dp"></com.facebook.drawee.view.SimpleDraweeView>
 
         <TextView
             android:id="@+id/tv_title"

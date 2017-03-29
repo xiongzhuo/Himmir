@@ -125,10 +125,6 @@ public class MainActivity extends BaseBusActivity {
             return false;
         }
     });
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
     private GoogleApiClient client;
 
     @Override
@@ -324,7 +320,6 @@ public class MainActivity extends BaseBusActivity {
                     e.printStackTrace();
                 }
             } else {
-                // Permission Denied
                 Toast.makeText(MainActivity.this, "请允许才能进行定位", Toast.LENGTH_SHORT).show();
             }
             return;
@@ -333,6 +328,9 @@ public class MainActivity extends BaseBusActivity {
     }
 
     private void GPSLocation() {
+        if (!TextUtils.isEmpty(tvCity.getText().toString().trim())) {
+            return;
+        }
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
         try {
             List<Address> addresses = null;
@@ -356,7 +354,6 @@ public class MainActivity extends BaseBusActivity {
                 }
             }
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             Toast.makeText(this, "报错", Toast.LENGTH_LONG).show();
             e.printStackTrace();
         }
@@ -366,16 +363,9 @@ public class MainActivity extends BaseBusActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
     public Action getIndexApiAction() {
         Thing object = new Thing.Builder()
                 .setName("Main Page") // TODO: Define a title for the content shown.
@@ -391,9 +381,6 @@ public class MainActivity extends BaseBusActivity {
     @Override
     public void onStart() {
         super.onStart();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
         client.connect();
         AppIndex.AppIndexApi.start(client, getIndexApiAction());
     }
@@ -401,9 +388,6 @@ public class MainActivity extends BaseBusActivity {
     @Override
     public void onStop() {
         super.onStop();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
         AppIndex.AppIndexApi.end(client, getIndexApiAction());
         client.disconnect();
     }

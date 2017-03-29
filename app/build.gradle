@@ -1,8 +1,8 @@
 apply plugin: 'com.android.application'
-
 android {
     compileSdkVersion 24
     buildToolsVersion "25.0.2"
+
     defaultConfig {
         applicationId "activity.hamir.com.himmir"
         minSdkVersion 19
@@ -30,6 +30,7 @@ dependencies {
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
     compile 'com.google.guava:guava:19.0'
     compile files('libs/logutil-1.4.2.jar')
+    compile 'com.facebook.fresco:fresco:0.14.0'
     compile 'org.xutils:xutils:3.3.42'
     compile files('libs/AHibernate-1.1.jar')
     compile 'com.google.android.gms:play-services-appindexing:8.4.0'

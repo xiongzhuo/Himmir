@@ -14,6 +14,7 @@ import org.apache.mina.transport.socket.nio.NioSocketConnector;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
@@ -99,8 +100,9 @@ public class ConnectionManager {
         @Override
         public void messageReceived(IoSession session, Object message) throws Exception {
             Log.d(TAG, "收到数据，接下来你要怎么解析数据就是你的事了");
+            InputStream inputStream = (InputStream) message;
             session.write("sssfdsa");
-            FileInputStream fileIn = (FileInputStream) message;
+//            FileInputStream fileIn = (FileInputStream) message;
 //            ByteBuffer bf = buf.buf();
 //            byte[] tmpBuffer = new byte[bf.limit()];
 //            HandlerEvent.getInstance().handle(buf);

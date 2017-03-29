@@ -27,6 +27,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.interfaces.DraweeController;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.himmiractivity.App;
 import com.himmiractivity.Constant.Configuration;
 import com.himmiractivity.Utils.ChangePhotosUtils;
@@ -41,12 +44,9 @@ import com.himmiractivity.entity.UserData;
 import com.himmiractivity.interfaces.StatisConstans;
 import com.himmiractivity.request.ModifyNameRequest;
 import com.himmiractivity.request.TaskDetailImageUploadTask;
-import com.himmiractivity.view.CircleImageView;
 import com.himmiractivity.view.ResetNameDialog;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -90,7 +90,7 @@ public class SetActivity extends BaseBusActivity {
     @BindView(R.id.tv_title)
     TextView tvTitle;
     @BindView(R.id.cir_image)
-    CircleImageView cirImage;
+    SimpleDraweeView simImage;
     TextView tv_sell_phone, tv_service_phone;
     Bundle bundle;
     UserData userData;
@@ -114,7 +114,7 @@ public class SetActivity extends BaseBusActivity {
                 case StatisConstans.MSG_IMAGE_SUCCES:
                     imageBean = (ImageBean) msg.obj;
                     if (photo != null) {
-                        cirImage.setImageBitmap(photo);
+                        simImage.setImageBitmap(photo);
                         isResult = true;
                     }
                     break;
@@ -141,13 +141,15 @@ public class SetActivity extends BaseBusActivity {
             if (bundle.getSerializable("userData") != null) {
                 userData = (UserData) bundle.getSerializable("userData");
                 tvTitle.setText(userData != null && TextUtils.isEmpty(userData.getUserName().trim()) ? "熊卓" : userData.getUserName());
-                if (!TextUtils.isEmpty(userData.getUserImage())) {// 加载登陆头像
-                    DisplayImageOptions.Builder mOptions = new DisplayImageOptions.Builder();
-                    mOptions.displayer(new RoundedBitmapDisplayer(20)).build();
-                    im.displayImage(Configuration.HOST + userData.getUserImage(), cirImage);
-                } else {// 显示默认头像
-                    cirImage.setImageResource(R.drawable.overlay);
-                }
+                /**
+                 * 圆形头像加载
+                 * */
+                DraweeController circleImageController = Fresco.newDraweeControllerBuilder()
+                        .setUri(Configuration.HOST + userData.getUserImage())
+                        .setTapToRetryEnabled(true)
+                        .setOldController(simImage.getController())
+                        .build();
+                simImage.setController(circleImageController);
             }
         }
         files = new ArrayList<>();
@@ -160,7 +162,7 @@ public class SetActivity extends BaseBusActivity {
         llExit.setOnClickListener(this);
         btnBack.setOnClickListener(this);
         tvTitle.setOnClickListener(this);
-        cirImage.setOnClickListener(this);
+        simImage.setOnClickListener(this);
 
     }
 
