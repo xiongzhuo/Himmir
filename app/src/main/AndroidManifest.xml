@@ -242,6 +242,8 @@
             android:screenOrientation="portrait" />
 
         <service android:name="com.himmiractivity.service.LocationService" />
+        <service android:name="com.himmiractivity.service.CoreService" />
+
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />

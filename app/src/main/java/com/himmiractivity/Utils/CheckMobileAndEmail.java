@@ -201,7 +201,7 @@ public class CheckMobileAndEmail {
         }
 
         // Look for period in a domain but followed by at least a two-char TLD
-        // Forget strings that don't have a valid-looking protocol
+        // Forget strings that don't have a valid-looking
         int period = uri.indexOf('.');
         if (period >= uri.length() - 2) {
             return false;
@@ -212,7 +212,7 @@ public class CheckMobileAndEmail {
         }
         if (colon >= 0) {
             if (period < 0 || period > colon) {
-                // colon ends the protocol
+                // colon ends the
                 for (int i = 0; i < colon; i++) {
                     char c = uri.charAt(i);
                     if ((c < 'a' || c > 'z') && (c < 'A' || c > 'Z')) {

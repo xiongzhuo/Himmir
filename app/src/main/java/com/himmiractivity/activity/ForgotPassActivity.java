@@ -56,6 +56,7 @@ public class ForgotPassActivity extends BaseBusActivity {
                     break;
                 // 验证码 手机号码已绑定其它账号
                 case StatisConstans.MSG_RECEIVED_BOUND:
+                    btnIdentify.setText("获取验证码");
                     btnIdentify.setEnabled(true);
                     break;
                 // 验证码 手机号码正常
@@ -125,6 +126,7 @@ public class ForgotPassActivity extends BaseBusActivity {
         } else if (!CheckMobileAndEmail.isMobileNO(phone)) {
             ToastUtil.show(this, "手机号码格式错误");
         } else {
+            btnIdentify.setText("正在发送...");
             btnIdentify.setEnabled(false);
             CodeRequest codeRequest = new CodeRequest(ForgotPassActivity.this, phone, "reset", handler);
             try {

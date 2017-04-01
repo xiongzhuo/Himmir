@@ -8,6 +8,33 @@ import java.io.Serializable;
 
 public class DataServerBean implements Serializable {
     private DataServerConfig dataServerConfig;
+    String seriesNumber;
+    String mac;
+    String ip;
+
+    public String getIp() {
+        return ip;
+    }
+
+    public void setIp(String ip) {
+        this.ip = ip;
+    }
+
+    public String getSeriesNumber() {
+        return seriesNumber;
+    }
+
+    public void setSeriesNumber(String seriesNumber) {
+        this.seriesNumber = seriesNumber;
+    }
+
+    public String getMac() {
+        return mac;
+    }
+
+    public void setMac(String mac) {
+        this.mac = mac;
+    }
 
     public void setDataServerConfig(DataServerConfig dataServerConfig) {
         this.dataServerConfig = dataServerConfig;

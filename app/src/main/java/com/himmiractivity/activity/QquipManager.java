@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,15 +22,24 @@ import android.widget.Toast;
 
 import com.himmiractivity.Adapter.RvcAdapter;
 import com.himmiractivity.Utils.DividerItemDecoration;
+import com.himmiractivity.Utils.SocketSingle;
+import com.himmiractivity.Utils.ToastUtil;
 import com.himmiractivity.Utils.ToastUtils;
 import com.himmiractivity.base.BaseBusActivity;
 import com.himmiractivity.entity.AllUserDerviceBaen;
 import com.himmiractivity.entity.ImageBean;
 import com.himmiractivity.interfaces.StatisConstans;
+import com.himmiractivity.liuxing_scoket.Protocal;
+import com.himmiractivity.mining.app.zxing.ScoketOFFeON;
 import com.himmiractivity.request.AllDeviceInfoRequest;
 import com.himmiractivity.request.DeleteDeviceRequest;
 import com.himmiractivity.request.ModifyRoomNameRequest;
+import com.himmiractivity.util.ThreadPoolUtils;
 import com.himmiractivity.view.AlxRefreshLoadMoreRecyclerView;
+import com.himmiractivity.view.DialogView;
+
+import java.io.IOException;
+import java.net.Socket;
 
 import activity.hamir.com.himmir.R;
 import butterknife.BindView;
@@ -49,6 +59,10 @@ public class QquipManager extends BaseBusActivity implements AlxRefreshLoadMoreR
     Button btnAddAqu;
     private int deletePosition = -1;
     String name;
+    Protocal protocal;
+    Socket socket;
+    String mac;
+    DialogView dialogView;
 
     private Handler mHandler = new Handler() {
         @Override
@@ -60,6 +74,18 @@ public class QquipManager extends BaseBusActivity implements AlxRefreshLoadMoreR
                         rvcAdapter.removeData(deletePosition);
                         alertDialog.dismiss();
                     }
+                    break;
+                case StatisConstans.MSG_ENABLED_SUCCESSFUL:
+                    if (null != dialogView) {
+                        dialogView.cancel();
+                    }
+                    ToastUtil.show(QquipManager.this, "校时成功");
+                    break;
+                case StatisConstans.MSG_ENABLED_FAILING:
+                    if (null != dialogView) {
+                        dialogView.cancel();
+                    }
+                    ToastUtil.show(QquipManager.this, "校时失败");
                     break;
                 case StatisConstans.MSG_MODIFY_NAME:
                     ImageBean mostr = (ImageBean) msg.obj;
@@ -100,6 +126,15 @@ public class QquipManager extends BaseBusActivity implements AlxRefreshLoadMoreR
     protected void initView(Bundle savedInstanceState) {
         setMidTxt("设备管理");
         initTitleBar();
+        ThreadPoolUtils threadPoolUtils = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 1);
+        threadPoolUtils.execute(new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String ip = sharedPreferencesDB.getString("ip", "");
+                String port = sharedPreferencesDB.getString("port", "");
+                request(ip, Integer.valueOf(port));
+            }
+        }));
         int resourceId = getResources().getIdentifier("navigation_bar_height", "dimen", "android");
         navigationHeight = getResources().getDimensionPixelSize(resourceId);
         btnAddAqu.setOnClickListener(this);
@@ -127,7 +162,14 @@ public class QquipManager extends BaseBusActivity implements AlxRefreshLoadMoreR
                 startActivity(new Intent(this, DeployWifiActivity.class));
                 break;
             case R.id.tv_pick_phone:
-                startActivity(new Intent(this, EditTimeActivity.class));
+//                startActivity(new Intent(this, EditTimeActivity.class));
+                mac = allUserDerviceBaen.getSpace().get(deletePosition).getDevice().getDevice_mac();
+                if (null == dialogView) {
+                    dialogView = new DialogView(QquipManager.this);
+                    dialogView.show();
+                    dialogView.setMessage("加载中");
+                }
+                ScoketOFFeON.sendTimingMessage(socket, protocal, mac);
                 alertDialog.dismiss();
                 break;
             case R.id.tv_pick_zone:
@@ -317,5 +359,25 @@ public class QquipManager extends BaseBusActivity implements AlxRefreshLoadMoreR
                 mRecyclerView.stopRefresh();
             }
         }, 2000);
+    }
+
+
+    public void request(String host, int location) {
+        try {
+            // 1.连接服务器
+            socket = SocketSingle.getInstance(host, location);
+            Log.d("ConnectionManager", "AbsClient*****已经建立连接");
+            protocal = Protocal.getInstance();
+            ThreadPoolUtils threadPoolUtils = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 1);
+            threadPoolUtils.execute(new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    ScoketOFFeON.receMessage(socket, protocal, mHandler);
+                }
+            }));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 }

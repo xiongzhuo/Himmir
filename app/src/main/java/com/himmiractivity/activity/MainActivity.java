@@ -19,7 +19,6 @@ import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -33,21 +32,30 @@ import com.google.android.gms.appindexing.Thing;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.himmiractivity.App;
 import com.himmiractivity.Utils.GpsUtils;
+import com.himmiractivity.Utils.SocketSingle;
 import com.himmiractivity.Utils.ToastUtil;
 import com.himmiractivity.Utils.ToastUtils;
-import com.himmiractivity.Utils.UiUtil;
 import com.himmiractivity.Utils.WifiUtils;
 import com.himmiractivity.base.BaseBusActivity;
 import com.himmiractivity.entity.AllUserDerviceBaen;
+import com.himmiractivity.entity.DataServerBean;
+import com.himmiractivity.entity.PmAllData;
 import com.himmiractivity.entity.Space;
 import com.himmiractivity.entity.UserData;
 import com.himmiractivity.interfaces.StatisConstans;
+import com.himmiractivity.liuxing_scoket.Protocal;
+import com.himmiractivity.mining.app.zxing.ScoketOFFeON;
 import com.himmiractivity.request.AllDeviceInfoRequest;
+import com.himmiractivity.request.DataServerConfigRequest;
 import com.himmiractivity.request.LodingRequest;
+import com.himmiractivity.util.ThreadPoolUtils;
+import com.himmiractivity.view.DialogView;
 import com.himmiractivity.view.ListPopupWindow;
 import com.himmiractivity.view.PercentView;
 import com.himmiractivity.view.SelectorImageView;
 
+import java.io.IOException;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -84,34 +92,80 @@ public class MainActivity extends BaseBusActivity {
     ImageView ivAdd;
     @BindView(R.id.iv_off_on_controller)
     SelectorImageView ivOffOnController;
+    @BindView(R.id.iv_off_line_controller)
+    SelectorImageView ivOffLineController;
     @BindView(R.id.tv_hz_valus)
     TextView tvHzValus;
     @BindView(R.id.tv_room)
     TextView tvRoom;
-    private Double aimPercent = (24d / 225d) * 100d;
+    private Double aimPercent = (0d / 225d) * 100d;
     Bundle bundle;
     UserData userData;
     //获取设备
     private List<String> list;
     private List<Space> space;
     public static MainActivity instans;
+    Socket socket;
+    Protocal protocal;
+    DataServerBean dataServerBean;
+    String mac;
+    AllUserDerviceBaen allUserDerviceBaen;
+    PmAllData pmAllData;
+
     private Handler handler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
             switch (msg.what) {
+                case StatisConstans.MSG_QUEST_SERVER:
+                    pmAllData = (PmAllData) msg.obj;
+                    if (pmAllData.getoNstate().equals("开机")) {
+                        ivOffOnController.toggle(true);
+                    } else {
+                        ivOffOnController.toggle(false);
+                    }
+                    aimPercent = ((double) pmAllData.getIndoorPmThickness() / 225d) * 100d;
+                    double sensorIndoorTemp = (double) pmAllData.getSensorIndoorTemp() / 10;
+                    double sensorOutdoorTemp = (double) pmAllData.getSensorOutdoorTemp() / 10;
+                    percentView.setAngel(aimPercent);
+                    percentView.setRankText("PM2.5室内", pmAllData.getIndoorPmThickness() + "");
+                    tvHzValus.setText(pmAllData.getFanFreq() + "");
+                    tvCco2.setText(pmAllData.getCo2Thickness() + "");
+                    tvTempIndoor.setText(sensorIndoorTemp + "℃");
+                    tvTempOutSide.setText(sensorOutdoorTemp + "℃");
+                    tvSpeed.setText(pmAllData.getBlowingRate() + "");
+                    tvHzValus.setText(pmAllData.getFanFreq() + "");
+                    break;
                 //成功
                 case StatisConstans.MSG_RECEIVED_REGULAR:
                     userData = (UserData) msg.obj;
                     initRechclerView();
                     break;
+                case StatisConstans.CONFIG_REGULAR:
+                    dataServerBean = (DataServerBean) msg.obj;
+                    sharedPreferencesDB.setString("ip", dataServerBean.getDataServerConfig().getPrimary_server_address());
+                    sharedPreferencesDB.setString("port", dataServerBean.getDataServerConfig().getPrimary_server_port() + "");
+                    ThreadPoolUtils threadPoolUtils = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 1);
+                    threadPoolUtils.execute(new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            request(dataServerBean.getDataServerConfig().getPrimary_server_address(), dataServerBean.getDataServerConfig().getPrimary_server_port());
+                        }
+                    }));
+                    break;
                 case StatisConstans.MSG_QQUIP:
-                    AllUserDerviceBaen allUserDerviceBaen = (AllUserDerviceBaen) msg.obj;
+                    allUserDerviceBaen = (AllUserDerviceBaen) msg.obj;
+                    mac = allUserDerviceBaen.getSpace().get(0).getDevice().getDevice_mac();
                     if (allUserDerviceBaen.getSpace() != null && allUserDerviceBaen.getSpace().size() > 0) {
                         space = allUserDerviceBaen.getSpace();
                         list = new ArrayList<>();
                         for (int i = 0; i < space.size(); i++) {
                             list.add(space.get(i).getUserRoom().getRoom_name());
                         }
+                    }
+                    if (list.size() > 0) {
+                        tvRoom.setText(list.get(0).trim());
+                        ivOffOnController.setVisibility(View.VISIBLE);
+                        ivOffLineController.setVisibility(View.GONE);
                     }
 
                     break;
@@ -155,7 +209,7 @@ public class MainActivity extends BaseBusActivity {
         ivOffOnController.setOnClickListener(this);
         Log.i("aimPercent", aimPercent + "=-------");
         percentView.setAngel(aimPercent);
-        percentView.setRankText("PM2.5室内", "24");
+        percentView.setRankText("PM2.5室内", "--");
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_COARSE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this,
@@ -189,7 +243,8 @@ public class MainActivity extends BaseBusActivity {
                     ListPopupWindow popupWindow = new ListPopupWindow(MainActivity.this, tvRoom, list, new ListPopupWindow.downOnclick() {
                         @Override
                         public void onDownItemClick(int position) {
-                            ToastUtil.show(MainActivity.this, "你点击了ITEM" + position);
+                            mac = allUserDerviceBaen.getSpace().get(position).getDevice().getDevice_mac();
+                            tvRoom.setText(list.get(position).trim());
                         }
                     });
                 } else {
@@ -227,13 +282,6 @@ public class MainActivity extends BaseBusActivity {
                 }
                 break;
             case R.id.iv_set:
-//                ThreadPoolUtils threadPoolUtils = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 1);
-//                threadPoolUtils.execute(new Thread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                    }
-//                }));
-                // login
                 Intent intent = new Intent();
                 intent.setClass(MainActivity.this, SetActivity.class);
                 Bundle bundle = new Bundle();
@@ -245,6 +293,10 @@ public class MainActivity extends BaseBusActivity {
                 break;
             case R.id.iv_off_on_controller:
                 ivOffOnController.toggle(!ivOffOnController.isChecked());
+                if (protocal == null) {
+                    protocal = new Protocal();
+                }
+                ScoketOFFeON.sendMessage(socket, protocal, mac, ivOffOnController.isChecked());
                 break;
             default:
                 break;
@@ -392,10 +444,52 @@ public class MainActivity extends BaseBusActivity {
         client.disconnect();
     }
 
+    public void request(String host, int location) {
+        try {
+            // 1.连接服务器
+            socket = SocketSingle.getInstance(host, location);
+            Log.d("ConnectionManager", "AbsClient*****已经建立连接");
+            protocal = Protocal.getInstance();
+            ThreadPoolUtils threadPoolUtils = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 1);
+            threadPoolUtils.execute(new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    ScoketOFFeON.receMessage(socket, protocal, handler);
+                }
+            }));
+            ScoketOFFeON.sendMessage(socket, protocal, mac);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        sharedPreferencesDB.setString("ip", "");
+        sharedPreferencesDB.setString("port", "");
+        try {
+            if (socket != null) {
+                socket.close();
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        super.onDestroy();
+    }
+
+
     private void initRechclerView() {
         AllDeviceInfoRequest allDeviceInfoRequest = new AllDeviceInfoRequest(sharedPreferencesDB, this, handler);
         try {
             allDeviceInfoRequest.requestCode();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            DataServerConfigRequest dataServerConfigRequest = new DataServerConfigRequest(sharedPreferencesDB, handler, MainActivity.this);
+            dataServerConfigRequest.requestCode();
         } catch (Exception e) {
             e.printStackTrace();
         }

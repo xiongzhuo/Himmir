@@ -32,7 +32,9 @@
                 android:layout_marginRight="5dp"
                 android:layout_weight="1"
                 android:background="@drawable/edittext_bg"
-                android:padding="10dp" />
+                android:hint="请输入序列号"
+                android:padding="10dp"
+                android:text="" />
 
             <ImageView
                 android:id="@+id/iv_qr_code"

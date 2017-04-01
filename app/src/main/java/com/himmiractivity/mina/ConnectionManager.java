@@ -3,6 +3,8 @@ package com.himmiractivity.mina;
 import android.content.Context;
 import android.util.Log;
 
+import com.himmiractivity.liuxing_scoket.Protocol;
+
 import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.filterchain.IoFilterAdapter;
 import org.apache.mina.core.future.ConnectFuture;
@@ -95,7 +97,9 @@ public class ConnectionManager {
         public void sessionOpened(IoSession session) throws Exception {
             super.sessionOpened(session);
             Log.d(TAG, "连接打开");
+            session.write(Protocol.PowerSwitch(false));
         }
+
 
         @Override
         public void messageReceived(IoSession session, Object message) throws Exception {

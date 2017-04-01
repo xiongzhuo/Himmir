@@ -36,6 +36,7 @@ public class ScanQRCode extends BaseBusActivity {
     @BindView(R.id.iv_qr_code)
     ImageView ivQrCode;
     SmartLinkedModule smartLinkedModule;
+    String code;
 
     private Handler handler = new Handler(new Handler.Callback() {
         @Override
@@ -47,6 +48,9 @@ public class ScanQRCode extends BaseBusActivity {
                     intent.setClass(ScanQRCode.this, InformationComitActivity.class);
                     Bundle bundle = new Bundle();
                     bundle.putSerializable("device_info", deviceInfoBean);
+                    bundle.putString("server_number", code);
+                    bundle.putString("mac", smartLinkedModule.getMac());
+                    bundle.putString("ip", smartLinkedModule.getIp());
                     intent.putExtras(bundle);
                     startActivity(intent);
                     break;
@@ -86,7 +90,7 @@ public class ScanQRCode extends BaseBusActivity {
                 setIvQrCode();
                 break;
             case R.id.btn_qr_next:
-                String code = etCodeNumber.getText().toString().trim();
+                code = etCodeNumber.getText().toString().trim();
                 if (TextUtils.isEmpty(code)) {
                     ToastUtil.show(this, "请输入二维码编号");
                     return;

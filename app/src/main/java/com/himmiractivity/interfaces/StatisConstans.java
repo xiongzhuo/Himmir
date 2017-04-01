@@ -42,4 +42,10 @@ public interface StatisConstans {
     // 获取服务器配置信息成功
     int CONFIG_REGULAR = 109;
     int MSG_QQUIP = 110;
+
+    // 配置档成功
+    int MSG_ENABLED_SUCCESSFUL = 37;
+    // 配置档失败
+    int MSG_ENABLED_FAILING = 38;
+    int MSG_QUEST_SERVER = 45;
 }

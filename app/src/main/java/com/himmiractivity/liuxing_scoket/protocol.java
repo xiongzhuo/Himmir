@@ -1,5 +1,13 @@
 package com.himmiractivity.liuxing_scoket;
 
+import android.os.Handler;
+import android.util.Log;
+
+import com.himmiractivity.Utils.ToastUtil;
+import com.himmiractivity.entity.DataServerBean;
+import com.himmiractivity.entity.PmAllData;
+import com.himmiractivity.interfaces.StatisConstans;
+
 import java.util.Arrays;
 
 import javax.crypto.Cipher;
@@ -12,8 +20,10 @@ import java.io.IOException;
 import java.net.Socket;
 import java.lang.Thread;
 
+import okio.*;
 
-public class protocol {
+
+public class Protocol {
 
     public static interface MsgType {
         public static final byte DEV_SERVER_CMD_LOGIN = (byte) 0;
@@ -123,8 +133,7 @@ public class protocol {
         public static final short ptype_Server_Dev_Cmd_Pub = (short) (DIR_SVR_DEV | PACKET_TYPE_CMD | ENCRYPT_TYPE_PUBLIC);
         public static final short ptype_Server_Dev_Cmd_Act = (short) (DIR_SVR_DEV | PACKET_TYPE_CMD | ENCRYPT_TYPE_ACTIVATE);
         public static final short ptype_Server_Dev_Ack_Pub = (short) (DIR_SVR_DEV | PACKET_TYPE_ACK | ENCRYPT_TYPE_ACTIVATE);
-        public static final short ptyte_App_Dev_Act_Act = (short) (DIR_APP_DEV | PACKET_TYPE_CMD | ENCRYPT_TYPE_ACTIVATE);
-
+        public static final short ptyte_App_Dev_Act_Act = (short) (DIR_APP_DEV | PACKET_TYPE_CMD | ENCRYPT_TYPE_PUBLIC);
         //2.Dev to Server
         public static final short ptype_Dev_Server_Ack_Pub = (short) (DIR_DEV_SVR | PACKET_TYPE_ACK | ENCRYPT_TYPE_PUBLIC); //上报用什么？
         public static final short ptype_Dev_Server_Cmd_Pub = (short) (DIR_DEV_SVR | PACKET_TYPE_CMD | ENCRYPT_TYPE_PUBLIC); //上报用什么？
@@ -198,6 +207,137 @@ public class protocol {
         }
     }
 
+    //取开风量payload
+    public static byte[] getVolums(boolean isOn) {
+        if (isOn == true) {
+            byte[] rett = {0x10, 0x01};
+            return rett;
+        } else {
+            byte[] retf = {0x10, 0x00};
+            return retf;
+        }
+    }
+
+    //取激活payload
+    public static byte[] getSensitize(DataServerBean dataServerBean, String seriesNumber, String mac) throws Exception {
+        ByteBuffer buffer = ByteBuffer.allocate(1024);
+        //序列号
+        byte[] snBytes = new byte[14];
+        byte[] snTemp = DigitalTrans.stringToAsciiBytes(seriesNumber);
+        int snLen = snTemp.length;
+        System.arraycopy(snTemp, 0, snBytes, 0, snLen);
+        buffer.put(snBytes);
+
+        //主服务器
+        byte[] mainServerBytes = new byte[32];
+        byte[] mainServerTemp = DigitalTrans.stringToAsciiBytes(dataServerBean.getDataServerConfig().getPrimary_server_address());
+        int mainServerLen = mainServerTemp.length;
+        System.arraycopy(mainServerTemp, 0, mainServerBytes, 0, mainServerLen);
+        buffer.put(mainServerBytes);
+
+        //主服务器端口号
+        byte[] hostBytes = new byte[2];
+        byte[] hostTemp = DigitalTrans.unsignedShortToByte2_Litte(dataServerBean.getDataServerConfig().getPrimary_server_port());
+        int hostLen = hostTemp.length;
+        System.arraycopy(hostTemp, 0, hostBytes, 0, hostLen);
+        buffer.put(hostBytes);
+
+        //主服务器链接类型
+        byte[] typeBytes = new byte[1];
+        byte[] typeTemp = new byte[1];
+        typeTemp[0] = (byte) dataServerBean.getDataServerConfig().getPrimary_server_connection();
+        int typeLen = typeTemp.length;
+        System.arraycopy(typeTemp, 0, typeBytes, 0, typeLen);
+        buffer.put(typeBytes);
+
+        //次服务器地址
+        byte[] degreeBytes = new byte[32];
+        byte[] degreeTemp = DigitalTrans.stringToAsciiBytes(dataServerBean.getDataServerConfig().getSecondary_server_address());
+        int degreeLen = degreeTemp.length;
+        System.arraycopy(degreeTemp, 0, degreeBytes, 0, degreeLen);
+        buffer.put(degreeBytes);
+
+        //次服务器端口号
+        byte[] degreeHostBytes = new byte[2];
+        byte[] degreeHostTemp = DigitalTrans.unsignedShortToByte2_Litte(dataServerBean.getDataServerConfig().getSecondary_server_port());
+        int degreeHostLen = degreeHostTemp.length;
+        System.arraycopy(degreeHostTemp, 0, degreeHostBytes, 0, degreeHostLen);
+        buffer.put(degreeHostBytes);
+
+        //次服务器链接类型
+        byte[] degreeTypeBytes = new byte[1];
+        byte[] degreeTypeTemp = new byte[1];
+        degreeTypeTemp[0] = (byte) dataServerBean.getDataServerConfig().getSecondary_server_connection();
+        int degreeTypeLen = degreeTypeTemp.length;
+        System.arraycopy(degreeTypeTemp, 0, degreeTypeBytes, 0, degreeTypeLen);
+        buffer.put(degreeTypeBytes);
+
+        //心跳包内容
+        byte[] heartBytes = new byte[16];
+        byte[] heartTemp = DigitalTrans.StringToAsciiBytes(mac);
+        int heartLen = heartTemp.length;
+        System.arraycopy(heartTemp, 0, heartBytes, 0, heartLen);
+        buffer.put(heartBytes);
+
+        //心跳包间隔
+        byte[] heartSpaceBytes = new byte[1];
+        byte[] heartSpaceTemp = new byte[1];
+        heartSpaceTemp[0] = (byte) dataServerBean.getDataServerConfig().getHeart_package_interval();
+        int heartSpaceLen = heartSpaceTemp.length;
+        System.arraycopy(heartSpaceTemp, 0, heartSpaceBytes, 0, heartSpaceLen);
+        buffer.put(heartSpaceBytes);
+
+        //服务器链接超时时间
+        byte[] timeServerBytes = new byte[2];
+        byte[] timeServerTemp = DigitalTrans.unsignedShortToByte2_Litte(dataServerBean.getDataServerConfig().getServer_connection_timeout());
+        int timeServerLen = timeServerTemp.length;
+        System.arraycopy(timeServerTemp, 0, timeServerBytes, 0, timeServerLen);
+        buffer.put(timeServerBytes);
+
+        //读设备状态间隔时间
+        byte[] timeFlxingBytes = new byte[2];
+        byte[] timeFlxingTemp = DigitalTrans.unsignedShortToByte2_Litte(dataServerBean.getDataServerConfig().getRead_device_interval());
+        int timeFlxingLen = timeFlxingTemp.length;
+        System.arraycopy(timeFlxingTemp, 0, timeFlxingBytes, 0, timeFlxingLen);
+        buffer.put(timeFlxingBytes);
+
+        //模块主动上报间隔时间
+        byte[] timemodouBytes = new byte[2];
+        byte[] timemodouTemp = DigitalTrans.unsignedShortToByte2_Litte(dataServerBean.getDataServerConfig().getModule_report_interval());
+        int timemodouLen = timemodouTemp.length;
+        System.arraycopy(timemodouTemp, 0, timemodouBytes, 0, timemodouLen);
+        buffer.put(timemodouBytes);
+
+        //校时间隔
+        byte[] timeProofreadBytes = new byte[1];
+        byte[] timeProofreadTemp = new byte[1];
+        timeProofreadTemp[0] = (byte) dataServerBean.getDataServerConfig().getProofread_time_interval();
+        int timeProofreadLen = timeProofreadTemp.length;
+        System.arraycopy(timeProofreadTemp, 0, timeProofreadBytes, 0, timeProofreadLen);
+        buffer.put(timeProofreadBytes);
+
+        //上传阔值时间
+        byte[] timeUploadBytes = new byte[1];
+        byte[] timeUploadTemp = new byte[1];
+        timeUploadTemp[0] = (byte) dataServerBean.getDataServerConfig().getUpload_threshold_time();
+        int timeUploadLen = timeUploadTemp.length;
+        System.arraycopy(timeUploadTemp, 0, timeUploadBytes, 0, timeUploadLen);
+        buffer.put(timeUploadBytes);
+
+        //AP模式开光
+        byte[] timeAPBytes = new byte[1];
+        byte[] timeAPTemp = new byte[1];
+        timeAPTemp[0] = (byte) dataServerBean.getDataServerConfig().getAp_module_switch();
+        int timeAPLen = timeAPTemp.length;
+        System.arraycopy(timeAPTemp, 0, timeAPBytes, 0, timeAPLen);
+        buffer.put(timeAPBytes);
+        buffer.flip();
+        int datalen = buffer.remaining();
+        byte[] retData = new byte[datalen];
+        buffer.get(retData);
+        return retData;
+    }
+
     //取开关机payload
     public static byte[] getPowerSwitchPayloadBymac(boolean isOn, String Mac) {
         if (Mac.length() > 12) {
@@ -205,7 +345,7 @@ public class protocol {
         }
         byte[] macCmdBytes = new byte[14];
         byte[] mac = DigitalTrans.stringToAsciiBytes(Mac);
-        System.arraycopy(mac, 0, macCmdBytes, 0, Mac.length() - 1);
+        System.arraycopy(mac, 0, macCmdBytes, 0, Mac.length());
         if (isOn == true) {
             byte[] cmd = {0x10, 0x01};
             System.arraycopy(cmd, 0, macCmdBytes, 12, 2);
@@ -220,8 +360,8 @@ public class protocol {
     //开关机数据包
     public static byte[] PowerSwitchByMac(boolean isOn, String Mac) {
         byte[] plBytes = getPowerSwitchPayloadBymac(isOn, Mac);
-        System.out.println(DigitalTrans.byte2hex(plBytes));
-        byte[] sendBytes = Packet(Packe_Def.ptype_Server_Dev_Cmd_Pub, (byte) MsgType.SERVER_DEV_CMD_CONTROL, plBytes);
+        System.out.println("plBytes:" + DigitalTrans.byte2hex(plBytes));
+        byte[] sendBytes = Packet(Packe_Def.ptype_App_Server_Cmd_Pub, (byte) MsgType.APP_SERVER_CMD_CONTROL, plBytes);
         return sendBytes;
     }
 
@@ -231,6 +371,94 @@ public class protocol {
         System.out.println(DigitalTrans.byte2hex(plBytes));
         byte[] sendBytes = Packet(Packe_Def.ptype_Server_Dev_Cmd_Pub, (byte) MsgType.SERVER_DEV_CMD_CONTROL, plBytes);
         return sendBytes;
+    }
+
+    //取校时payload
+    public static byte[] timingPlayload(String mac) {
+
+        ByteBuffer buffer = ByteBuffer.allocate(1024);
+        byte[] macBytesTemp = DigitalTrans.StringToAsciiBytes(mac);
+        byte[] macBytes = new byte[12];
+        int macLen = macBytesTemp.length;
+        System.arraycopy(macBytesTemp, 0, macBytes, 0, macLen);
+        byte[] keyBytes = new byte[]{0x01};
+        buffer.put(macBytes);
+        buffer.put(keyBytes);
+        buffer.flip();
+        byte[] plBytes = new byte[buffer.remaining()];
+        buffer.get(plBytes);
+        System.out.println(DigitalTrans.byte2hex(plBytes));
+        byte[] sendBytes = Packet(Packe_Def.ptype_App_Server_Cmd_Pub, (byte) MsgType.APP_SERVER_CMD_CONTROL, plBytes);
+        return sendBytes;
+    }
+//    public static byte[] timingPlayload(String mac) {
+//        if (mac.length() > 12) {
+//            return null;
+//        }
+//        byte[] macCmdBytes = new byte[13];
+//        byte[] macs = DigitalTrans.stringToAsciiBytes(mac);
+//        System.arraycopy(macs, 0, macCmdBytes, 0, mac.length());
+//        byte[] cmd = {0x01};
+//        System.arraycopy(cmd, 0, macCmdBytes, 12, 1);
+//        byte[] sendBytes = Packet(Packe_Def.ptype_App_Server_Cmd_Pub, (byte) MsgType.APP_SERVER_CMD_CONTROL, macCmdBytes);
+//        return sendBytes;
+//    }
+
+    //调整风量plaload
+    public static byte[] adjustAirVolum(String mac, short volum) {
+
+        ByteBuffer buffer = ByteBuffer.allocate(1024);
+        byte[] macBytesTemp = DigitalTrans.StringToAsciiBytes(mac);
+        byte[] macBytes = new byte[12];
+        int macLen = macBytesTemp.length;
+        System.arraycopy(macBytesTemp, 0, macBytes, 0, macLen);
+        byte[] keyBytes = new byte[]{0x31};
+        byte[] volumBytes = new byte[]{(byte) volum};
+        buffer.put(macBytes);
+        buffer.put(keyBytes);
+        buffer.put(volumBytes);
+        buffer.flip();
+        byte[] plBytes = new byte[buffer.remaining()];
+        buffer.get(plBytes);
+        System.out.println(DigitalTrans.byte2hex(plBytes));
+        return plBytes;
+    }
+
+    //查询数据包
+    public static byte[] quest() {
+        byte[] plBytes = new byte[]{};
+        byte[] sendBytes = Packet(Packe_Def.ptype_Server_Dev_Cmd_Pub, (byte) MsgType.APP_DEV_CMD_DEMAND, plBytes);
+        return sendBytes;
+    }
+
+    //查询数据包
+    public static byte[] questServer(String mac) {
+        ByteBuffer buffer = ByteBuffer.allocate(1024);
+        byte[] macBytes = new byte[12];
+        byte[] macBytesTemp = DigitalTrans.StringToAsciiBytes(mac);
+        int macLen = macBytesTemp.length;
+        System.arraycopy(macBytesTemp, 0, macBytes, 0, macLen);
+        byte[] keyBytes = new byte[]{(byte) 0xda};
+        buffer.put(macBytes);
+        buffer.put(keyBytes);
+        buffer.flip();
+        byte[] plBytes = new byte[buffer.remaining()];
+        buffer.get(plBytes);
+        byte[] sendBytes = Packet(Packe_Def.ptype_App_Server_Cmd_Pub, (byte) MsgType.APP_SERVER_CMD_DEMAND, plBytes);
+        return sendBytes;
+    }
+
+    //激活数据包
+    public static byte[] sensitize(DataServerBean dataServerBean, String seriesNumber, String mac) {
+        try {
+            byte[] plBytes = getSensitize(dataServerBean, seriesNumber, mac);
+            byte[] sendBytes = Packet(Packe_Def.ptyte_App_Dev_Act_Act, (byte) MsgType.APP_DEV_CMD_ACTIVATE, plBytes);
+
+            return sendBytes;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     //数据打包
@@ -279,7 +507,7 @@ public class protocol {
     public static byte[] Packet(short packTpe, byte cmdType, byte[] payLoadSrc) {
         //数据组包--时间戳  命令类型  playload
         ByteBuffer buffer = ByteBuffer.allocate(1024);
-        //long time_stamp =System.currentTimeMillis();
+//        long time_stamp = System.currentTimeMillis();
         long time_stamp = 123456;
         byte[] timeStampBytes = DigitalTrans.unsignedIntToByte4_Litte(time_stamp);
         byte[] cmdBytes = {cmdType};
@@ -319,12 +547,14 @@ public class protocol {
         Endbuffer.flip();
         byte[] SendBytes = new byte[Endbuffer.remaining()];
         Endbuffer.get(SendBytes);
+        Log.d("ConnectionManager", DigitalTrans.byte2hex(SendBytes));
         return SendBytes;
+
     }
 
     //粘包处理
     //private static final byte[]
-    public static byte[] DataUnPacket(byte[] inBytes) {
+    public static byte[] DataUnPacket(byte[] inBytes, Handler handler) {
         int dataLen = inBytes.length;
         int todataLen = dataLen;
         int end = dataLen;
@@ -374,7 +604,7 @@ public class protocol {
                             int playlen = deData.length - 1;
                             byte[] playData = new byte[playlen];
                             System.arraycopy(deData, 0, playData, 0, playlen);//去校验码
-                            payloadAnalysis(playData);
+                            payloadAnalysis(playData, handler);
                         }
                         if (iKeylen == 0) {
                             iKeylen = 1;
@@ -404,7 +634,8 @@ public class protocol {
 
     //粘包处理
     //private static final byte[]
-    public static byte[] DataUnPacket_Server(byte[] inBytes, Socket devSocket) throws IOException, InterruptedException {
+    public static byte[] DataUnPacket_Server(byte[] inBytes, Socket devSocket, Handler handler) throws IOException, InterruptedException {
+        Log.d("ConnectionManager", "进行了粘包处理");
         int dataLen = inBytes.length;
         int todataLen = dataLen;
         int end = dataLen;
@@ -450,14 +681,14 @@ public class protocol {
                         byte[] packData = new byte[iKeylen];
                         System.arraycopy(inBytes, pos + 4, packData, 0, iKeylen);
                         byte[] deData = decrypt_CTR(Key_IV.Public_Key, Key_IV.Public_IV, packData);
-
+                        Log.d("ConnectionManager", "数据分析");
                         if (xor(deData) == 0x00) {
                             //数据分析
                             int playlen = deData.length - 1;
                             byte[] playData = new byte[playlen];
                             System.arraycopy(deData, 0, playData, 0, playlen);// 去校验码
                             try {
-                                payloadAnalysis_server(playData, devSocket);
+                                payloadAnalysis_server(playData, devSocket, handler);
                             } catch (Exception e) {
                                 // TODO Auto-generated catch block
                                 e.printStackTrace();
@@ -489,7 +720,7 @@ public class protocol {
         return new byte[]{};
     }
 
-    public static void payloadAnalysis(byte[] deData) {
+    public static void payloadAnalysis(byte[] deData, Handler handler) {
         if (deData.length < 7) {
             return;
         }
@@ -502,7 +733,7 @@ public class protocol {
                 int playlen = deData.length - 5;
                 byte[] playload = new byte[playlen];
                 System.arraycopy(deData, 5, playload, 0, playlen);
-                PayloadUnPacket(playload);
+                PayloadUnPacket(playload, handler);
                 break;
             case MsgType.SERVER_APP_ACK_DEMAND:
                 byte demandType = deData[5];
@@ -516,17 +747,18 @@ public class protocol {
                     int plen = deData.length - 5;
                     byte[] pload = new byte[plen];
                     System.arraycopy(deData, 5, pload, 0, plen);
-                    PayloadUnPacket(pload);
+                    PayloadUnPacket(pload, handler);
                 }
                 break;
         }
     }
 
-    public static void payloadAnalysis_server(byte[] deData, Socket devSocket) throws InterruptedException {
-        if (deData.length < 7) {
+    public static void payloadAnalysis_server(byte[] deData, Socket devSocket, Handler handler) throws InterruptedException {
+        if (deData.length < 6) {
             return;
         }
         byte cmd = deData[4];
+        Log.d("ConnectionManager", "CmdType key" + cmd);
         switch (cmd) {
             case MsgType.DEV_SERVER_CMD_LOGIN:
                 DataOutputStream out;
@@ -550,21 +782,60 @@ public class protocol {
                 int playlen = deData.length - 5;
                 byte[] playload = new byte[playlen];
                 System.arraycopy(deData, 5, playload, 0, playlen);
-                PayloadUnPacket(playload);
+                PayloadUnPacket(playload, handler);
                 break;
             case MsgType.SERVER_APP_ACK_DEMAND:
+//                byte demandType = deData[5];
+//                if (demandType == Packe_Def.DEV_OFF_ON) {
+//                    if (deData[6] == 0x00) {
+//                        System.out.println("设备离线");
+//                    } else {
+//                        System.out.println("设备在线");
+//                    }
+//                } else if (demandType == Packe_Def.DEV_Q_DATA) {
+//                    int plen = deData.length - 5;
+//                    byte[] pload = new byte[plen];
+//                    System.arraycopy(deData, 5, pload, 0, plen);
+//                    PayloadUnPacket(pload);
+//                }
+                Log.d("ConnectionManager", "我终于得到你");
                 byte demandType = deData[5];
                 if (demandType == Packe_Def.DEV_OFF_ON) {
-                    if (deData[6] == 0x00) {
-                        System.out.println("设备离线");
-                    } else {
-                        System.out.println("设备在线");
-                    }
+                    byte ackByte = deData[6];
                 } else if (demandType == Packe_Def.DEV_Q_DATA) {
-                    int plen = deData.length - 5;
-                    byte[] pload = new byte[plen];
-                    System.arraycopy(deData, 5, pload, 0, plen);
-                    PayloadUnPacket(pload);
+                    int dLen = deData.length - 6;
+                    byte[] pBytes = new byte[dLen];
+                    System.arraycopy(deData, 6, pBytes, 0, dLen);
+                    PayloadUnPacket(pBytes, handler);
+                }
+
+                break;
+            case MsgType.DEV_SERVER_ACK_DEMAND:
+                int playlenA = deData.length - 5;
+                byte[] playloadA = new byte[playlenA];
+                System.arraycopy(deData, 5, playloadA, 0, playlenA);
+                PayloadUnPacket(playloadA, handler);
+                break;
+            case MsgType.DEV_APP_ACK_ACTIVATE:
+                byte isAck = deData[5];
+                if (isAck == (byte) 1) {
+                    handler.sendEmptyMessage(StatisConstans.MSG_ENABLED_SUCCESSFUL);
+                    Log.d("ConnectionManager", "配置成功");
+                } else {
+                    handler.sendEmptyMessage(StatisConstans.MSG_ENABLED_FAILING);
+                    Log.d("ConnectionManager", "配置失败");
+                }
+
+                break;
+            case MsgType.SERVER_APP_ACK_CONTROL:
+                byte isTiming = deData[5];
+                Log.d("ConnectionManager", "校时" + isTiming);
+                if (isTiming == (byte) 1) {
+                    handler.sendEmptyMessage(StatisConstans.MSG_ENABLED_SUCCESSFUL);
+                    Log.d("ConnectionManager", "校时成功");
+                } else {
+                    handler.sendEmptyMessage(StatisConstans.MSG_ENABLED_FAILING);
+                    Log.d("ConnectionManager", "校时失败");
                 }
                 break;
         }
@@ -572,20 +843,24 @@ public class protocol {
     }
 
     //Payload解包
-    public static void PayloadUnPacket(byte[] payLoadBody) {
+    public static void PayloadUnPacket(byte[] payLoadBody, Handler handler) {
 
         int end = payLoadBody.length;
         int pos = 0;
+        PmAllData pmAllData = new PmAllData();
         while (pos < end) {
             byte key = payLoadBody[pos];
+            Log.d("ConnectionManager", "进行了粘包处理" + key);
             switch (key) {
 //		   case:
 //			   break;
                 case PayloardKey.D_POWER: //开关机
                     pos++;
                     if (payLoadBody[pos] == (byte) 0x01) {
+                        pmAllData.setoNstate("开机");
                         System.out.println("开关状态：开启\r\n");
                     } else {
+                        pmAllData.setoNstate("关机");
                         System.out.println("开关状态：关机\r\n");
                         //devInfo.IsOpen = false
                     }
@@ -595,14 +870,17 @@ public class protocol {
                     //devInfo.SmartModel = uint8(payLoadBody[pos])
                     //System.out.println("开机模式:")
                     if (((byte) payLoadBody[pos] & (byte) (0x01)) == (byte) (0x01)) {
+                        pmAllData.setMode("静音");
                         System.out.println("静音");
                     }
 
                     if (((byte) payLoadBody[pos] & (byte) (0x01 << 1)) == (0x01 << 1)) {
+                        pmAllData.setMode("co2模式");
                         System.out.println("co2模式");
                     }
 
                     if (((byte) payLoadBody[pos] & (byte) (0x01 << 2)) == 0x01 << 2) {
+                        pmAllData.setMode("粉尘模式");
                         System.out.println("粉尘模式");
                     }
                     System.out.println("\r\n");
@@ -612,10 +890,13 @@ public class protocol {
                     System.out.println("新排风模式:");
                     switch ((byte) (payLoadBody[pos])) {
                         case 1:
+                            pmAllData.setExhaustMode("单新风");
                             System.out.println("单新风");
                         case 2:
+                            pmAllData.setExhaustMode("单排风");
                             System.out.println("单排风");
                         case 3:
+                            pmAllData.setExhaustMode("新排风");
                             System.out.println("新排风");
                     }
                     System.out.println("\r\n");
@@ -626,6 +907,7 @@ public class protocol {
                     //System.out.println(pos)
                     byte[] pBytes = new byte[2];
                     System.arraycopy(payLoadBody, pos, pBytes, 0, 2);
+                    pmAllData.setExhaustRatio(DigitalTrans.byte2ToUnsignedShort(pBytes));
                     System.out.printf("排风比例:%d", DigitalTrans.byte2ToUnsignedShort(pBytes));
                     System.out.println("\r\n");
                     pos++;
@@ -636,15 +918,19 @@ public class protocol {
                     System.out.println("背光时间:");
                     switch (payLoadBody[pos]) {
                         case 0:
+                            pmAllData.setLcdBacklight("10s");
                             System.out.println("10s");
                             break;
                         case 1:
+                            pmAllData.setLcdBacklight("30s");
                             System.out.println("30s");
                             break;
                         case 2:
-                            System.out.println("60");
+                            pmAllData.setLcdBacklight("60s");
+                            System.out.println("60s");
                             break;
                         case 3:
+                            pmAllData.setLcdBacklight("常亮");
                             System.out.println("常亮");
                             break;
                     }
@@ -654,6 +940,7 @@ public class protocol {
                 case PayloardKey.D_AUX_HEATING: //辅热温度值
 
                     pos++;
+                    pmAllData.setAuxHeating(payLoadBody[pos]);
                     System.out.printf("辅热温度:%d", payLoadBody[pos]);
                     System.out.println("\r\n");
                     break;
@@ -662,8 +949,10 @@ public class protocol {
                     pos++;
                     System.out.println("恒温模式:");
                     if (payLoadBody[pos] == 0) {
+                        pmAllData.setConstTempMode("关");
                         System.out.println("关");
                     } else {
+                        pmAllData.setConstTempMode("开");
                         System.out.println("开");
                     }
                     System.out.println("\r\n");
@@ -674,8 +963,10 @@ public class protocol {
                     pos++;
                     System.out.println("恒湿模式:");
                     if (payLoadBody[pos] == 0) {
+                        pmAllData.setConstHumiMode("关");
                         System.out.println("关");
                     } else {
+                        pmAllData.setConstHumiMode("开");
                         System.out.println("开");
                     }
                     System.out.println("\r\n");
@@ -683,17 +974,19 @@ public class protocol {
 
                 case PayloardKey.D_CONST_TEMP_PARA: //恒温参数
                     pos++;
+                    pmAllData.setConstTempPara(payLoadBody[pos]);
                     System.out.printf("恒温参数:%d", payLoadBody[pos]);
                     System.out.println("\r\n");
                     break;
                 case PayloardKey.D_CONST_HUMI_PARA: //恒湿参数
-
                     pos++;
+                    pmAllData.setConstHumiPara(payLoadBody[pos]);
                     System.out.printf("恒湿参数:%d", payLoadBody[pos]);
                     System.out.println("\r\n");
                     break;
                 case PayloardKey.D_FAN_FREQ: //风机频率
                     pos++;
+                    pmAllData.setFanFreq((payLoadBody[pos]));
                     System.out.printf("风机频率:%d", (payLoadBody[pos]));
                     System.out.println("\r\n");
                     break;
@@ -701,6 +994,7 @@ public class protocol {
                     pos++;
                     byte[] sBytes = new byte[2];
                     System.arraycopy(payLoadBody, pos, sBytes, 0, 2);
+                    pmAllData.setBlowerSpeed(DigitalTrans.byte2ToUnsignedShort(sBytes));
                     System.out.printf("送风机转速:%d", DigitalTrans.byte2ToUnsignedShort(sBytes));
                     System.out.println("\r\n");
                     pos++;
@@ -710,6 +1004,7 @@ public class protocol {
                     pos++;
                     byte[] prBytes = new byte[2];
                     System.arraycopy(payLoadBody, pos, prBytes, 0, 2);
+                    pmAllData.setExhaustSpeed(DigitalTrans.byte2ToUnsignedShort(prBytes));
                     System.out.printf("排风机转速:%d", DigitalTrans.byte2ToUnsignedShort(prBytes));
                     System.out.println("\r\n");
                     pos++;
@@ -718,30 +1013,35 @@ public class protocol {
                     pos++;
                     byte[] zBytes = new byte[2];
                     System.arraycopy(payLoadBody, pos, zBytes, 0, 2);
+                    pmAllData.setBlowingRate(DigitalTrans.byte2ToUnsignedShort(zBytes));
                     System.out.printf("风量:%d", DigitalTrans.byte2ToUnsignedShort(zBytes));
                     System.out.println("\r\n");
                     pos++;
                     break;
                 case PayloardKey.D_THAW_START_TEMP: //融冰启动温度
                     pos++;
+                    pmAllData.setThawStartTemp(payLoadBody[pos]);
                     System.out.printf("融冰启动温度:%d", payLoadBody[pos]);
                     System.out.println("\r\n");
                     break;
                 case PayloardKey.D_THAW_STOP_TEMP://融冰停止温度
 
                     pos++;
+                    pmAllData.setThawStopTemp(payLoadBody[pos]);
                     System.out.printf("融冰停止温度:%d", payLoadBody[pos]);
                     System.out.println("\r\n");
                     break;
                 case PayloardKey.D_THAW_TIME: //融冰时间
 
                     pos++;
+                    pmAllData.setThawTime(payLoadBody[pos]);
                     System.out.printf("融冰时间:%d分钟", payLoadBody[pos]);
                     System.out.println("\r\n");
                     break;
                 case PayloardKey.D_THAW_INV: //融冰间隔时间
 
                     pos++;
+                    pmAllData.setThawInv(payLoadBody[pos]);
                     System.out.printf("融冰间隔时间:%d分钟", payLoadBody[pos]);
                     System.out.println("\r\n");
                     break;
@@ -749,6 +1049,7 @@ public class protocol {
                     pos++;
                     byte[] clBytes = new byte[2];
                     System.arraycopy(payLoadBody, pos, clBytes, 0, 2);
+                    pmAllData.setDustwiperClearPeriod(DigitalTrans.byte2ToUnsignedShort(clBytes));
                     System.out.printf("除尘器清洗周期:%d小时", DigitalTrans.byte2ToUnsignedShort(clBytes));
                     System.out.println("\r\n");
                     pos++;
@@ -757,6 +1058,7 @@ public class protocol {
                     pos++;
                     byte[] dlBytes = new byte[2];
                     System.arraycopy(payLoadBody, pos, dlBytes, 0, 2);
+                    pmAllData.setDustwiperClearRemain(DigitalTrans.byte2ToUnsignedShort(dlBytes));
                     System.out.printf("除尘器清洗周期剩余时间:%d小时", DigitalTrans.byte2ToUnsignedShort(dlBytes));
                     System.out.println("\r\n");
                     pos++;
@@ -764,27 +1066,33 @@ public class protocol {
                 case PayloardKey.D_TIME_MODE: //定时模式
                     pos++;
                     if (((byte) (payLoadBody[pos]) & (byte) (0x01)) != 0) {
+                        pmAllData.setTimeMode("每天");
                         System.out.println("定时模式1开启:每天");
                         System.out.println("\r\n");
                     }
                     if (((byte) (payLoadBody[pos]) & (byte) (0x02)) != 0) {
+                        pmAllData.setTimeMode("仅一次");
                         System.out.println("定时模式2开启:仅一次");
                         System.out.println("\r\n");
                     }
                     if (((byte) (payLoadBody[pos]) & (byte) (0x04)) != 0) {
+                        pmAllData.setTimeMode("工作日");
                         System.out.println("定时模式3开启:工作日");
                         System.out.println("\r\n");
                     }
 
                     if (((byte) (payLoadBody[pos]) & (byte) (0x08)) != 0) {
+                        pmAllData.setTimerOneState("开");
                         System.out.println("定时器1状态:开");
                         System.out.println("\r\n");
                     }
                     if (((byte) (payLoadBody[pos]) & (byte) (0x10)) != 0) {
+                        pmAllData.setTimerTwoState("开");
                         System.out.println("定时器2状态:开");
                         System.out.println("\r\n");
                     }
                     if (((byte) (payLoadBody[pos]) & (byte) (0x20)) != 0) {
+                        pmAllData.setTimerThreeState("开");
                         System.out.println("定时器3状态:开");
                         System.out.println("\r\n");
                     }
@@ -792,9 +1100,13 @@ public class protocol {
                 case PayloardKey.D_TIMER1: //定时器1
                     pos++;
                     System.out.println("定时器1:");
+                    pmAllData.setTimerOneStartHour(payLoadBody[pos]);
                     System.out.printf("开始时间小时值:%d", payLoadBody[pos]);
+                    pmAllData.setTimerOneStartMin(payLoadBody[pos]);
                     System.out.printf("开始时间分钟值:%d", payLoadBody[pos + 1]);
+                    pmAllData.setTimerOneEndHour(payLoadBody[pos]);
                     System.out.printf("结束时间小时值:%d", payLoadBody[pos + 2]);
+                    pmAllData.setTimerOneEndMin(payLoadBody[pos]);
                     System.out.printf("结束时间分钟值:%d", payLoadBody[pos + 3]);
                     System.out.println("\r\n");
                     pos += 3;
@@ -802,9 +1114,13 @@ public class protocol {
                 case PayloardKey.D_TIMER2: //定时器2
                     pos++;
                     System.out.println("定时器2:");
+                    pmAllData.setTimerTwoStartHour(payLoadBody[pos]);
                     System.out.printf("开始时间小时值:%d", payLoadBody[pos]);
+                    pmAllData.setTimerTwoStartMin(payLoadBody[pos + 1]);
                     System.out.printf("开始时间分钟值:%d", payLoadBody[pos + 1]);
+                    pmAllData.setTimerTwoEndHour(payLoadBody[pos + 2]);
                     System.out.printf("结束时间小时值:%d", payLoadBody[pos + 2]);
+                    pmAllData.setTimerTwoEndMin(payLoadBody[pos + 3]);
                     System.out.printf("结束时间分钟值:%d", payLoadBody[pos + 3]);
                     System.out.println("\r\n");
                     pos += 3;
@@ -812,9 +1128,13 @@ public class protocol {
                 case PayloardKey.D_TIMER3: //定时器3
                     pos++;
                     System.out.println("定时器3:");
+                    pmAllData.setTimerThreeStartHour(payLoadBody[pos]);
                     System.out.printf("开始时间小时值:%d", payLoadBody[pos]);
+                    pmAllData.setTimerThreeStartMin(payLoadBody[pos + 1]);
                     System.out.printf("开始时间分钟值:%d", payLoadBody[pos + 1]);
+                    pmAllData.setTimerThreeEndHour(payLoadBody[pos + 2]);
                     System.out.printf("结束时间小时值:%d", payLoadBody[pos + 2]);
+                    pmAllData.setTimerThreeEndMin(payLoadBody[pos + 3]);
                     System.out.printf("结束时间分钟值:%d", payLoadBody[pos + 3]);
                     System.out.println("\r\n");
                     pos += 3;
@@ -823,6 +1143,7 @@ public class protocol {
                     pos++;
                     byte[] cBytes = new byte[2];
                     System.arraycopy(payLoadBody, pos, cBytes, 0, 2);
+                    pmAllData.setCo2Adj(DigitalTrans.byte2ToUnsignedShort(cBytes));
                     System.out.printf("CO2调节值:%d", DigitalTrans.byte2ToUnsignedShort(cBytes));
                     System.out.println("\r\n");
                     pos++;
@@ -830,17 +1151,21 @@ public class protocol {
                 case PayloardKey.D_FUNC_STATUS: //功能状态
                     pos++;
                     if (((byte) (payLoadBody[pos]) & (byte) (0x01)) != 0) {
+                        pmAllData.setFaultStatus("集尘器开启");
                         System.out.println("集尘器开启");
                         System.out.println("\r\n");
                     } else {
+                        pmAllData.setFaultStatus("集尘器关闭");
                         System.out.println("集尘器关闭");
                         System.out.println("\r\n");
                     }
 
                     if (((byte) (payLoadBody[pos]) & (byte) (0x02)) != 0) {
+                        pmAllData.setFaultStatus("负离子开启");
                         System.out.println("负离子开启");
                         System.out.println("\r\n");
                     } else {
+                        pmAllData.setFaultStatus("集尘器关闭");
                         System.out.println("集尘器关闭");
                         System.out.println("\r\n");
                     }
@@ -850,6 +1175,7 @@ public class protocol {
                     pos++;
                     byte[] pmBytes = new byte[2];
                     System.arraycopy(payLoadBody, pos, pmBytes, 0, 2);
+                    pmAllData.setPmAdj(DigitalTrans.byte2ToUnsignedShort(pmBytes));
                     System.out.printf("PM调节值:%d", DigitalTrans.byte2ToUnsignedShort(pmBytes));
                     System.out.println("\r\n");
                     pos++;
@@ -859,6 +1185,7 @@ public class protocol {
                     pos++;
                     byte[] co2Bytes = new byte[2];
                     System.arraycopy(payLoadBody, pos, co2Bytes, 0, 2);
+                    pmAllData.setSensorIndoorTemp(DigitalTrans.byte2ToUnsignedShort(co2Bytes));
                     System.out.printf("室内温度:%d", DigitalTrans.byte2ToUnsignedShort(co2Bytes));
                     System.out.println("\r\n");
                     pos++;
@@ -867,6 +1194,7 @@ public class protocol {
                     pos++;
                     byte[] ico2Bytes = new byte[2];
                     System.arraycopy(payLoadBody, pos, ico2Bytes, 0, 2);
+                    pmAllData.setSensorOutdoorTemp(DigitalTrans.byte2ToUnsignedShort(ico2Bytes));
                     System.out.printf("室外温度:%d", DigitalTrans.byte2ToUnsignedShort(ico2Bytes));
                     System.out.println("\r\n");
                     pos++;
@@ -875,6 +1203,7 @@ public class protocol {
                     pos++;
                     byte[] newBytes = new byte[2];
                     System.arraycopy(payLoadBody, pos, newBytes, 0, 2);
+                    pmAllData.setSensorFanTemp(DigitalTrans.byte2ToUnsignedShort(newBytes));
                     System.out.printf("新风温度:%d", DigitalTrans.byte2ToUnsignedShort(newBytes));
                     System.out.println("\r\n");
                     pos++;
@@ -883,6 +1212,7 @@ public class protocol {
                     pos++;
                     byte[] pwBytes = new byte[2];
                     System.arraycopy(payLoadBody, pos, pwBytes, 0, 2);
+                    pmAllData.setSensorExhaustTemp(DigitalTrans.byte2ToUnsignedShort(pwBytes));
                     System.out.printf("排风温度:%d", DigitalTrans.byte2ToUnsignedShort(pwBytes));
                     System.out.println("\r\n");
                     pos++;
@@ -891,6 +1221,7 @@ public class protocol {
                     pos++;
                     byte[] co2lBytes = new byte[2];
                     System.arraycopy(payLoadBody, pos, co2lBytes, 0, 2);
+                    pmAllData.setCo2Thickness(DigitalTrans.byte2ToUnsignedShort(co2lBytes));
                     System.out.printf("CO2浓度:%d", DigitalTrans.byte2ToUnsignedShort(co2lBytes));
                     System.out.println("\r\n");
                     pos++;
@@ -899,6 +1230,7 @@ public class protocol {
                     pos++;
                     byte[] ipmBytes = new byte[2];
                     System.arraycopy(payLoadBody, pos, ipmBytes, 0, 2);
+                    pmAllData.setIndoorPmThickness(DigitalTrans.byte2ToUnsignedShort(ipmBytes));
                     System.out.printf("室内颗粒物浓度:%d", DigitalTrans.byte2ToUnsignedShort(ipmBytes));
                     System.out.println("\r\n");
                     pos++;
@@ -907,6 +1239,7 @@ public class protocol {
                     pos++;
                     byte[] outRoomPMBytes = new byte[2];
                     System.arraycopy(payLoadBody, pos, outRoomPMBytes, 0, 2);
+                    pmAllData.setOutdoorPmThickness(DigitalTrans.byte2ToUnsignedShort(outRoomPMBytes));
                     System.out.printf("室外颗粒物浓度:%d", DigitalTrans.byte2ToUnsignedShort(outRoomPMBytes));
                     System.out.println("\r\n");
                     pos++;
@@ -922,10 +1255,15 @@ public class protocol {
                     pos++;
                     byte[] stBytes = new byte[2];
                     System.arraycopy(payLoadBody, pos, stBytes, 0, 2);
+                    pmAllData.setSystemClockHour(DigitalTrans.byte2ToUnsignedShort(stBytes));
                     System.out.printf("系统时间年:%d", DigitalTrans.byte2ToUnsignedShort(stBytes));
+                    pmAllData.setSystemClockMouth(payLoadBody[pos + 2]);
                     System.out.printf("系统时间月:%d", payLoadBody[pos + 2]);
+                    pmAllData.setSystemClockDay(payLoadBody[pos + 3]);
                     System.out.printf("系统时间日:%d", payLoadBody[pos + 3]);
+                    pmAllData.setSystemClockHour(payLoadBody[pos + 4]);
                     System.out.printf("系统时间时:%d", payLoadBody[pos + 4]);
+                    pmAllData.setSystemClockMin(payLoadBody[pos + 5]);
                     System.out.printf("系统时间分:%d", payLoadBody[pos + 5]);
                     System.out.println("\r\n");
                     pos += 5;
@@ -933,34 +1271,42 @@ public class protocol {
                 case PayloardKey.D_FAULT_STATUS: //故障状态
                     pos++;
                     if (((byte) (payLoadBody[pos]) & (byte) (0x01)) == (0x01)) {
+                        pmAllData.setFaultStatus("CO2传感器故障");
                         System.out.println("CO2传感器故障");
                         System.out.println("\r\n");
                     }
                     if (((byte) (payLoadBody[pos]) & (byte) (0x01 << 1)) == (0x01 << 1)) {
+                        pmAllData.setFaultStatus("室内温度探头故障");
                         System.out.println("室内温度探头故障");
                         System.out.println("\r\n");
                     }
                     if (((byte) (payLoadBody[pos]) & (byte) (0x01 << 2)) == (0x01 << 2)) {
+                        pmAllData.setFaultStatus("室外温度探头故障");
                         System.out.println("室外温度探头故障");
                         System.out.println("\r\n");
                     }
                     if (((byte) (payLoadBody[pos]) & (byte) (0x01 << 3)) == (0x01 << 3)) {
+                        pmAllData.setFaultStatus("新风温度探头故障");
                         System.out.println("新风温度探头故障");
                         System.out.println("\r\n");
                     }
                     if (((byte) (payLoadBody[pos]) & (byte) (0x01 << 4)) == (0x01 << 4)) {
+                        pmAllData.setFaultStatus("排风温度探头故障");
                         System.out.println("排风温度探头故障");
                         System.out.println("\r\n");
                     }
                     if (((byte) (payLoadBody[pos]) & (byte) (0x01 << 5)) == (0x01 << 5)) {
+                        pmAllData.setFaultStatus("室内粉尘传感器故障");
                         System.out.println("室内粉尘传感器故障");
                         System.out.println("\r\n");
                     }
                     if (((byte) (payLoadBody[pos]) & (byte) (0x01 << 6)) == (0x01 << 6)) {
+                        pmAllData.setFaultStatus("室外粉尘传感器故障");
                         System.out.println("室外粉尘传感器故障");
                         System.out.println("\r\n");
                     }
                     if (((byte) (payLoadBody[pos]) & (byte) (0x01 << 7)) == (0x01 << 7)) {
+                        pmAllData.setFaultStatus("湿度传感器故障");
                         System.out.println("湿度传感器故障");
                         System.out.println("\r\n");
                     }
@@ -968,6 +1314,7 @@ public class protocol {
                     byte[] errBytes = new byte[2];
                     System.arraycopy(payLoadBody, pos, errBytes, 0, 2);
                     if (DigitalTrans.byte2ToUnsignedShort(errBytes) == 0xFFFF) {
+                        pmAllData.setFaultStatus("未知的故障");
                         System.out.println("未知的故障");
                         System.out.println("\r\n");
 
@@ -978,6 +1325,7 @@ public class protocol {
             }
             pos++;
         }
+        handler.sendMessage(handler.obtainMessage(StatisConstans.MSG_QUEST_SERVER, pmAllData));
     }
 
     //字节异或处理

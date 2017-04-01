@@ -49,19 +49,16 @@ public class DataServerConfigRequest {
             public void onSuccess(String json) {
                 JsonResult<DataServerBean> result = new JsonResult<DataServerBean>();
                 try {
-                    Log.i("CodeRequest", json);
+                    Log.i("DataCodeRequest", json);
                     if (TextUtils.isEmpty(json)) {
                         return;
                     }
                     result = JsonUtils.parseJson(json,
                             new TypeToken<DataServerBean>() {
                             }.getType());
-                    //手机号码已经被其它账号绑定
                     if (!result.isFlag()) {
                         ToastUtil.show(context, result.getMsg());
-                    }
-                    //手机号码正常
-                    else {
+                    } else {
                         handler.sendMessage(handler.obtainMessage(StatisConstans.CONFIG_REGULAR, result.getData()));
                     }
                 } catch (Exception e) {

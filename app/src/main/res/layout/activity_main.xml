@@ -28,7 +28,7 @@
             android:layout_weight="1"
             android:drawableBottom="@drawable/iv_btoom"
             android:gravity="center"
-            android:text="客厅"
+            android:text="暂无房间"
             android:textColor="@color/white"
             android:textSize="18sp" />
 
@@ -176,7 +176,7 @@
                             android:drawablePadding="20dp"
                             android:gravity="center_vertical"
                             android:paddingRight="15dp"
-                            android:text="520"
+                            android:text="--"
                             android:textColor="@color/green"
                             android:textSize="24sp" />
 
@@ -201,7 +201,7 @@
                             android:drawableLeft="@drawable/temp_indoor"
                             android:drawablePadding="20dp"
                             android:gravity="center_vertical"
-                            android:text="25℃"
+                            android:text="--℃"
                             android:textColor="@color/green"
                             android:textSize="24sp" />
                     </LinearLayout>
@@ -228,7 +228,7 @@
                             android:drawablePadding="20dp"
                             android:gravity="center"
                             android:paddingRight="15dp"
-                            android:text="520"
+                            android:text="--"
                             android:textColor="@color/green"
                             android:textSize="24sp" />
 
@@ -253,7 +253,7 @@
                             android:drawableLeft="@drawable/temp_out_side"
                             android:drawablePadding="20dp"
                             android:gravity="center_vertical"
-                            android:text="25℃"
+                            android:text="--℃"
                             android:textColor="@color/green"
                             android:textSize="24sp" />
                     </LinearLayout>
@@ -279,7 +279,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="40dp"
-                    android:text="10"
+                    android:text="--"
                     android:textColor="@color/green"
                     android:textSize="40sp" />
 
@@ -302,11 +302,20 @@
     </ScrollView>
 
     <com.himmiractivity.view.SelectorImageView
+        android:id="@+id/iv_off_line_controller"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:scaleType="fitXY"
+        android:src="@drawable/off_line" />
+
+    <com.himmiractivity.view.SelectorImageView
         android:id="@+id/iv_off_on_controller"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:scaleType="fitXY"
         android:src="@drawable/power_off"
+        android:visibility="gone"
         app:selector_src="@drawable/start_up" />
 </LinearLayout>

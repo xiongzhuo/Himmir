@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -17,12 +18,17 @@ import com.himmiractivity.entity.DataServerBean;
 import com.himmiractivity.entity.DeviceInfoBean;
 import com.himmiractivity.entity.ImageBean;
 import com.himmiractivity.interfaces.StatisConstans;
+import com.himmiractivity.liuxing_scoket.Protocal;
+import com.himmiractivity.mining.app.zxing.ScoketOFFeON;
 import com.himmiractivity.request.DataServerConfigRequest;
 import com.himmiractivity.request.ReceiveUserDeviceInfoRequest;
+import com.himmiractivity.util.ThreadPoolUtils;
 import com.himmiractivity.view.ChangeAddressDialog;
 import com.himmiractivity.view.ClearEditText;
 
+import java.io.IOException;
 import java.io.Serializable;
+import java.net.Socket;
 import java.util.List;
 
 import activity.hamir.com.himmir.R;
@@ -49,6 +55,10 @@ public class InformationComitActivity extends BaseBusActivity {
     Button btnQrNext;
     DataServerBean dataServerBean;
     DeviceInfoBean deviceInfoBean;
+    String server_number;
+    String mac;
+    String ip;
+    public final int port = 8800;
     String provinceSite, citySite, areaSite;
     String provinceChoise, cityChoise, areaChoise;
     ChangeAddressDialog mChangeAddressDialog;
@@ -56,6 +66,9 @@ public class InformationComitActivity extends BaseBusActivity {
     public final int ACTIVITY_MORE_MESSAGE = 169;
     List<DafalutUserRoom> list;
     int position = -1;
+    Socket socket;
+    Protocal protocal;
+    public boolean isdeploy = false;
 
     private Handler handler = new Handler(new Handler.Callback() {
         @Override
@@ -63,12 +76,28 @@ public class InformationComitActivity extends BaseBusActivity {
             switch (msg.what) {
                 case StatisConstans.CONFIG_REGULAR:
                     dataServerBean = (DataServerBean) msg.obj;
+                    ThreadPoolUtils threadPoolUtils = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 1);
+                    threadPoolUtils.execute(new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            request(ip, port);
+                        }
+                    }));
+
                     break;
                 case StatisConstans.MSG_RECEIVED_REGULAR:
                     ImageBean imageBean = (ImageBean) msg.obj;
                     ToastUtil.show(InformationComitActivity.this, imageBean.getSuccess());
                     Intent intent = new Intent(InformationComitActivity.this, MainActivity.class);
                     startActivity(intent);
+                    break;
+                case StatisConstans.MSG_ENABLED_SUCCESSFUL:
+                    isdeploy = true;
+                    ToastUtil.show(InformationComitActivity.this, "激活配置档成功");
+                    break;
+                case StatisConstans.MSG_ENABLED_FAILING:
+                    isdeploy = false;
+                    ToastUtil.show(InformationComitActivity.this, "激活配置档失败");
                     break;
             }
             return false;
@@ -89,9 +118,14 @@ public class InformationComitActivity extends BaseBusActivity {
         btnChooseRoom.setOnClickListener(this);
         btnQrNext.setOnClickListener(this);
         if (getIntent().getExtras() != null) {
-            deviceInfoBean = (DeviceInfoBean) getIntent().getExtras().getSerializable("device_info");
+            Bundle bundle = getIntent().getExtras();
+            deviceInfoBean = (DeviceInfoBean) bundle.getSerializable("device_info");
+            server_number = bundle.getString("server_number");
+            mac = bundle.getString("mac");
+            ip = bundle.getString("ip");
             tvUnitType.setText(deviceInfoBean.getDeviceInfo().getDevice_type());
             tvManufacturingDate.setText(deviceInfoBean.getDeviceInfo().getDevice_shipmenttime());
+
         }
         try {
             DataServerConfigRequest dataServerConfigRequest = new DataServerConfigRequest(sharedPreferencesDB, handler, InformationComitActivity.this);
@@ -193,13 +227,16 @@ public class InformationComitActivity extends BaseBusActivity {
         }
     }
 
+
     //验证信息是否通过
     private void confirmation() {
         String name = etUsername.getText().toString().trim();
         String address = etFullAddress.getText().toString().trim();
         String stroe = btStroe.getText().toString().trim();
         String room = btnChooseRoom.getText().toString().trim();
-        if (TextUtils.isEmpty(name)) {
+        if (!isdeploy) {
+            ToastUtil.show(this, "请重新激活配置档!");
+        } else if (TextUtils.isEmpty(name)) {
             ToastUtil.show(this, "用户姓名不能为空!");
             return;
         } else if (TextUtils.isEmpty(stroe)) {
@@ -217,6 +254,39 @@ public class InformationComitActivity extends BaseBusActivity {
             receiveUserDeviceInfoRequest.setBuyAddress(provinceChoise + "省", cityChoise + "市", areaChoise, stroe);
             receiveUserDeviceInfoRequest.setinstallAddress(provinceSite + "省", citySite + "市", areaSite, address);
             receiveUserDeviceInfoRequest.requestCode();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        try {
+            if (socket != null) {
+                socket.close();
+                socket = null;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        super.onDestroy();
+    }
+
+    public void request(String host, int location) {
+        try {
+            // 1.连接服务器
+            socket = new Socket(host, location);
+            Log.d("ConnectionManager", "AbsClient*****已经建立连接");
+            protocal = new Protocal();
+//            ThreadPoolUtils threadPoolUtils = new ThreadPoolUtils().execute();
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    ScoketOFFeON.receMessage(socket, protocal, handler);
+                }
+            }).start();
+            ScoketOFFeON.sendMessage(socket, protocal, dataServerBean, server_number, mac);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
