@@ -1,5 +1,6 @@
 package com.himmiractivity.liuxing_scoket;
 
+import android.content.Context;
 import android.os.Handler;
 import android.util.Log;
 
@@ -46,6 +47,16 @@ public class Protocal {
 //        }
     }
 
+    //风量
+    public void sendBlowingRate(OutputStream out, String mac, int volum) throws Exception {
+        Log.d("ConnectionManager", "AbsClient===in" + volum);
+        out.write(Protocol.adjustAirVolum(mac, volum));
+        out.flush();
+//        if (null != out) {
+//            out.close();
+//        }
+    }
+
     /********
      * 发送查询指令
      ***************************************************/
@@ -64,6 +75,30 @@ public class Protocal {
     public void sendTimingRequest(OutputStream out, String mac) throws Exception {
         Log.d("ConnectionManager", "AbsClient===in" + mac);
         out.write(Protocol.timingPlayload(mac));
+        out.flush();
+//        if (null != out) {
+//            out.close();
+//        }
+    }
+
+    /********
+     * 发送定时指令
+     ***************************************************/
+    public void sendTimingCommandRequest(OutputStream out, String mac, int timingMode, boolean t1Switch, boolean t2Switch, boolean t3Switch, int t1start, int t1Stop, int t2start, int t2Stop, int t3start, int t3Stop) throws Exception {
+        Log.d("ConnectionManager", "AbsClient===in" + mac);
+        out.write(Protocol.TimingCommand(mac, timingMode, t1Switch, t2Switch, t3Switch, t1start, t1Stop, t2start, t2Stop, t3start, t3Stop));
+        out.flush();
+//        if (null != out) {
+//            out.close();
+//        }
+    }
+
+    /********
+     * 发送智能指令
+     ***************************************************/
+    public void sendNoopsycheMode(OutputStream out, String mac, boolean muteMode, boolean coMode, boolean pmMode, int coNumber, int pmNumber) throws Exception {
+        Log.d("ConnectionManager", "AbsClient===in" + mac);
+        out.write(Protocol.noopsycheMode(mac, muteMode, coMode, pmMode, coNumber, pmNumber));
         out.flush();
 //        if (null != out) {
 //            out.close();

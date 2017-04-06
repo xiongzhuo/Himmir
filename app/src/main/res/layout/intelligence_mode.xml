@@ -25,7 +25,7 @@
             android:paddingLeft="40dp">
 
             <CheckBox
-                android:id="@+id/checkBox"
+                android:id="@+id/cb_mute"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:button="@drawable/cb_mode_sel"
@@ -40,7 +40,7 @@
                 android:background="@color/bar_gray"></View>
 
             <CheckBox
-                android:id="@+id/checkBox2"
+                android:id="@+id/cb_co"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:button="@drawable/cb_mode_sel"
@@ -54,7 +54,7 @@
                 android:background="@color/bar_gray"></View>
 
             <CheckBox
-                android:id="@+id/checkBox3"
+                android:id="@+id/cb_dust"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:button="@drawable/cb_mode_sel"

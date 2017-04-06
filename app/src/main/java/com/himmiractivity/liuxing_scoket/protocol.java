@@ -1,5 +1,6 @@
 package com.himmiractivity.liuxing_scoket;
 
+import android.content.Context;
 import android.os.Handler;
 import android.util.Log;
 
@@ -24,7 +25,6 @@ import okio.*;
 
 
 public class Protocol {
-
     public static interface MsgType {
         public static final byte DEV_SERVER_CMD_LOGIN = (byte) 0;
         public static final byte SERVER_DEV_ACK_LOGIN = (byte) 1;
@@ -207,17 +207,6 @@ public class Protocol {
         }
     }
 
-    //取开风量payload
-    public static byte[] getVolums(boolean isOn) {
-        if (isOn == true) {
-            byte[] rett = {0x10, 0x01};
-            return rett;
-        } else {
-            byte[] retf = {0x10, 0x00};
-            return retf;
-        }
-    }
-
     //取激活payload
     public static byte[] getSensitize(DataServerBean dataServerBean, String seriesNumber, String mac) throws Exception {
         ByteBuffer buffer = ByteBuffer.allocate(1024);
@@ -377,18 +366,111 @@ public class Protocol {
     public static byte[] timingPlayload(String mac) {
 
         ByteBuffer buffer = ByteBuffer.allocate(1024);
-        byte[] macBytesTemp = DigitalTrans.StringToAsciiBytes(mac);
-        byte[] macBytes = new byte[12];
-        int macLen = macBytesTemp.length;
-        System.arraycopy(macBytesTemp, 0, macBytes, 0, macLen);
+//        byte[] macBytesTemp = DigitalTrans.StringToAsciiBytes(mac);
+//        byte[] macBytes = new byte[12];
+//        int macLen = macBytesTemp.length;
+//        System.arraycopy(macBytesTemp, 0, macBytes, 0, macLen);
         byte[] keyBytes = new byte[]{0x01};
-        buffer.put(macBytes);
+//        buffer.put(macBytes);
         buffer.put(keyBytes);
         buffer.flip();
         byte[] plBytes = new byte[buffer.remaining()];
         buffer.get(plBytes);
         System.out.println(DigitalTrans.byte2hex(plBytes));
-        byte[] sendBytes = Packet(Packe_Def.ptype_App_Server_Cmd_Pub, (byte) MsgType.APP_SERVER_CMD_CONTROL, plBytes);
+        byte[] sendBytes = Packet_Mac(Packe_Def.ptype_App_Server_Cmd_Pub, (byte) MsgType.APP_SERVER_CMD_CONTROL, mac, plBytes);
+        return sendBytes;
+    }
+
+    //智能指令
+    public static byte[] noopsycheMode(String mac, boolean muteMode, boolean coMode, boolean pmMode, int coNumber, int pmNumber) {
+        byte tb = (byte) 0x00;
+        //定时器开关
+        if (muteMode) {
+            tb |= (byte) 0x01;
+        }
+        if (coMode) {
+            tb |= (byte) (0x01 << 1);
+        }
+        if (pmMode) {
+            tb |= (byte) (0x01 << 2);
+        }
+        ByteBuffer buffer = ByteBuffer.allocate(1024);
+//        buffer.put(macBytes);
+        buffer.put((byte) (0x20));
+        buffer.put(tb);
+        buffer.put((byte) 0x61);
+        byte[] coBytes = new byte[2];
+        byte[] coTemp = DigitalTrans.unsignedShortToByte2_Litte(coNumber);
+        int coLen = coTemp.length;
+        System.arraycopy(coTemp, 0, coBytes, 0, coLen);
+        buffer.put(coBytes);
+        buffer.put((byte) 0x63);
+        byte[] pmBytes = new byte[2];
+        byte[] pmTemp = DigitalTrans.unsignedShortToByte2_Litte(pmNumber);
+        int pmLen = pmTemp.length;
+        System.arraycopy(pmTemp, 0, pmBytes, 0, pmLen);
+        buffer.put(pmBytes);
+        buffer.flip();
+        byte[] plBytes = new byte[buffer.remaining()];
+        buffer.get(plBytes);
+        byte[] sendBytes = Packet_Mac(Packe_Def.ptype_App_Server_Cmd_Pub, (byte) MsgType.APP_SERVER_CMD_CONTROL, mac, plBytes);
+        return sendBytes;
+    }
+
+    //定时指令
+    public static byte[] TimingCommand(String mac, int timingMode, boolean t1Switch, boolean t2Switch, boolean t3Switch, int t1start, int t1Stop, int t2start, int t2Stop, int t3start, int t3Stop) {
+//        byte[] macBytesTemp = DigitalTrans.StringToAsciiBytes(mac);
+//        byte[] macBytes = new byte[12];
+//        int macLen = macBytesTemp.length;
+//        System.arraycopy(macBytesTemp, 0, macBytes, 0, macLen);
+        byte tb = (byte) 0x00;
+        //mode设定
+        switch (timingMode) {
+            case 1:
+                tb |= (byte) 0x01;
+                break;
+            case 2:
+                tb |= (byte) 0x01 << 1;
+                break;
+            case 4:
+                tb |= (byte) 0x01 << 2;
+                break;
+        }
+        //定时器开关
+        if (t1Switch) {
+            tb |= (byte) 0x01 << 3;
+        }
+        if (t2Switch) {
+            tb |= (byte) (0x01 << 4);
+        }
+        if (t3Switch) {
+            tb |= (byte) (0x01 << 5);
+        }
+        ByteBuffer buffer = ByteBuffer.allocate(1024);
+//        buffer.put(macBytes);
+        buffer.put((byte) (0x50));
+        buffer.put(tb);
+        buffer.put((byte) 0x51);
+        buffer.put((byte) (t1start / 100));
+        buffer.put((byte) (t1start % 100));
+        buffer.put((byte) (t1Stop / 100));
+        buffer.put((byte) (t1Stop % 100));
+        buffer.put((byte) 0x52);
+        buffer.put((byte) (t2start / 100));
+        buffer.put((byte) (t2start % 100));
+        buffer.put((byte) (t2Stop / 100));
+        buffer.put((byte) (t2Stop % 100));
+        buffer.put((byte) 0x53);
+        buffer.put((byte) (t3start / 100));
+        buffer.put((byte) (t3start % 100));
+        buffer.put((byte) (t3Stop / 100));
+        buffer.put((byte) (t3Stop % 100));
+        buffer.flip();
+        byte[] plBytes = new byte[buffer.remaining()];
+        buffer.get(plBytes);
+        byte[] sendBytes = Packet_Mac(Packe_Def.ptype_App_Server_Cmd_Pub, (byte) MsgType.APP_SERVER_CMD_CONTROL, mac, plBytes);
+
+
         return sendBytes;
     }
 //    public static byte[] timingPlayload(String mac) {
@@ -405,23 +487,24 @@ public class Protocol {
 //    }
 
     //调整风量plaload
-    public static byte[] adjustAirVolum(String mac, short volum) {
+    public static byte[] adjustAirVolum(String mac, int volum) {
 
         ByteBuffer buffer = ByteBuffer.allocate(1024);
-        byte[] macBytesTemp = DigitalTrans.StringToAsciiBytes(mac);
-        byte[] macBytes = new byte[12];
-        int macLen = macBytesTemp.length;
-        System.arraycopy(macBytesTemp, 0, macBytes, 0, macLen);
+//        byte[] macBytesTemp = DigitalTrans.StringToAsciiBytes(mac);
+//        byte[] macBytes = new byte[12];
+//        int macLen = macBytesTemp.length;
+//        System.arraycopy(macBytesTemp, 0, macBytes, 0, macLen);
         byte[] keyBytes = new byte[]{0x31};
         byte[] volumBytes = new byte[]{(byte) volum};
-        buffer.put(macBytes);
+//        buffer.put(macBytes);
         buffer.put(keyBytes);
         buffer.put(volumBytes);
         buffer.flip();
         byte[] plBytes = new byte[buffer.remaining()];
         buffer.get(plBytes);
         System.out.println(DigitalTrans.byte2hex(plBytes));
-        return plBytes;
+        byte[] sendBytes = Packet_Mac(Packe_Def.ptype_App_Server_Cmd_Pub, (byte) MsgType.APP_SERVER_CMD_CONTROL, mac, plBytes);
+        return sendBytes;
     }
 
     //查询数据包
@@ -507,12 +590,69 @@ public class Protocol {
     public static byte[] Packet(short packTpe, byte cmdType, byte[] payLoadSrc) {
         //数据组包--时间戳  命令类型  playload
         ByteBuffer buffer = ByteBuffer.allocate(1024);
-//        long time_stamp = System.currentTimeMillis();
-        long time_stamp = 123456;
+        long time_stamp = System.currentTimeMillis();
+        //long time_stamp = 123456;
         byte[] timeStampBytes = DigitalTrans.unsignedIntToByte4_Litte(time_stamp);
         byte[] cmdBytes = {cmdType};
         buffer.put(timeStampBytes);
         buffer.put(cmdBytes);
+        buffer.put(payLoadSrc);
+
+        //取校验码
+        buffer.flip();
+        int len = buffer.remaining();
+        byte[] tmpBytes = new byte[len];
+        buffer.get(tmpBytes);
+        byte xorByte = xor(tmpBytes);
+
+        //存校验码
+        buffer.clear();
+        buffer.put(tmpBytes);
+        buffer.put(xorByte);
+
+        //取数据加密码
+        buffer.flip();
+        byte[] inEncryptBytes = new byte[buffer.remaining()];
+        buffer.get(inEncryptBytes);
+        byte[] encrypOutBytes = encrypt_CRT(Key_IV.Public_Key, Key_IV.Public_IV, inEncryptBytes);
+
+        //取数据加密数据长度
+        int len1 = encrypOutBytes.length;
+        //最后组包
+        ByteBuffer Endbuffer = ByteBuffer.allocate(1024);
+        byte[] cmdTypeBytes = DigitalTrans.unsignedShortToByte2_Litte(packTpe);
+        byte[] lenBytes = DigitalTrans.unsignedShortToByte2_Litte(len1);
+        Endbuffer.put(cmdTypeBytes);
+        Endbuffer.put(lenBytes);
+        Endbuffer.put(encrypOutBytes);
+
+        //取完成处理的包
+        Endbuffer.flip();
+        byte[] SendBytes = new byte[Endbuffer.remaining()];
+        Endbuffer.get(SendBytes);
+        Log.d("ConnectionManager", DigitalTrans.byte2hex(SendBytes));
+        return SendBytes;
+
+    }
+
+    //数据打包
+    public static byte[] Packet_Mac(short packTpe, byte cmdType, String mac, byte[] payLoadSrc) {
+        //get mac bytes
+        byte[] macBytes = new byte[12];
+        byte[] macBytesTemp = DigitalTrans.StringToAsciiBytes(mac);
+        int macLen = macBytesTemp.length;
+        System.arraycopy(macBytesTemp, 0, macBytes, 0, macLen);
+
+
+        //数据组包--时间戳  命令类型  playload
+        ByteBuffer buffer = ByteBuffer.allocate(1024);
+        long time_stamp = System.currentTimeMillis();
+        //long time_stamp = 123456;
+        byte[] timeStampBytes = DigitalTrans.unsignedIntToByte4_Litte(time_stamp);
+        byte[] cmdBytes = {cmdType};
+        buffer.put(timeStampBytes);
+        buffer.put(cmdBytes);
+        buffer.put(macBytes);
         buffer.put(payLoadSrc);
 
         //取校验码
@@ -832,10 +972,8 @@ public class Protocol {
                 Log.d("ConnectionManager", "校时" + isTiming);
                 if (isTiming == (byte) 1) {
                     handler.sendEmptyMessage(StatisConstans.MSG_ENABLED_SUCCESSFUL);
-                    Log.d("ConnectionManager", "校时成功");
                 } else {
                     handler.sendEmptyMessage(StatisConstans.MSG_ENABLED_FAILING);
-                    Log.d("ConnectionManager", "校时失败");
                 }
                 break;
         }
@@ -892,12 +1030,15 @@ public class Protocol {
                         case 1:
                             pmAllData.setExhaustMode("单新风");
                             System.out.println("单新风");
+                            break;
                         case 2:
                             pmAllData.setExhaustMode("单排风");
                             System.out.println("单排风");
+                            break;
                         case 3:
                             pmAllData.setExhaustMode("新排风");
                             System.out.println("新排风");
+                            break;
                     }
                     System.out.println("\r\n");
                     break;
@@ -1066,75 +1207,75 @@ public class Protocol {
                 case PayloardKey.D_TIME_MODE: //定时模式
                     pos++;
                     if (((byte) (payLoadBody[pos]) & (byte) (0x01)) != 0) {
-                        pmAllData.setTimeMode("每天");
+                        pmAllData.setTimeMode(1);
                         System.out.println("定时模式1开启:每天");
                         System.out.println("\r\n");
                     }
                     if (((byte) (payLoadBody[pos]) & (byte) (0x02)) != 0) {
-                        pmAllData.setTimeMode("仅一次");
+                        pmAllData.setTimeMode(2);
                         System.out.println("定时模式2开启:仅一次");
                         System.out.println("\r\n");
                     }
                     if (((byte) (payLoadBody[pos]) & (byte) (0x04)) != 0) {
-                        pmAllData.setTimeMode("工作日");
+                        pmAllData.setTimeMode(4);
                         System.out.println("定时模式3开启:工作日");
                         System.out.println("\r\n");
                     }
 
                     if (((byte) (payLoadBody[pos]) & (byte) (0x08)) != 0) {
-                        pmAllData.setTimerOneState("开");
+                        pmAllData.setTimerOneState(true);
                         System.out.println("定时器1状态:开");
                         System.out.println("\r\n");
                     }
                     if (((byte) (payLoadBody[pos]) & (byte) (0x10)) != 0) {
-                        pmAllData.setTimerTwoState("开");
+                        pmAllData.setTimerTwoState(true);
                         System.out.println("定时器2状态:开");
                         System.out.println("\r\n");
                     }
                     if (((byte) (payLoadBody[pos]) & (byte) (0x20)) != 0) {
-                        pmAllData.setTimerThreeState("开");
+                        pmAllData.setTimerThreeState(true);
                         System.out.println("定时器3状态:开");
                         System.out.println("\r\n");
                     }
-
+                    break;
                 case PayloardKey.D_TIMER1: //定时器1
-                    pos++;
+                    pos+=1;
                     System.out.println("定时器1:");
-                    pmAllData.setTimerOneStartHour(payLoadBody[pos]);
-                    System.out.printf("开始时间小时值:%d", payLoadBody[pos]);
-                    pmAllData.setTimerOneStartMin(payLoadBody[pos]);
-                    System.out.printf("开始时间分钟值:%d", payLoadBody[pos + 1]);
-                    pmAllData.setTimerOneEndHour(payLoadBody[pos]);
-                    System.out.printf("结束时间小时值:%d", payLoadBody[pos + 2]);
-                    pmAllData.setTimerOneEndMin(payLoadBody[pos]);
-                    System.out.printf("结束时间分钟值:%d", payLoadBody[pos + 3]);
+//                    pmAllData.setTimerOneStartHour(payLoadBody[pos + 1]);
+                    System.out.printf("开始时间小时值:%d", (byte)payLoadBody[pos]);
+//                    pmAllData.setTimerOneStartMin(payLoadBody[pos + 2]);
+                    System.out.printf("开始时间分钟值:%d",(byte) payLoadBody[pos + 1]);
+//                    pmAllData.setTimerOneEndHour(payLoadBody[pos + 3]);
+                    System.out.printf("结束时间小时值:%d", (byte)payLoadBody[pos + 2]);
+//                    pmAllData.setTimerOneEndMin(payLoadBody[pos + 4]);
+                    System.out.printf("结束时间分钟值:%d",(byte) payLoadBody[pos + 3]);
                     System.out.println("\r\n");
                     pos += 3;
-
+                    break;
                 case PayloardKey.D_TIMER2: //定时器2
                     pos++;
                     System.out.println("定时器2:");
-                    pmAllData.setTimerTwoStartHour(payLoadBody[pos]);
-                    System.out.printf("开始时间小时值:%d", payLoadBody[pos]);
-                    pmAllData.setTimerTwoStartMin(payLoadBody[pos + 1]);
-                    System.out.printf("开始时间分钟值:%d", payLoadBody[pos + 1]);
-                    pmAllData.setTimerTwoEndHour(payLoadBody[pos + 2]);
-                    System.out.printf("结束时间小时值:%d", payLoadBody[pos + 2]);
-                    pmAllData.setTimerTwoEndMin(payLoadBody[pos + 3]);
-                    System.out.printf("结束时间分钟值:%d", payLoadBody[pos + 3]);
+//                    pmAllData.setTimerTwoStartHour(payLoadBody[pos + 1]);
+                    System.out.printf("开始时间小时值:%d", (byte)payLoadBody[pos]);
+//                    pmAllData.setTimerTwoStartMin(payLoadBody[pos + 2]);
+                    System.out.printf("开始时间分钟值:%d", (byte)payLoadBody[pos + 1]);
+                    pmAllData.setTimerTwoEndHour((byte)payLoadBody[pos + 3]);
+                    System.out.printf("结束时间小时值:%d", (byte)payLoadBody[pos + 2]);
+                    pmAllData.setTimerTwoEndMin(payLoadBody[pos + 4]);
+                    System.out.printf("结束时间分钟值:%d", (byte)payLoadBody[pos + 3]);
                     System.out.println("\r\n");
                     pos += 3;
-
+                    break;
                 case PayloardKey.D_TIMER3: //定时器3
                     pos++;
                     System.out.println("定时器3:");
-                    pmAllData.setTimerThreeStartHour(payLoadBody[pos]);
+                    pmAllData.setTimerThreeStartHour(payLoadBody[pos + 1]);
                     System.out.printf("开始时间小时值:%d", payLoadBody[pos]);
-                    pmAllData.setTimerThreeStartMin(payLoadBody[pos + 1]);
+                    pmAllData.setTimerThreeStartMin(payLoadBody[pos + 2]);
                     System.out.printf("开始时间分钟值:%d", payLoadBody[pos + 1]);
-                    pmAllData.setTimerThreeEndHour(payLoadBody[pos + 2]);
+                    pmAllData.setTimerThreeEndHour(payLoadBody[pos + 3]);
                     System.out.printf("结束时间小时值:%d", payLoadBody[pos + 2]);
-                    pmAllData.setTimerThreeEndMin(payLoadBody[pos + 3]);
+                    pmAllData.setTimerThreeEndMin(payLoadBody[pos + 4]);
                     System.out.printf("结束时间分钟值:%d", payLoadBody[pos + 3]);
                     System.out.println("\r\n");
                     pos += 3;
@@ -1176,7 +1317,7 @@ public class Protocol {
                     byte[] pmBytes = new byte[2];
                     System.arraycopy(payLoadBody, pos, pmBytes, 0, 2);
                     pmAllData.setPmAdj(DigitalTrans.byte2ToUnsignedShort(pmBytes));
-                    System.out.printf("PM调节值:%d", DigitalTrans.byte2ToUnsignedShort(pmBytes));
+                    System.out.printf("PM调节值:%d", (int)(DigitalTrans.byte2ToUnsignedShort(pmBytes)&0xffff));
                     System.out.println("\r\n");
                     pos++;
                     break;
@@ -1251,6 +1392,7 @@ public class Protocol {
                     System.out.printf("室内湿度:%d", DigitalTrans.byte2ToUnsignedShort(inRoomHumPMBytes));
                     System.out.println("\r\n");
                     pos++;
+                    break;
                 case PayloardKey.D_SYSTEM_CLOCK: //系统时间校准
                     pos++;
                     byte[] stBytes = new byte[2];

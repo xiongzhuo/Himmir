@@ -5,6 +5,7 @@
     android:background="@color/white"
     android:orientation="vertical">
 
+
     <include
         android:id="@+id/title_bar"
         layout="@layout/title_top_view"
@@ -12,11 +13,13 @@
         android:layout_height="50dp" />
 
     <LinearLayout
+        android:id="@+id/ll_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:background="@color/ll_gray"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <RadioGroup
             android:layout_width="match_parent"
@@ -25,10 +28,12 @@
             android:paddingLeft="40dp">
 
             <RadioButton
+                android:id="@+id/rb_allday"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:button="@drawable/cb_mode_sel"
+                android:checked="true"
                 android:padding="15dp"
                 android:text="每天"
                 android:textColor="@color/black" />
@@ -40,7 +45,7 @@
                 android:background="@color/bar_gray"></View>
 
             <RadioButton
-                android:id="@+id/checkBox"
+                android:id="@+id/rb_once"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
@@ -57,7 +62,7 @@
                 android:background="@color/gray"></View>
 
             <RadioButton
-                android:id="@+id/radioButton"
+                android:id="@+id/rb_weekday"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
@@ -165,4 +170,11 @@
                 android:src="@drawable/set_time" />
         </LinearLayout>
     </LinearLayout>
+
+    <com.himmiractivity.circular_progress_bar.CircularProgressBar
+        android:id="@+id/progress"
+        android:layout_width="50dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:visibility="visible" />
 </LinearLayout>

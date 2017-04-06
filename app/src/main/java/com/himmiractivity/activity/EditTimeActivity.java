@@ -24,7 +24,7 @@ import activity.hamir.com.himmir.R;
 import butterknife.BindView;
 
 /**
- * 设备管理
+ * 编辑时间
  */
 
 public class EditTimeActivity extends BaseBusActivity {
@@ -136,7 +136,7 @@ public class EditTimeActivity extends BaseBusActivity {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                String str = hour.getCurrentItem() + ":" + mins.getCurrentItem();
+                String str = String.format("%02d", hour.getCurrentItem()) + ":" + String.format("%02d", mins.getCurrentItem());
                 if (offandon.equals("off")) {
                     tvOffTime.setText(str);
                 } else {

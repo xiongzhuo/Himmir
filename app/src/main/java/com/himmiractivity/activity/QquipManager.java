@@ -1,7 +1,10 @@
 package com.himmiractivity.activity;
 
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -62,7 +65,6 @@ public class QquipManager extends BaseBusActivity implements AlxRefreshLoadMoreR
     Protocal protocal;
     Socket socket;
     String mac;
-    DialogView dialogView;
 
     private Handler mHandler = new Handler() {
         @Override
@@ -75,18 +77,6 @@ public class QquipManager extends BaseBusActivity implements AlxRefreshLoadMoreR
                         alertDialog.dismiss();
                     }
                     break;
-                case StatisConstans.MSG_ENABLED_SUCCESSFUL:
-                    if (null != dialogView) {
-                        dialogView.cancel();
-                    }
-                    ToastUtil.show(QquipManager.this, "校时成功");
-                    break;
-                case StatisConstans.MSG_ENABLED_FAILING:
-                    if (null != dialogView) {
-                        dialogView.cancel();
-                    }
-                    ToastUtil.show(QquipManager.this, "校时失败");
-                    break;
                 case StatisConstans.MSG_MODIFY_NAME:
                     ImageBean mostr = (ImageBean) msg.obj;
                     if (deletePosition != -1) {
@@ -97,6 +87,7 @@ public class QquipManager extends BaseBusActivity implements AlxRefreshLoadMoreR
                 //成功
                 case StatisConstans.MSG_QQUIP:
                     allUserDerviceBaen = (AllUserDerviceBaen) msg.obj;
+                    mac = allUserDerviceBaen.getSpace().get(0).getDevice().getDevice_mac();
 //                    mRecyclerView.setLayoutManager(new LinearLayoutManager(QquipManager.this));
                     rvcAdapter = new RvcAdapter(allUserDerviceBaen.getSpace(), R.layout.list_item, true);
                     rvcAdapter.setPullLoadMoreEnable(false);
@@ -126,6 +117,7 @@ public class QquipManager extends BaseBusActivity implements AlxRefreshLoadMoreR
     protected void initView(Bundle savedInstanceState) {
         setMidTxt("设备管理");
         initTitleBar();
+        registerBoradcastReceiver();
         ThreadPoolUtils threadPoolUtils = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 1);
         threadPoolUtils.execute(new Thread(new Runnable() {
             @Override
@@ -141,10 +133,35 @@ public class QquipManager extends BaseBusActivity implements AlxRefreshLoadMoreR
         initRechclerView();
     }
 
+    private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (action.equalsIgnoreCase(StatisConstans.BROADCAST_HONGREN_SUCC)) {
+                ToastUtil.show(QquipManager.this, "编辑成功");
+            } else if (action.equalsIgnoreCase(StatisConstans.BROADCAST_HONGREN_KILL)) {
+                ToastUtil.show(QquipManager.this, "编辑失败");
+            }
+        }
+    };
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        QquipManager.this.unregisterReceiver(mBroadcastReceiver);
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
         initRechclerView();
+    }
+
+    private void registerBoradcastReceiver() {
+        IntentFilter filter = new IntentFilter(
+                StatisConstans.BROADCAST_HONGREN_SUCC);
+        filter.addAction(StatisConstans.BROADCAST_HONGREN_KILL);
+        QquipManager.this.registerReceiver(mBroadcastReceiver, filter);
     }
 
     @Override
@@ -163,24 +180,22 @@ public class QquipManager extends BaseBusActivity implements AlxRefreshLoadMoreR
                 break;
             case R.id.tv_pick_phone:
 //                startActivity(new Intent(this, EditTimeActivity.class));
-                mac = allUserDerviceBaen.getSpace().get(deletePosition).getDevice().getDevice_mac();
-                if (null == dialogView) {
-                    dialogView = new DialogView(QquipManager.this);
-                    dialogView.show();
-                    dialogView.setMessage("加载中");
-                }
                 ScoketOFFeON.sendTimingMessage(socket, protocal, mac);
                 alertDialog.dismiss();
                 break;
             case R.id.tv_pick_zone:
-                startActivity(new Intent(this, FixedTimeActivity.class));
+                Intent intent = new Intent(this, FixedTimeActivity.class);
+                intent.putExtra("mac", mac);
+                startActivity(intent);
                 alertDialog.dismiss();
                 break;
             case R.id.tv_cancel:
                 alertDialog.dismiss();
                 break;
             case R.id.tv_mode:
-                startActivity(new Intent(this, IntelligenceModeActivity.class));
+                Intent intentMode = new Intent(this, IntelligenceModeActivity.class);
+                intentMode.putExtra("mac", mac);
+                startActivity(intentMode);
                 alertDialog.dismiss();
                 break;
             case R.id.tv_rename:
@@ -368,13 +383,14 @@ public class QquipManager extends BaseBusActivity implements AlxRefreshLoadMoreR
             socket = SocketSingle.getInstance(host, location);
             Log.d("ConnectionManager", "AbsClient*****已经建立连接");
             protocal = Protocal.getInstance();
-            ThreadPoolUtils threadPoolUtils = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 1);
-            threadPoolUtils.execute(new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    ScoketOFFeON.receMessage(socket, protocal, mHandler);
-                }
-            }));
+//            ThreadPoolUtils threadPoolUtils = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 1);
+//            threadPoolUtils.execute(new Thread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    ScoketOFFeON.receMessage(socket, protocal, mHandler);
+//                }
+//            }
+//            ));
         } catch (Exception e) {
             e.printStackTrace();
         }

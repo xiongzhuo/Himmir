@@ -49,7 +49,6 @@ import com.himmiractivity.request.AllDeviceInfoRequest;
 import com.himmiractivity.request.DataServerConfigRequest;
 import com.himmiractivity.request.LodingRequest;
 import com.himmiractivity.util.ThreadPoolUtils;
-import com.himmiractivity.view.DialogView;
 import com.himmiractivity.view.ListPopupWindow;
 import com.himmiractivity.view.PercentView;
 import com.himmiractivity.view.SelectorImageView;
@@ -111,29 +110,61 @@ public class MainActivity extends BaseBusActivity {
     String mac;
     AllUserDerviceBaen allUserDerviceBaen;
     PmAllData pmAllData;
+    int hzNumeber;
+    boolean isRevise = false;
+    boolean isOff = true;
 
     private Handler handler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
             switch (msg.what) {
+                case StatisConstans.MSG_ENABLED_SUCCESSFUL:
+                    // 发送 一个无序广播
+                    MainActivity.this.sendBroadcast(new Intent(StatisConstans.BROADCAST_HONGREN_SUCC));
+                    break;
+                case StatisConstans.MSG_ENABLED_FAILING:
+                    // 发送 一个无序广播
+                    MainActivity.this.sendBroadcast(new Intent(StatisConstans.BROADCAST_HONGREN_KILL));
+                    break;
                 case StatisConstans.MSG_QUEST_SERVER:
                     pmAllData = (PmAllData) msg.obj;
-                    if (pmAllData.getoNstate().equals("开机")) {
-                        ivOffOnController.toggle(true);
-                    } else {
-                        ivOffOnController.toggle(false);
+                    Intent intentData = new Intent();
+                    intentData.setAction(StatisConstans.BROADCAST_HONGREN_DATA);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("pm_all_data", pmAllData);
+                    // 要发送的内容
+                    intentData.putExtras(bundle);
+                    // 发送 一个无序广播
+                    MainActivity.this.sendBroadcast(intentData);
+                    if (isOff) {
+                        if (!TextUtils.isEmpty(pmAllData.getoNstate()) && pmAllData.getoNstate().equals("开机")) {
+                            ivOffOnController.toggle(true);
+                        } else {
+                            ivOffOnController.toggle(false);
+                        }
+                        isOff = false;
                     }
                     aimPercent = ((double) pmAllData.getIndoorPmThickness() / 225d) * 100d;
                     double sensorIndoorTemp = (double) pmAllData.getSensorIndoorTemp() / 10;
                     double sensorOutdoorTemp = (double) pmAllData.getSensorOutdoorTemp() / 10;
                     percentView.setAngel(aimPercent);
                     percentView.setRankText("PM2.5室内", pmAllData.getIndoorPmThickness() + "");
-                    tvHzValus.setText(pmAllData.getFanFreq() + "");
+
+                    if (isRevise) {
+                        if (hzNumeber == pmAllData.getFanFreq()) {
+                            isRevise = false;
+                        } else {
+                            ScoketOFFeON.sendBlowingRate(socket, protocal, mac, hzNumeber);
+                        }
+                    } else {
+                        hzNumeber = pmAllData.getFanFreq();
+                        tvHzValus.setText(pmAllData.getFanFreq() + "");
+                    }
+
                     tvCco2.setText(pmAllData.getCo2Thickness() + "");
                     tvTempIndoor.setText(sensorIndoorTemp + "℃");
                     tvTempOutSide.setText(sensorOutdoorTemp + "℃");
                     tvSpeed.setText(pmAllData.getBlowingRate() + "");
-                    tvHzValus.setText(pmAllData.getFanFreq() + "");
                     break;
                 //成功
                 case StatisConstans.MSG_RECEIVED_REGULAR:
@@ -148,13 +179,21 @@ public class MainActivity extends BaseBusActivity {
                     threadPoolUtils.execute(new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            request(dataServerBean.getDataServerConfig().getPrimary_server_address(), dataServerBean.getDataServerConfig().getPrimary_server_port());
+                            while (true) {
+                                try {
+                                    request(dataServerBean.getDataServerConfig().getPrimary_server_address(), dataServerBean.getDataServerConfig().getPrimary_server_port());
+                                    Thread.sleep(5000);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                            }
                         }
                     }));
                     break;
                 case StatisConstans.MSG_QQUIP:
                     allUserDerviceBaen = (AllUserDerviceBaen) msg.obj;
                     mac = allUserDerviceBaen.getSpace().get(0).getDevice().getDevice_mac();
+                    Log.d("mac", mac);
                     if (allUserDerviceBaen.getSpace() != null && allUserDerviceBaen.getSpace().size() > 0) {
                         space = allUserDerviceBaen.getSpace();
                         list = new ArrayList<>();
@@ -260,25 +299,39 @@ public class MainActivity extends BaseBusActivity {
                 }
                 break;
             case R.id.btn_speed_add:
-                if (!TextUtils.isEmpty(tvHzValus.getText().toString().trim())) {
+                String string = tvHzValus.getText().toString().trim();
+                if (!TextUtils.isEmpty(string) && !string.contains("-")) {
                     int hz = Integer.valueOf(tvHzValus.getText().toString().trim());
                     if (hz > 46) {
                         ToastUtils.show(MainActivity.this, "风量最大值", Toast.LENGTH_SHORT);
                         tvHzValus.setText("50");
                     } else {
-                        tvHzValus.setText((hz + 5) + "");
+                        hz = hz + 5;
+                        tvHzValus.setText(hz + "");
+                        isRevise = true;
+                        hzNumeber = hz;
+                        ScoketOFFeON.sendBlowingRate(socket, protocal, mac, hzNumeber);
                     }
+                } else {
+                    ToastUtils.show(MainActivity.this, "设备离线", Toast.LENGTH_SHORT);
                 }
                 break;
             case R.id.btn_speed_semll:
-                if (!TextUtils.isEmpty(tvHzValus.getText().toString().trim())) {
+                String str = tvHzValus.getText().toString().trim();
+                if (!TextUtils.isEmpty(str) && !str.contains("-")) {
                     int hz = Integer.valueOf(tvHzValus.getText().toString().trim());
                     if (hz < 14) {
                         ToastUtils.show(MainActivity.this, "风量最小值", Toast.LENGTH_SHORT);
                         tvHzValus.setText("10");
                     } else {
-                        tvHzValus.setText((hz - 5) + "");
+                        hz = hz - 5;
+                        tvHzValus.setText(hz + "");
+                        isRevise = true;
+                        hzNumeber = hz;
+                        ScoketOFFeON.sendBlowingRate(socket, protocal, mac, hzNumeber);
                     }
+                } else {
+                    ToastUtils.show(MainActivity.this, "设备离线", Toast.LENGTH_SHORT);
                 }
                 break;
             case R.id.iv_set:
@@ -466,16 +519,17 @@ public class MainActivity extends BaseBusActivity {
 
     @Override
     protected void onDestroy() {
-        sharedPreferencesDB.setString("ip", "");
-        sharedPreferencesDB.setString("port", "");
-        try {
-            if (socket != null) {
-                socket.close();
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        sharedPreferencesDB.setString("ip", "");
+//        sharedPreferencesDB.setString("port", "");
+//        try {
+//            if (socket != null) {
+//                socket.close();
+//                socket = null;
+//            }
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
         super.onDestroy();
     }
 

@@ -28,10 +28,10 @@ public class PmAllData implements Serializable {
     private int thawInv;//融冰间隔时间分钟
     private int dustwiperClearPeriod;//除尘器清洗周期小时
     private int dustwiperClearRemain;//除尘器清洗周期剩余时间小时
-    private String timeMode;//定时模式
-    private String timerOneState;//定时器一
-    private String timerTwoState;//定时器二
-    private String timerThreeState;//定时器三
+    private int timeMode;//定时模式 1每天2.即一次4.工作日
+    private boolean timerOneState;//定时器一
+    private boolean timerTwoState;//定时器二
+    private boolean timerThreeState;//定时器三
     private int timerOneStartHour;//定时器1开始时间小时值
     private int timerOneStartMin;//定时器1开始时间分钟值
     private int timerOneEndHour;//定时器1结束时间小时值
@@ -142,21 +142,22 @@ public class PmAllData implements Serializable {
         return dustwiperClearRemain;
     }
 
-    public String getTimeMode() {
+    public int getTimeMode() {
         return timeMode;
     }
 
-    public String getTimerOneState() {
+    public boolean isTimerOneState() {
         return timerOneState;
     }
 
-    public String getTimerTwoState() {
+    public boolean isTimerTwoState() {
         return timerTwoState;
     }
 
-    public String getTimerThreeState() {
+    public boolean isTimerThreeState() {
         return timerThreeState;
     }
+
 
     public int getTimerOneStartHour() {
         return timerOneStartHour;
@@ -351,21 +352,22 @@ public class PmAllData implements Serializable {
         this.dustwiperClearRemain = dustwiperClearRemain;
     }
 
-    public void setTimeMode(String timeMode) {
+    public void setTimeMode(int timeMode) {
         this.timeMode = timeMode;
     }
 
-    public void setTimerOneState(String timerOneState) {
+    public void setTimerOneState(boolean timerOneState) {
         this.timerOneState = timerOneState;
     }
 
-    public void setTimerTwoState(String timerTwoState) {
+    public void setTimerTwoState(boolean timerTwoState) {
         this.timerTwoState = timerTwoState;
     }
 
-    public void setTimerThreeState(String timerThreeState) {
+    public void setTimerThreeState(boolean timerThreeState) {
         this.timerThreeState = timerThreeState;
     }
+
 
     public void setTimerOneStartHour(int timerOneStartHour) {
         this.timerOneStartHour = timerOneStartHour;
