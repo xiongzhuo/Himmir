@@ -3,6 +3,8 @@ package com.himmiractivity.entity;
 import java.io.Serializable;
 
 public class Space implements Serializable {
+    private boolean onLine;
+
     private UserRoom userRoom;
 
     private DeviceFreshAirData deviceFreshAirData;
@@ -12,6 +14,14 @@ public class Space implements Serializable {
     private Device device;
 
     private InstallAddress installAddress;
+
+    public boolean isOnLine() {
+        return onLine;
+    }
+
+    public void setOnLine(boolean onLine) {
+        this.onLine = onLine;
+    }
 
     public class UserRoom {
         private String room_name;

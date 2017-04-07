@@ -247,6 +247,12 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+        <meta-data
+            android:name="design_width"
+            android:value="640"></meta-data>
+        <meta-data
+            android:name="design_height"
+            android:value="1136"></meta-data>
     </application>
 
 </manifest>

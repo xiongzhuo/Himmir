@@ -15,7 +15,8 @@
         android:layout_marginTop="@dimen/dp15"
         android:background="@drawable/edittext_bg"
         android:hint="请输入房间名"
-        android:padding="10dp" />
+        android:padding="10dp"
+        android:textColor="@color/black" />
 
 
     <LinearLayout

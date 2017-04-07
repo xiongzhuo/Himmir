@@ -18,12 +18,11 @@ import android.widget.RadioButton;
 import com.himmiractivity.App;
 import com.himmiractivity.Utils.SocketSingle;
 import com.himmiractivity.Utils.ToastUtil;
-import com.himmiractivity.Utils.ToastUtils;
 import com.himmiractivity.base.BaseBusActivity;
 import com.himmiractivity.circular_progress_bar.CircularProgressBar;
 import com.himmiractivity.entity.PmAllData;
 import com.himmiractivity.interfaces.StatisConstans;
-import com.himmiractivity.liuxing_scoket.Protocal;
+import com.himmiractivity.service.Protocal;
 import com.himmiractivity.mining.app.zxing.ScoketOFFeON;
 import com.himmiractivity.util.ThreadPoolUtils;
 
@@ -180,6 +179,10 @@ public class FixedTimeActivity extends BaseBusActivity {
     }
 
     private void doComit() {
+        if (linearLayout.getVisibility() == View.GONE) {
+            ToastUtil.show(FixedTimeActivity.this, "设备网络断开");
+            return;
+        }
         String[] cbOnearr = checkBoxes.get(0).getText().toString().trim().split(" - ");
         String[] cbTwoarr = checkBoxes.get(1).getText().toString().trim().split(" - ");
         String[] cbThreearr = checkBoxes.get(2).getText().toString().trim().split(" - ");
@@ -230,7 +233,12 @@ public class FixedTimeActivity extends BaseBusActivity {
                     //得到数据的广播
                     Bundle bundle = intent.getExtras();
                     pmAllData = (PmAllData) bundle.getSerializable("pm_all_data");
-                    handler.sendEmptyMessage(StatisConstans.MSG_ENABLED_SUCCESSFUL);
+                    if (pmAllData.getFanFreq() > 9) {
+                        handler.sendEmptyMessage(StatisConstans.MSG_ENABLED_SUCCESSFUL);
+                    } else {
+                        progressBar.setVisibility(View.GONE);
+                        ToastUtil.show(FixedTimeActivity.this, "设备网络断开");
+                    }
                 }
             }
         }
@@ -246,6 +254,14 @@ public class FixedTimeActivity extends BaseBusActivity {
             socket = SocketSingle.getInstance(host, location);
             Log.d("ConnectionManager", "AbsClient*****已经建立连接");
             protocal = Protocal.getInstance();
+//            ThreadPoolUtils threadPoolUtils = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 1);
+//            threadPoolUtils.execute(new Thread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    ScoketOFFeON.receMessage(socket, protocal, handler);
+//                }
+//            }));
+            ScoketOFFeON.sendMessage(socket, protocal, mac);
         } catch (Exception e) {
             e.printStackTrace();
         }

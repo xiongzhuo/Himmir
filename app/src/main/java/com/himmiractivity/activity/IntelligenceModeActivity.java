@@ -10,7 +10,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.InputType;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,9 +27,10 @@ import com.himmiractivity.Utils.SocketSingle;
 import com.himmiractivity.Utils.ToastUtil;
 import com.himmiractivity.Utils.ToastUtils;
 import com.himmiractivity.base.BaseBusActivity;
+import com.himmiractivity.circular_progress_bar.CircularProgressBar;
 import com.himmiractivity.entity.PmAllData;
 import com.himmiractivity.interfaces.StatisConstans;
-import com.himmiractivity.liuxing_scoket.Protocal;
+import com.himmiractivity.service.Protocal;
 import com.himmiractivity.mining.app.zxing.ScoketOFFeON;
 import com.himmiractivity.util.ThreadPoolUtils;
 
@@ -42,38 +42,43 @@ import butterknife.BindView;
 import butterknife.BindViews;
 
 public class IntelligenceModeActivity extends BaseBusActivity {
-    @BindView(R.id.ll_co)
-    LinearLayout llCo2;
-    @BindView(R.id.ll_pm)
-    LinearLayout ll_pm;
-    @BindView(R.id.tv_co_value)
-    TextView tvCoValue;
-    @BindView(R.id.tv_pm_value)
+    @BindView(R.id.progress)
+    CircularProgressBar progressBar;
+    @BindView(R.id.ll_content)
+    LinearLayout linearLayout;
+    @BindViews({R.id.ll_co, R.id.ll_pm})
+    List<LinearLayout> linearLayouts;
+    @BindViews({R.id.tv_co_value, R.id.tv_pm_value})
+    List<TextView> textViews;
     @BindViews({R.id.cb_mute, R.id.cb_co, R.id.cb_dust})
     List<CheckBox> checkBoxs;
-    TextView tvPmValus;
     Socket socket;
     String mac;
     Protocal protocal;
     PmAllData pmAllData;
     private boolean isFirst = true;//只有一次
+    boolean muteMode;
+    boolean coMode;
+    boolean pmMode;
+    int coNumber;
+    int pmNumber;
 
     private Handler handler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
             switch (msg.what) {
                 case StatisConstans.MSG_ENABLED_SUCCESSFUL:
+                    linearLayout.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
                     if (pmAllData != null) {
-                        if (TextUtils.isEmpty(pmAllData.getMode())) {
-                            if ((pmAllData.getMode().contains("静音"))) {
-                                checkBoxs.get(0).setChecked(true);
-                            } else if (pmAllData.getMode().contains("co")) {
-                                checkBoxs.get(1).setChecked(true);
-                            } else if (pmAllData.getMode().contains("粉尘")) {
-                                checkBoxs.get(2).setChecked(true);
-                            }
-                        }
-//                        tvCoValue.setText();
+                        checkBoxs.get(0).setChecked(pmAllData.isMuteMode());
+                        checkBoxs.get(1).setChecked(pmAllData.isCoMode());
+                        checkBoxs.get(2).setChecked(pmAllData.isPmMode());
+                        coNumber = pmAllData.getCo2Adj();
+                        pmNumber = pmAllData.getPmAdj();
+                        textViews.get(0).setText(coNumber + " ppm");
+                        textViews.get(1).setText(pmNumber + " ug/m³");
+                        isFirst = false;
                     }
                     break;
                 default:
@@ -96,8 +101,8 @@ public class IntelligenceModeActivity extends BaseBusActivity {
         initTitleBar();
         setRightView("确定", true);
         registerBoradcastReceiver();
-        llCo2.setOnClickListener(this);
-        ll_pm.setOnClickListener(this);
+        linearLayouts.get(0).setOnClickListener(this);
+        linearLayouts.get(1).setOnClickListener(this);
         ThreadPoolUtils threadPoolUtils = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 1);
         threadPoolUtils.execute(new Thread(new Runnable() {
             @Override
@@ -121,7 +126,7 @@ public class IntelligenceModeActivity extends BaseBusActivity {
                 finish();
                 break;
             case R.id.btn_right:
-                ScoketOFFeON.sendNoopsycheMode(socket, protocal, mac, false, true, true, 800, 500);
+                doComit();
                 break;
             case R.id.ll_co:
                 showinputPassdialog("CO₂调节值设置", "请输入(800-1800)", "co");
@@ -132,6 +137,21 @@ public class IntelligenceModeActivity extends BaseBusActivity {
             default:
                 break;
         }
+    }
+
+    private void doComit() {
+        if (linearLayout.getVisibility() == View.GONE) {
+            ToastUtil.show(IntelligenceModeActivity.this, "设备网络断开");
+            return;
+        }
+        muteMode = checkBoxs.get(0).isChecked();
+        coMode = checkBoxs.get(1).isChecked();
+        pmMode = checkBoxs.get(2).isChecked();
+        String[] arrCO = textViews.get(0).getText().toString().trim().split(" ");
+        coNumber = Integer.parseInt(arrCO[0]);
+        String[] arrPM = textViews.get(1).getText().toString().trim().split(" ");
+        pmNumber = Integer.parseInt(arrPM[0]);
+        ScoketOFFeON.sendNoopsycheMode(socket, protocal, mac, muteMode, coMode, pmMode, coNumber, pmNumber);
     }
 
     public void showinputPassdialog(String head, String headHit, final String isTool) {
@@ -175,23 +195,23 @@ public class IntelligenceModeActivity extends BaseBusActivity {
                 }
                 if (isTool.equals("co")) {
                     if (Integer.valueOf(etNewName.getText().toString().trim()) >= 1800) {
-                        tvPmValus.setText("1800 ppm");
+                        textViews.get(0).setText("1800 ppm");
                         ToastUtils.show(IntelligenceModeActivity.this, "CO₂的最大值为1800", Toast.LENGTH_LONG);
                     } else if (Integer.valueOf(etNewName.getText().toString().trim()) <= 800) {
-                        tvPmValus.setText("800 ppm");
-                        ToastUtils.show(IntelligenceModeActivity.this, "CO₂的最大值为800", Toast.LENGTH_LONG);
+                        textViews.get(0).setText("800 ppm");
+                        ToastUtils.show(IntelligenceModeActivity.this, "CO₂的最小值为800", Toast.LENGTH_LONG);
                     } else {
-                        tvPmValus.setText(etNewName.getText().toString().trim() + "ppm");
+                        textViews.get(0).setText(etNewName.getText().toString().trim() + "ppm");
                     }
                 } else {
                     if (Integer.valueOf(etNewName.getText().toString().trim()) >= 1000) {
-                        tvPmValus.setText("1000 ug/m³");
+                        textViews.get(1).setText("1000 ug/m³");
                         ToastUtils.show(IntelligenceModeActivity.this, "PM2.5的最大值为1000", Toast.LENGTH_LONG);
                     } else if (Integer.valueOf(etNewName.getText().toString().trim()) <= 10) {
-                        tvPmValus.setText("10 ug/m³");
+                        textViews.get(1).setText("10 ug/m³");
                         ToastUtils.show(IntelligenceModeActivity.this, "PM2.5的最小值为10", Toast.LENGTH_LONG);
                     } else {
-                        tvPmValus.setText(etNewName.getText().toString().trim() + " ug/m³");
+                        textViews.get(1).setText(etNewName.getText().toString().trim() + " ug/m³");
                     }
                 }
                 dialog.dismiss();
@@ -227,7 +247,12 @@ public class IntelligenceModeActivity extends BaseBusActivity {
                 if (isFirst) {
                     //得到数据
                     pmAllData = (PmAllData) intent.getExtras().getSerializable("pm_all_data");
-                    handler.sendEmptyMessage(StatisConstans.MSG_ENABLED_SUCCESSFUL);
+                    if (pmAllData.getFanFreq() > 9) {
+                        handler.sendEmptyMessage(StatisConstans.MSG_ENABLED_SUCCESSFUL);
+                    } else {
+                        progressBar.setVisibility(View.GONE);
+                        ToastUtil.show(IntelligenceModeActivity.this, "设备网络断开");
+                    }
                 }
             }
         }
@@ -238,6 +263,7 @@ public class IntelligenceModeActivity extends BaseBusActivity {
             // 1.连接服务器
             socket = SocketSingle.getInstance(host, location);
             protocal = Protocal.getInstance();
+            ScoketOFFeON.sendMessage(socket, protocal, mac);
         } catch (Exception e) {
             e.printStackTrace();
         }

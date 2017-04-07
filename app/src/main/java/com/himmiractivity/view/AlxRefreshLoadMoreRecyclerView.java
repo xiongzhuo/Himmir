@@ -808,6 +808,7 @@ public class AlxRefreshLoadMoreRecyclerView extends RecyclerView {
         protected boolean loadMore;
 
         private List<T> dataList;
+        private Context context;
 
         public List<T> getDataList() {
             return dataList;
@@ -817,10 +818,11 @@ public class AlxRefreshLoadMoreRecyclerView extends RecyclerView {
             this.dataList = dataList;
         }
 
-        public AlxDragRecyclerViewAdapter(List<T> dataList, int itemLayout, boolean pullEnable) {
+        public AlxDragRecyclerViewAdapter(Context context, List<T> dataList, int itemLayout, boolean pullEnable) {
             this.dataList = dataList;
             this.ITEM = itemLayout;
             this.loadMore = pullEnable;
+            this.context = context;
         }
 
         public abstract ViewHolder setItemViewHolder(View itemView);
@@ -829,6 +831,10 @@ public class AlxRefreshLoadMoreRecyclerView extends RecyclerView {
             if (dataList != null && dataList.size() >= position)
                 return dataList.get(position - 1);//如果有header
             return null;
+        }
+
+        public Context getContext() {
+            return context;
         }
 
         @Override

@@ -400,13 +400,13 @@ public class Protocol {
         buffer.put(tb);
         buffer.put((byte) 0x61);
         byte[] coBytes = new byte[2];
-        byte[] coTemp = DigitalTrans.unsignedShortToByte2_Litte(coNumber);
+        byte[] coTemp = DigitalTrans.unsignedShortToByte2(coNumber);
         int coLen = coTemp.length;
         System.arraycopy(coTemp, 0, coBytes, 0, coLen);
         buffer.put(coBytes);
         buffer.put((byte) 0x63);
         byte[] pmBytes = new byte[2];
-        byte[] pmTemp = DigitalTrans.unsignedShortToByte2_Litte(pmNumber);
+        byte[] pmTemp = DigitalTrans.unsignedShortToByte2(pmNumber);
         int pmLen = pmTemp.length;
         System.arraycopy(pmTemp, 0, pmBytes, 0, pmLen);
         buffer.put(pmBytes);
@@ -1008,17 +1008,17 @@ public class Protocol {
                     //devInfo.SmartModel = uint8(payLoadBody[pos])
                     //System.out.println("开机模式:")
                     if (((byte) payLoadBody[pos] & (byte) (0x01)) == (byte) (0x01)) {
-                        pmAllData.setMode("静音");
+                        pmAllData.setMuteMode(true);
                         System.out.println("静音");
                     }
 
                     if (((byte) payLoadBody[pos] & (byte) (0x01 << 1)) == (0x01 << 1)) {
-                        pmAllData.setMode("co2模式");
+                        pmAllData.setCoMode(true);
                         System.out.println("co2模式");
                     }
 
                     if (((byte) payLoadBody[pos] & (byte) (0x01 << 2)) == 0x01 << 2) {
-                        pmAllData.setMode("粉尘模式");
+                        pmAllData.setPmMode(true);
                         System.out.println("粉尘模式");
                     }
                     System.out.println("\r\n");
@@ -1239,43 +1239,43 @@ public class Protocol {
                     }
                     break;
                 case PayloardKey.D_TIMER1: //定时器1
-                    pos+=1;
+                    pos += 1;
                     System.out.println("定时器1:");
-//                    pmAllData.setTimerOneStartHour(payLoadBody[pos + 1]);
-                    System.out.printf("开始时间小时值:%d", (byte)payLoadBody[pos]);
-//                    pmAllData.setTimerOneStartMin(payLoadBody[pos + 2]);
-                    System.out.printf("开始时间分钟值:%d",(byte) payLoadBody[pos + 1]);
-//                    pmAllData.setTimerOneEndHour(payLoadBody[pos + 3]);
-                    System.out.printf("结束时间小时值:%d", (byte)payLoadBody[pos + 2]);
-//                    pmAllData.setTimerOneEndMin(payLoadBody[pos + 4]);
-                    System.out.printf("结束时间分钟值:%d",(byte) payLoadBody[pos + 3]);
+                    pmAllData.setTimerOneStartHour(payLoadBody[pos]);
+                    System.out.printf("开始时间小时值:%d", (byte) payLoadBody[pos]);
+                    pmAllData.setTimerOneStartMin(payLoadBody[pos + 1]);
+                    System.out.printf("开始时间分钟值:%d", (byte) payLoadBody[pos + 1]);
+                    pmAllData.setTimerOneEndHour(payLoadBody[pos + 2]);
+                    System.out.printf("结束时间小时值:%d", (byte) payLoadBody[pos + 2]);
+                    pmAllData.setTimerOneEndMin(payLoadBody[pos + 3]);
+                    System.out.printf("结束时间分钟值:%d", (byte) payLoadBody[pos + 3]);
                     System.out.println("\r\n");
                     pos += 3;
                     break;
                 case PayloardKey.D_TIMER2: //定时器2
                     pos++;
                     System.out.println("定时器2:");
-//                    pmAllData.setTimerTwoStartHour(payLoadBody[pos + 1]);
-                    System.out.printf("开始时间小时值:%d", (byte)payLoadBody[pos]);
-//                    pmAllData.setTimerTwoStartMin(payLoadBody[pos + 2]);
-                    System.out.printf("开始时间分钟值:%d", (byte)payLoadBody[pos + 1]);
-                    pmAllData.setTimerTwoEndHour((byte)payLoadBody[pos + 3]);
-                    System.out.printf("结束时间小时值:%d", (byte)payLoadBody[pos + 2]);
-                    pmAllData.setTimerTwoEndMin(payLoadBody[pos + 4]);
-                    System.out.printf("结束时间分钟值:%d", (byte)payLoadBody[pos + 3]);
+                    pmAllData.setTimerTwoStartHour(payLoadBody[pos]);
+                    System.out.printf("开始时间小时值:%d", (byte) payLoadBody[pos]);
+                    pmAllData.setTimerTwoStartMin(payLoadBody[pos + 1]);
+                    System.out.printf("开始时间分钟值:%d", (byte) payLoadBody[pos + 1]);
+                    pmAllData.setTimerTwoEndHour((byte) payLoadBody[pos + 2]);
+                    System.out.printf("结束时间小时值:%d", (byte) payLoadBody[pos + 2]);
+                    pmAllData.setTimerTwoEndMin(payLoadBody[pos + 3]);
+                    System.out.printf("结束时间分钟值:%d", (byte) payLoadBody[pos + 3]);
                     System.out.println("\r\n");
                     pos += 3;
                     break;
                 case PayloardKey.D_TIMER3: //定时器3
                     pos++;
                     System.out.println("定时器3:");
-                    pmAllData.setTimerThreeStartHour(payLoadBody[pos + 1]);
+                    pmAllData.setTimerThreeStartHour(payLoadBody[pos]);
                     System.out.printf("开始时间小时值:%d", payLoadBody[pos]);
-                    pmAllData.setTimerThreeStartMin(payLoadBody[pos + 2]);
+                    pmAllData.setTimerThreeStartMin(payLoadBody[pos + 1]);
                     System.out.printf("开始时间分钟值:%d", payLoadBody[pos + 1]);
-                    pmAllData.setTimerThreeEndHour(payLoadBody[pos + 3]);
+                    pmAllData.setTimerThreeEndHour(payLoadBody[pos + 2]);
                     System.out.printf("结束时间小时值:%d", payLoadBody[pos + 2]);
-                    pmAllData.setTimerThreeEndMin(payLoadBody[pos + 4]);
+                    pmAllData.setTimerThreeEndMin(payLoadBody[pos + 3]);
                     System.out.printf("结束时间分钟值:%d", payLoadBody[pos + 3]);
                     System.out.println("\r\n");
                     pos += 3;
@@ -1317,7 +1317,7 @@ public class Protocol {
                     byte[] pmBytes = new byte[2];
                     System.arraycopy(payLoadBody, pos, pmBytes, 0, 2);
                     pmAllData.setPmAdj(DigitalTrans.byte2ToUnsignedShort(pmBytes));
-                    System.out.printf("PM调节值:%d", (int)(DigitalTrans.byte2ToUnsignedShort(pmBytes)&0xffff));
+                    System.out.printf("PM调节值:%d", (int) (DigitalTrans.byte2ToUnsignedShort(pmBytes) & 0xffff));
                     System.out.println("\r\n");
                     pos++;
                     break;

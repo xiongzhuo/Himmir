@@ -52,4 +52,6 @@ public interface StatisConstans {
     // 配置档失败
     int MSG_ENABLED_FAILING = 38;
     int MSG_QUEST_SERVER = 45;
+    // 循环发送
+    int MSG_CYCLIC_TRANSMISSION = 1110;
 }

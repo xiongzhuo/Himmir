@@ -31,17 +31,16 @@ import com.himmiractivity.Utils.ToastUtils;
 import com.himmiractivity.base.BaseBusActivity;
 import com.himmiractivity.entity.AllUserDerviceBaen;
 import com.himmiractivity.entity.ImageBean;
+import com.himmiractivity.entity.PmAllData;
 import com.himmiractivity.interfaces.StatisConstans;
-import com.himmiractivity.liuxing_scoket.Protocal;
 import com.himmiractivity.mining.app.zxing.ScoketOFFeON;
 import com.himmiractivity.request.AllDeviceInfoRequest;
 import com.himmiractivity.request.DeleteDeviceRequest;
 import com.himmiractivity.request.ModifyRoomNameRequest;
+import com.himmiractivity.service.Protocal;
 import com.himmiractivity.util.ThreadPoolUtils;
 import com.himmiractivity.view.AlxRefreshLoadMoreRecyclerView;
-import com.himmiractivity.view.DialogView;
 
-import java.io.IOException;
 import java.net.Socket;
 
 import activity.hamir.com.himmir.R;
@@ -65,6 +64,7 @@ public class QquipManager extends BaseBusActivity implements AlxRefreshLoadMoreR
     Protocal protocal;
     Socket socket;
     String mac;
+    int onLinePos;
 
     private Handler mHandler = new Handler() {
         @Override
@@ -87,9 +87,12 @@ public class QquipManager extends BaseBusActivity implements AlxRefreshLoadMoreR
                 //成功
                 case StatisConstans.MSG_QQUIP:
                     allUserDerviceBaen = (AllUserDerviceBaen) msg.obj;
-                    mac = allUserDerviceBaen.getSpace().get(0).getDevice().getDevice_mac();
+                    if (onLinePos < allUserDerviceBaen.getSpace().size()) {
+                        Log.d("device_mac", allUserDerviceBaen.getSpace().get(onLinePos).getDevice().getDevice_mac() + "onLinePos:" + onLinePos);
+                        ScoketOFFeON.sendMessage(socket, protocal, allUserDerviceBaen.getSpace().get(onLinePos).getDevice().getDevice_mac());
+                    }
 //                    mRecyclerView.setLayoutManager(new LinearLayoutManager(QquipManager.this));
-                    rvcAdapter = new RvcAdapter(allUserDerviceBaen.getSpace(), R.layout.list_item, true);
+                    rvcAdapter = new RvcAdapter(QquipManager.this, allUserDerviceBaen.getSpace(), R.layout.list_item, true);
                     rvcAdapter.setPullLoadMoreEnable(false);
                     mRecyclerView.setPullLoadEnable(false);
                     mRecyclerView.setAdapter(rvcAdapter);
@@ -130,7 +133,6 @@ public class QquipManager extends BaseBusActivity implements AlxRefreshLoadMoreR
         int resourceId = getResources().getIdentifier("navigation_bar_height", "dimen", "android");
         navigationHeight = getResources().getDimensionPixelSize(resourceId);
         btnAddAqu.setOnClickListener(this);
-        initRechclerView();
     }
 
     private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
@@ -141,6 +143,21 @@ public class QquipManager extends BaseBusActivity implements AlxRefreshLoadMoreR
                 ToastUtil.show(QquipManager.this, "编辑成功");
             } else if (action.equalsIgnoreCase(StatisConstans.BROADCAST_HONGREN_KILL)) {
                 ToastUtil.show(QquipManager.this, "编辑失败");
+            } else if (action.equalsIgnoreCase(StatisConstans.BROADCAST_HONGREN_DATA)) {
+                //在线，反之为离线
+                if (onLinePos >= allUserDerviceBaen.getSpace().size())
+                    return;
+                PmAllData pmAllData = (PmAllData) intent.getExtras().getSerializable("pm_all_data");
+                Log.d("device_mac", "pmAllData.getFanFreq()" + pmAllData.getFanFreq());
+                if (pmAllData.getFanFreq() > 9) {
+                    allUserDerviceBaen.getSpace().get(onLinePos).setOnLine(true);
+                    rvcAdapter.setmDatas(allUserDerviceBaen.getSpace());
+                }
+                onLinePos++;
+                if (onLinePos >= allUserDerviceBaen.getSpace().size())
+                    return;
+                Log.d("device_mac", allUserDerviceBaen.getSpace().get(onLinePos).getDevice().getDevice_mac() + "onLinePos:" + onLinePos);
+                ScoketOFFeON.sendMessage(socket, protocal, allUserDerviceBaen.getSpace().get(onLinePos).getDevice().getDevice_mac());
             }
         }
     };
@@ -154,6 +171,7 @@ public class QquipManager extends BaseBusActivity implements AlxRefreshLoadMoreR
     @Override
     protected void onResume() {
         super.onResume();
+        onLinePos = 0;
         initRechclerView();
     }
 
@@ -161,6 +179,7 @@ public class QquipManager extends BaseBusActivity implements AlxRefreshLoadMoreR
         IntentFilter filter = new IntentFilter(
                 StatisConstans.BROADCAST_HONGREN_SUCC);
         filter.addAction(StatisConstans.BROADCAST_HONGREN_KILL);
+        filter.addAction(StatisConstans.BROADCAST_HONGREN_DATA);
         QquipManager.this.registerReceiver(mBroadcastReceiver, filter);
     }
 
@@ -180,7 +199,12 @@ public class QquipManager extends BaseBusActivity implements AlxRefreshLoadMoreR
                 break;
             case R.id.tv_pick_phone:
 //                startActivity(new Intent(this, EditTimeActivity.class));
-                ScoketOFFeON.sendTimingMessage(socket, protocal, mac);
+                Log.d("device_mac", mac);
+                if (allUserDerviceBaen.getSpace().get(deletePosition).isOnLine()) {
+                    ScoketOFFeON.sendTimingMessage(socket, protocal, mac);
+                } else {
+                    ToastUtil.show(QquipManager.this, "校时失败，请检查网络连接");
+                }
                 alertDialog.dismiss();
                 break;
             case R.id.tv_pick_zone:
@@ -352,6 +376,8 @@ public class QquipManager extends BaseBusActivity implements AlxRefreshLoadMoreR
 
     @Override
     public void onItemClick(View view, int position) {
+        System.out.println("position" + position);
+        mac = allUserDerviceBaen.getSpace().get(position).getDevice().getDevice_mac();
         openAlertDialog(position);
     }
 
@@ -370,6 +396,7 @@ public class QquipManager extends BaseBusActivity implements AlxRefreshLoadMoreR
         new Handler().postDelayed(new Runnable() {//模拟两秒网络延迟
             @Override
             public void run() {
+                onLinePos = 0;
                 initRechclerView();
                 mRecyclerView.stopRefresh();
             }
@@ -383,14 +410,6 @@ public class QquipManager extends BaseBusActivity implements AlxRefreshLoadMoreR
             socket = SocketSingle.getInstance(host, location);
             Log.d("ConnectionManager", "AbsClient*****已经建立连接");
             protocal = Protocal.getInstance();
-//            ThreadPoolUtils threadPoolUtils = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 1);
-//            threadPoolUtils.execute(new Thread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    ScoketOFFeON.receMessage(socket, protocal, mHandler);
-//                }
-//            }
-//            ));
         } catch (Exception e) {
             e.printStackTrace();
         }

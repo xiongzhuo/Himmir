@@ -31,34 +31,23 @@ import com.himmiractivity.Utils.ToastUtils;
 import com.himmiractivity.activity.MainActivity;
 import com.himmiractivity.interfaces.StatisConstans;
 import com.himmiractivity.view.SwipeBackLayout;
+import com.zhy.autolayout.AutoLayoutActivity;
 
 import org.xutils.x;
 
 import activity.hamir.com.himmir.R;
 import butterknife.ButterKnife;
 
-/**
- * ProjectName：WisdomBus
- * PackageName：com.zhcx.wisdombus.base
- * description:
- * Date：2016/3/8
- * Author：xz
- * ClassName:BaseBusActivity
- **/
-public abstract class BaseBusActivity extends FragmentActivity implements View.OnClickListener {
+public abstract class BaseBusActivity extends AutoLayoutActivity implements View.OnClickListener {
     protected Context mContext;
     View mTitleView;
     ImageView mLeftView;// 左侧按钮
     TextView mMidView;// 中间文本
     TextView mRightView;// 右侧按钮
     protected SharedPreferencesDB sharedPreferencesDB;
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
+
     private GoogleApiClient client;
     protected SwipeBackLayout layout;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

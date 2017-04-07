@@ -9,7 +9,9 @@ import java.io.Serializable;
 public class PmAllData implements Serializable {
 
     private String oNstate;//开关机
-    private String mode;//模式
+    private boolean muteMode;//静音模式
+    private boolean coMode;//CO2模式
+    private boolean pmMode;//粉尘模式
     private String exhaustMode;//新排风模式
     private int exhaustRatio;//排风比例
     private String lcdBacklight;//背光时间s
@@ -65,8 +67,16 @@ public class PmAllData implements Serializable {
         return oNstate;
     }
 
-    public String getMode() {
-        return mode;
+    public boolean isMuteMode() {
+        return muteMode;
+    }
+
+    public boolean isCoMode() {
+        return coMode;
+    }
+
+    public boolean isPmMode() {
+        return pmMode;
     }
 
     public String getExhaustMode() {
@@ -275,8 +285,16 @@ public class PmAllData implements Serializable {
         this.oNstate = oNstate;
     }
 
-    public void setMode(String mode) {
-        this.mode = mode;
+    public void setMuteMode(boolean muteMode) {
+        this.muteMode = muteMode;
+    }
+
+    public void setCoMode(boolean coMode) {
+        this.coMode = coMode;
+    }
+
+    public void setPmMode(boolean pmMode) {
+        this.pmMode = pmMode;
     }
 
     public void setExhaustMode(String exhaustMode) {

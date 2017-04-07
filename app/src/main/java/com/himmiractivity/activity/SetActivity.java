@@ -55,6 +55,7 @@ import java.util.List;
 
 import activity.hamir.com.himmir.R;
 import butterknife.BindView;
+import butterknife.BindViews;
 
 /**
  * 设置页面
@@ -72,20 +73,8 @@ public class SetActivity extends BaseBusActivity {
     private Bitmap photo;
     @BindView(R.id.btn_back)
     ImageView btnBack;
-    @BindView(R.id.ll_equip)
-    LinearLayout llEquip;
-    @BindView(R.id.ll_message)
-    LinearLayout llMessage;
-    @BindView(R.id.ll_feedback)
-    LinearLayout llFeedback;
-    @BindView(R.id.ll_phone)
-    LinearLayout llPhone;
-    @BindView(R.id.ll_help)
-    LinearLayout llHelp;
-    @BindView(R.id.ll_chanage_pass)
-    LinearLayout llChanagePass;
-    @BindView(R.id.ll_exit)
-    LinearLayout llExit;
+    @BindViews({R.id.ll_equip, R.id.ll_message, R.id.ll_feedback, R.id.ll_phone, R.id.ll_help, R.id.ll_chanage_pass, R.id.ll_exit})
+    List<LinearLayout> linearLayouts;
     AlertDialog alertDialog;
     @BindView(R.id.tv_title)
     TextView tvTitle;
@@ -153,13 +142,13 @@ public class SetActivity extends BaseBusActivity {
             }
         }
         files = new ArrayList<>();
-        llEquip.setOnClickListener(this);
-        llMessage.setOnClickListener(this);
-        llFeedback.setOnClickListener(this);
-        llPhone.setOnClickListener(this);
-        llHelp.setOnClickListener(this);
-        llChanagePass.setOnClickListener(this);
-        llExit.setOnClickListener(this);
+        linearLayouts.get(0).setOnClickListener(this);
+        linearLayouts.get(1).setOnClickListener(this);
+        linearLayouts.get(2).setOnClickListener(this);
+        linearLayouts.get(3).setOnClickListener(this);
+        linearLayouts.get(4).setOnClickListener(this);
+        linearLayouts.get(5).setOnClickListener(this);
+        linearLayouts.get(6).setOnClickListener(this);
         btnBack.setOnClickListener(this);
         tvTitle.setOnClickListener(this);
         simImage.setOnClickListener(this);

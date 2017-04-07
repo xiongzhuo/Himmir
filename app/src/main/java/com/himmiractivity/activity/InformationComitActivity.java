@@ -18,10 +18,10 @@ import com.himmiractivity.entity.DataServerBean;
 import com.himmiractivity.entity.DeviceInfoBean;
 import com.himmiractivity.entity.ImageBean;
 import com.himmiractivity.interfaces.StatisConstans;
-import com.himmiractivity.liuxing_scoket.Protocal;
 import com.himmiractivity.mining.app.zxing.ScoketOFFeON;
 import com.himmiractivity.request.DataServerConfigRequest;
 import com.himmiractivity.request.ReceiveUserDeviceInfoRequest;
+import com.himmiractivity.service.Protocal;
 import com.himmiractivity.util.ThreadPoolUtils;
 import com.himmiractivity.view.ChangeAddressDialog;
 import com.himmiractivity.view.ClearEditText;
@@ -236,6 +236,7 @@ public class InformationComitActivity extends BaseBusActivity {
         String room = btnChooseRoom.getText().toString().trim();
         if (!isdeploy) {
             ToastUtil.show(this, "请重新激活配置档!");
+            return;
         } else if (TextUtils.isEmpty(name)) {
             ToastUtil.show(this, "用户姓名不能为空!");
             return;

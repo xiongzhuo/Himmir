@@ -32,7 +32,8 @@
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
         android:background="@drawable/edittext_bg"
-        android:padding="10dp" />
+        android:padding="10dp"
+        android:textColor="@color/black" />
 
     <View
         android:layout_width="match_parent"

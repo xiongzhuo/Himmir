@@ -1,11 +1,10 @@
 package com.himmiractivity.mining.app.zxing;
 
-import android.content.Context;
 import android.os.Handler;
 import android.util.Log;
 
 import com.himmiractivity.entity.DataServerBean;
-import com.himmiractivity.liuxing_scoket.Protocal;
+import com.himmiractivity.service.Protocal;
 
 import java.net.Socket;
 
