@@ -53,6 +53,7 @@ import com.himmiractivity.view.ListPopupWindow;
 import com.himmiractivity.view.PercentView;
 import com.himmiractivity.view.SelectorImageView;
 
+import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
@@ -329,6 +330,7 @@ public class MainActivity extends BaseBusActivity {
         return mlocation;
     }
 
+    //开启定位回调接口
     LocationListener mLocationListener = new LocationListener() {
         @Override
         public void onLocationChanged(Location location) {
@@ -396,17 +398,17 @@ public class MainActivity extends BaseBusActivity {
         try {
             List<Address> addresses = null;
             addresses = geocoder.getFromLocation(mlocation.getLatitude(), mlocation.getLongitude(), 1);
-            StringBuilder stringBuilder = new StringBuilder();
+//            StringBuilder stringBuilder = new StringBuilder();
             if (addresses.size() > 0) {
                 Address address = addresses.get(0);
-                for (int i = 0; i < address.getMaxAddressLineIndex(); i++) {
-                    stringBuilder.append(address.getAddressLine(i)).append("\n");
-                }
-                stringBuilder.append(address.getLocality()).append("_");
-                stringBuilder.append(address.getPostalCode()).append("_");
-                stringBuilder.append(address.getCountryCode()).append("_");
-                stringBuilder.append(address.getCountryName()).append("_");
-                System.out.println(stringBuilder.toString());
+//                for (int i = 0; i < address.getMaxAddressLineIndex(); i++) {
+//                    stringBuilder.append(address.getAddressLine(i)).append("\n");
+//                }
+//                stringBuilder.append(address.getLocality()).append("_");
+//                stringBuilder.append(address.getPostalCode()).append("_");
+//                stringBuilder.append(address.getCountryCode()).append("_");
+//                stringBuilder.append(address.getCountryName()).append("_");
+//                System.out.println(stringBuilder.toString());
                 if (!TextUtils.isEmpty(address.getLocality())) {
                     tvCity.setText(address.getLocality().substring(0, address.getLocality().length() - 1));
                     sharedPreferencesDB.setString("province", address.getAdminArea().substring(0, address.getLocality().length() - 1));
@@ -415,7 +417,7 @@ public class MainActivity extends BaseBusActivity {
                 }
             }
         } catch (Exception e) {
-            Toast.makeText(this, "报错", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "定位失败", Toast.LENGTH_LONG).show();
             e.printStackTrace();
         }
     }
@@ -477,22 +479,23 @@ public class MainActivity extends BaseBusActivity {
     }
 
     public void request(String host, int location) {
-        try {
-            // 1.连接服务器
-            socket = SocketSingle.getInstance(host, location);
-            Log.d("ConnectionManager", "AbsClient*****已经建立连接");
-            protocal = Protocal.getInstance();
-            ThreadPoolUtils threadPoolUtils = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 1);
-            threadPoolUtils.execute(new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    ScoketOFFeON.receMessage(socket, protocal, handler);
-                }
-            }));
-        } catch (Exception e) {
-            e.printStackTrace();
+        while (GpsUtils.isServerClose(socket)) {
+            try {
+                // 1.连接服务器
+                socket = SocketSingle.getInstance(host, location);
+                Log.d("ConnectionManager", "AbsClient*****已经建立连接");
+                protocal = Protocal.getInstance();
+                ThreadPoolUtils threadPoolUtils = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 1);
+                threadPoolUtils.execute(new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ScoketOFFeON.receMessage(socket, protocal, handler);
+                    }
+                }));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
-
     }
 
     private void startTimer() {
