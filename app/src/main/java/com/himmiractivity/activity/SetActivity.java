@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -103,7 +104,17 @@ public class SetActivity extends BaseBusActivity {
                 case StatisConstans.MSG_IMAGE_SUCCES:
                     imageBean = (ImageBean) msg.obj;
                     if (photo != null) {
-                        simImage.setImageBitmap(photo);
+                        /**
+                         * 圆形头像加载
+                         * */
+                        Uri uri = Uri.parse(MediaStore.Images.Media.insertImage(SetActivity.this.getContentResolver(), photo, null, null));
+                        DraweeController circleImageController = Fresco.newDraweeControllerBuilder()
+                                .setUri(uri)
+                                .setTapToRetryEnabled(true)
+                                .setOldController(simImage.getController())
+                                .build();
+                        simImage.setController(circleImageController);
+//                        simImage.setImageBitmap(photo);
                         isResult = true;
                     }
                     break;

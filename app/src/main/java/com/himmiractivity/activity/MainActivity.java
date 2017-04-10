@@ -53,7 +53,6 @@ import com.himmiractivity.view.ListPopupWindow;
 import com.himmiractivity.view.PercentView;
 import com.himmiractivity.view.SelectorImageView;
 
-import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
@@ -66,7 +65,6 @@ import butterknife.BindView;
 import butterknife.BindViews;
 
 public class MainActivity extends BaseBusActivity {
-    TextView tvUg, tvCity, tvCco2, tvOutSide, tvTempIndoor, tvTempOutSide, tvSpeed;
     Location mlocation;
     LocationManager mLocationManager;
     @BindView(R.id.percent_view)
@@ -75,7 +73,7 @@ public class MainActivity extends BaseBusActivity {
     List<ImageView> imageViews;
     @BindViews({R.id.iv_off_on_controller, R.id.iv_off_line_controller})
     List<SelectorImageView> selectorImageViews;
-    @BindViews({R.id.tv_hz_valus, R.id.tv_room})
+    @BindViews({R.id.tv_hz_valus, R.id.tv_room, R.id.tv_ug, R.id.tv_city, R.id.tv_co2, R.id.tv_out_side, R.id.tv_temp_indoor, R.id.tv_temp_out_side, R.id.tv_speed})
     List<TextView> textViews;
     private Double aimPercent = (0d / 225d) * 100d;
     Bundle bundle;
@@ -113,6 +111,11 @@ public class MainActivity extends BaseBusActivity {
                     break;
                 case StatisConstans.MSG_QUEST_SERVER:
                     pmAllData = (PmAllData) msg.obj;
+                    if (pmAllData.getFanFreq() > 9) {
+                        upData();
+                    } else {
+                        restoreData();
+                    }
                     Intent intentData = new Intent();
                     intentData.setAction(StatisConstans.BROADCAST_HONGREN_DATA);
                     Bundle bundle = new Bundle();
@@ -120,11 +123,6 @@ public class MainActivity extends BaseBusActivity {
                     // 要发送的内容
                     intentData.putExtras(bundle);
                     MainActivity.this.sendBroadcast(intentData);
-                    if (pmAllData.getFanFreq() > 9) {
-                        upData();
-                    } else {
-                        restoreData();
-                    }
                     break;
                 //成功
                 case StatisConstans.MSG_RECEIVED_REGULAR:
@@ -186,14 +184,7 @@ public class MainActivity extends BaseBusActivity {
     protected void initView(Bundle savedInstanceState) {
         instans = this;
         App.getInstance().addActivity(this);
-        tvUg = (TextView) findViewById(R.id.tv_ug);
-        tvCco2 = (TextView) findViewById(R.id.tv_co2);
-        tvCity = (TextView) findViewById(R.id.tv_city);
-        tvOutSide = (TextView) findViewById(R.id.tv_out_side);
-        tvTempIndoor = (TextView) findViewById(R.id.tv_temp_indoor);
-        tvTempOutSide = (TextView) findViewById(R.id.tv_temp_out_side);
-        tvSpeed = (TextView) findViewById(R.id.tv_speed);
-        tvCity.setOnClickListener(this);
+        textViews.get(3).setOnClickListener(this);
         imageViews.get(2).setOnClickListener(this);
         imageViews.get(3).setOnClickListener(this);
         textViews.get(1).setOnClickListener(this);
@@ -391,7 +382,7 @@ public class MainActivity extends BaseBusActivity {
     }
 
     private void GPSLocation() {
-        if (!TextUtils.isEmpty(tvCity.getText().toString().trim())) {
+        if (!TextUtils.isEmpty(textViews.get(3).getText().toString().trim())) {
             return;
         }
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
@@ -410,7 +401,7 @@ public class MainActivity extends BaseBusActivity {
 //                stringBuilder.append(address.getCountryName()).append("_");
 //                System.out.println(stringBuilder.toString());
                 if (!TextUtils.isEmpty(address.getLocality())) {
-                    tvCity.setText(address.getLocality().substring(0, address.getLocality().length() - 1));
+                    textViews.get(3).setText(address.getLocality().substring(0, address.getLocality().length() - 1));
                     sharedPreferencesDB.setString("province", address.getAdminArea().substring(0, address.getLocality().length() - 1));
                     sharedPreferencesDB.setString("city", address.getLocality().substring(0, address.getLocality().length() - 1));
                     sharedPreferencesDB.setString("area", address.getSubLocality());
@@ -493,6 +484,8 @@ public class MainActivity extends BaseBusActivity {
                     }
                 }));
             } catch (Exception e) {
+                request(host, location);
+                Log.d("ConnectionManager", "AbsClient*****已经建立连接");
                 e.printStackTrace();
             }
         }
@@ -508,7 +501,7 @@ public class MainActivity extends BaseBusActivity {
                 public void run() {
                     handler.sendEmptyMessage(StatisConstans.MSG_CYCLIC_TRANSMISSION);
                 }
-            }, 0, 2000);
+            }, 0, 3000);
         }
     }
 
@@ -581,15 +574,15 @@ public class MainActivity extends BaseBusActivity {
             textViews.get(0).setText(pmAllData.getFanFreq() + "");
         }
         if (pmAllData.getCo2Thickness() > 1000) {
-            tvCco2.setTextColor(ContextCompat.getColor(MainActivity.this, R.color.mred));
+            textViews.get(4).setTextColor(ContextCompat.getColor(MainActivity.this, R.color.mred));
         } else {
-            tvCco2.setTextColor(ContextCompat.getColor(MainActivity.this, R.color.green));
+            textViews.get(4).setTextColor(ContextCompat.getColor(MainActivity.this, R.color.green));
         }
         Log.d("xiongzhuo", "跟新数据跟新数据" + pmAllData.getCo2Thickness());
-        tvCco2.setText(pmAllData.getCo2Thickness() + "");
-        tvTempIndoor.setText(sensorIndoorTemp + "℃");
-        tvTempOutSide.setText(sensorOutdoorTemp + "℃");
-        tvSpeed.setText(pmAllData.getBlowingRate() + "");
+        textViews.get(4).setText(pmAllData.getCo2Thickness() + "");
+        textViews.get(6).setText(sensorIndoorTemp + "℃");
+        textViews.get(7).setText(sensorOutdoorTemp + "℃");
+        textViews.get(8).setText(pmAllData.getBlowingRate() + "");
     }
 
     public void restoreData() {
@@ -600,10 +593,10 @@ public class MainActivity extends BaseBusActivity {
         percentView.setRankText("PM2.5室内", "--");
 
         textViews.get(0).setText("--");
-        tvCco2.setTextColor(ContextCompat.getColor(MainActivity.this, R.color.green));
-        tvCco2.setText("--");
-        tvTempIndoor.setText("--℃");
-        tvTempOutSide.setText("--℃");
-        tvSpeed.setText("--");
+        textViews.get(4).setTextColor(ContextCompat.getColor(MainActivity.this, R.color.green));
+        textViews.get(4).setText("--");
+        textViews.get(6).setText("--℃");
+        textViews.get(7).setText("--℃");
+        textViews.get(8).setText("--");
     }
 }

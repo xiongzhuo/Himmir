@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.himmiractivity.Utils.GpsUtils;
 import com.himmiractivity.Utils.ToastUtil;
 import com.himmiractivity.base.BaseBusActivity;
 import com.himmiractivity.entity.DafalutUserRoom;
@@ -274,22 +275,25 @@ public class InformationComitActivity extends BaseBusActivity {
     }
 
     public void request(String host, int location) {
-        try {
-            // 1.连接服务器
-            socket = new Socket(host, location);
-            Log.d("ConnectionManager", "AbsClient*****已经建立连接");
-            protocal = new Protocal();
+        while (GpsUtils.isServerClose(socket)) {
+            try {
+                // 1.连接服务器
+                socket = new Socket(host, location);
+                Log.d("ConnectionManager", "AbsClient*****已经建立连接");
+                protocal = new Protocal();
 //            ThreadPoolUtils threadPoolUtils = new ThreadPoolUtils().execute();
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    ScoketOFFeON.receMessage(socket, protocal, handler);
-                }
-            }).start();
-            ScoketOFFeON.sendMessage(socket, protocal, dataServerBean, server_number, mac);
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ScoketOFFeON.receMessage(socket, protocal, handler);
+                    }
+                }).start();
+                ScoketOFFeON.sendMessage(socket, protocal, dataServerBean, server_number, mac);
 
-        } catch (Exception e) {
-            e.printStackTrace();
+            } catch (Exception e) {
+                request(host, location);
+                e.printStackTrace();
+            }
         }
     }
 }

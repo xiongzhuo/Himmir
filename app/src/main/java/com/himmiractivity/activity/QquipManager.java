@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import com.himmiractivity.Adapter.RvcAdapter;
 import com.himmiractivity.Utils.DividerItemDecoration;
+import com.himmiractivity.Utils.GpsUtils;
 import com.himmiractivity.Utils.SocketSingle;
 import com.himmiractivity.Utils.ToastUtil;
 import com.himmiractivity.Utils.ToastUtils;
@@ -405,14 +406,16 @@ public class QquipManager extends BaseBusActivity implements AlxRefreshLoadMoreR
 
 
     public void request(String host, int location) {
-        try {
-            // 1.连接服务器
-            socket = SocketSingle.getInstance(host, location);
-            Log.d("ConnectionManager", "AbsClient*****已经建立连接");
-            protocal = Protocal.getInstance();
-        } catch (Exception e) {
-            e.printStackTrace();
+        while (GpsUtils.isServerClose(socket)) {
+            try {
+                // 1.连接服务器
+                socket = SocketSingle.getInstance(host, location);
+                Log.d("ConnectionManager", "AbsClient*****已经建立连接");
+                protocal = Protocal.getInstance();
+            } catch (Exception e) {
+                request(host, location);
+                e.printStackTrace();
+            }
         }
-
     }
 }

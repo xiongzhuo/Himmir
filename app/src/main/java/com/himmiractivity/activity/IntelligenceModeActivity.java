@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.himmiractivity.App;
+import com.himmiractivity.Utils.GpsUtils;
 import com.himmiractivity.Utils.SocketSingle;
 import com.himmiractivity.Utils.ToastUtil;
 import com.himmiractivity.Utils.ToastUtils;
@@ -259,14 +260,17 @@ public class IntelligenceModeActivity extends BaseBusActivity {
     };
 
     public void request(String host, int location) {
-        try {
-            // 1.连接服务器
-            socket = SocketSingle.getInstance(host, location);
-            protocal = Protocal.getInstance();
-            ScoketOFFeON.sendMessage(socket, protocal, mac);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        while (GpsUtils.isServerClose(socket)) {
+            try {
+                // 1.连接服务器
+                socket = SocketSingle.getInstance(host, location);
+                protocal = Protocal.getInstance();
+                ScoketOFFeON.sendMessage(socket, protocal, mac);
+            } catch (Exception e) {
+                request(host, location);
+                e.printStackTrace();
+            }
 
+        }
     }
 }

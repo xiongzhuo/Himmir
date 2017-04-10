@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 
 import com.himmiractivity.App;
+import com.himmiractivity.Utils.GpsUtils;
 import com.himmiractivity.Utils.SocketSingle;
 import com.himmiractivity.Utils.ToastUtil;
 import com.himmiractivity.base.BaseBusActivity;
@@ -249,11 +250,12 @@ public class FixedTimeActivity extends BaseBusActivity {
     }
 
     public void request(String host, int location) {
-        try {
-            // 1.连接服务器
-            socket = SocketSingle.getInstance(host, location);
-            Log.d("ConnectionManager", "AbsClient*****已经建立连接");
-            protocal = Protocal.getInstance();
+        while (GpsUtils.isServerClose(socket)) {
+            try {
+                // 1.连接服务器
+                socket = SocketSingle.getInstance(host, location);
+                Log.d("ConnectionManager", "AbsClient*****已经建立连接");
+                protocal = Protocal.getInstance();
 //            ThreadPoolUtils threadPoolUtils = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 1);
 //            threadPoolUtils.execute(new Thread(new Runnable() {
 //                @Override
@@ -261,10 +263,11 @@ public class FixedTimeActivity extends BaseBusActivity {
 //                    ScoketOFFeON.receMessage(socket, protocal, handler);
 //                }
 //            }));
-            ScoketOFFeON.sendMessage(socket, protocal, mac);
-        } catch (Exception e) {
-            e.printStackTrace();
+                ScoketOFFeON.sendMessage(socket, protocal, mac);
+            } catch (Exception e) {
+                request(host, location);
+                e.printStackTrace();
+            }
         }
-
     }
 }
