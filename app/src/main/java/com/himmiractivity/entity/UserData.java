@@ -8,7 +8,7 @@ import java.util.List;
  */
 
 public class UserData implements Serializable {
-    private List<UserRoom> userRoom;
+    private List<UserRoom> userDevs;
 
     private String token;
 
@@ -31,12 +31,12 @@ public class UserData implements Serializable {
 
     private String loginLasttime;
 
-    public void setUserRoom(List<UserRoom> userRoom) {
-        this.userRoom = userRoom;
+    public List<UserRoom> getUserDevs() {
+        return userDevs;
     }
 
-    public List<UserRoom> getUserRoom() {
-        return this.userRoom;
+    public void setUserDevs(List<UserRoom> userDevs) {
+        this.userDevs = userDevs;
     }
 
     public void setToken(String token) {
@@ -127,45 +127,54 @@ public class UserData implements Serializable {
         return this.loginLasttime;
     }
 
-    class UserRoom implements Serializable {
-        private String room_name;
+    public class UserRoom implements Serializable {
+        private String device_mac;
 
-        private int user_room_id;
-
-        private String create_time;
+        private int user_device_id;
 
         private String user_key;
 
-        public void setRoom_name(String room_name) {
-            this.room_name = room_name;
+        private String device_nickname;
+        private String user_token;
+
+        public String getDevice_mac() {
+            return device_mac;
         }
 
-        public String getRoom_name() {
-            return this.room_name;
+        public int getUser_device_id() {
+            return user_device_id;
         }
 
-        public void setUser_room_id(int user_room_id) {
-            this.user_room_id = user_room_id;
+        public String getUser_key() {
+            return user_key;
         }
 
-        public int getUser_room_id() {
-            return this.user_room_id;
+        public String getDevice_nickname() {
+            return device_nickname;
         }
 
-        public String getCreate_time() {
-            return create_time;
+        public String getUser_token() {
+            return user_token;
         }
 
-        public void setCreate_time(String create_time) {
-            this.create_time = create_time;
+        public void setDevice_mac(String device_mac) {
+            this.device_mac = device_mac;
+        }
+
+        public void setUser_device_id(int user_device_id) {
+            this.user_device_id = user_device_id;
         }
 
         public void setUser_key(String user_key) {
             this.user_key = user_key;
         }
 
-        public String getUser_key() {
-            return this.user_key;
+        public void setDevice_nickname(String device_nickname) {
+            this.device_nickname = device_nickname;
+        }
+
+        public void setUser_token(String user_token) {
+            this.user_token = user_token;
         }
     }
 }

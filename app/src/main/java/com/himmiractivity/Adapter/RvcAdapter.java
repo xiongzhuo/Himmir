@@ -63,7 +63,7 @@ public class RvcAdapter extends AlxRefreshLoadMoreRecyclerView.AlxDragRecyclerVi
             myViewHolder.view_buttom.setVisibility(View.GONE);
         }
         if (getDataList().get(position - 1).getUserRoom() != null) {
-            myViewHolder.title.setText(getDataList().get(position - 1).getUserRoom().getRoom_name());
+            myViewHolder.title.setText(getDataList().get(position - 1).getUserdevice().getDevice_nickname());
         }
         if (getDataList().get(position - 1).isOnLine()) {
             myViewHolder.tvOnLine.setText("在线");

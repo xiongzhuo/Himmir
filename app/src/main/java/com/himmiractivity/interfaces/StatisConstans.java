@@ -17,6 +17,7 @@ public interface StatisConstans {
     int MY_PERMISSIONS_REQUEST_LOCATION = 24;
     int MY_PERMISSIONS_REQUEST_READ_PHONE_STATE = 23;
     int MSG_IMAGE_REQUEST = 24;
+    int MSG_SUCCCE_TURS = 244;
     /**
      * 时间request
      */

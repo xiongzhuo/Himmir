@@ -42,6 +42,7 @@ import com.himmiractivity.entity.DataServerBean;
 import com.himmiractivity.entity.PmAllData;
 import com.himmiractivity.entity.Space;
 import com.himmiractivity.entity.UserData;
+import com.himmiractivity.entity.UserRoom;
 import com.himmiractivity.interfaces.StatisConstans;
 import com.himmiractivity.mining.app.zxing.ScoketOFFeON;
 import com.himmiractivity.request.AllDeviceInfoRequest;
@@ -77,21 +78,21 @@ public class MainActivity extends BaseBusActivity {
     List<TextView> textViews;
     private Double aimPercent = (0d / 225d) * 100d;
     Bundle bundle;
+    ListPopupWindow popupWindow = null;
     UserData userData;
     //获取设备
     private List<String> list;
-    private List<Space> space;
+    private List<UserData.UserRoom> space;
     public static MainActivity instans;
     Socket socket;
     Protocal protocal;
     DataServerBean dataServerBean;
     String mac;
-    AllUserDerviceBaen allUserDerviceBaen;
     PmAllData pmAllData;
     int hzNumeber;
     boolean isRevise = false;
-    boolean isOff = true;
-    boolean isFrist = true;
+    //    boolean isOff = true;
+//    boolean isFrist = true;
     private Timer mTimer = null;
 
     private Handler handler = new Handler(new Handler.Callback() {
@@ -127,6 +128,21 @@ public class MainActivity extends BaseBusActivity {
                 //成功
                 case StatisConstans.MSG_RECEIVED_REGULAR:
                     userData = (UserData) msg.obj;
+                    if (userData.getUserDevs() != null && userData.getUserDevs().size() > 0) {
+                        space = userData.getUserDevs();
+                        list = new ArrayList<>();
+                        for (int i = 0; i < space.size(); i++) {
+                            if (!TextUtils.isEmpty(space.get(i).getDevice_nickname())) {
+                                list.add(space.get(i).getDevice_nickname());
+                            } else {
+                                list.add("无名");
+                            }
+                        }
+                        if (list.size() > 0) {
+                            mac = userData.getUserDevs().get(0).getDevice_mac();
+                            textViews.get(1).setText(list.get(0).trim());
+                        }
+                    }
                     initRechclerView();
                     break;
                 case StatisConstans.CONFIG_REGULAR:
@@ -141,27 +157,6 @@ public class MainActivity extends BaseBusActivity {
                         }
                     }));
                     startTimer();
-                    break;
-                case StatisConstans.MSG_QQUIP:
-                    allUserDerviceBaen = (AllUserDerviceBaen) msg.obj;
-                    if (allUserDerviceBaen.getSpace() != null && allUserDerviceBaen.getSpace().size() > 0) {
-                        space = allUserDerviceBaen.getSpace();
-                        list = new ArrayList<>();
-                        for (int i = 0; i < space.size(); i++) {
-                            if (space.get(i).getUserRoom() != null) {
-                                list.add(space.get(i).getUserRoom().getRoom_name());
-                            } else {
-                                list.add("无名");
-                            }
-                        }
-                        if (list.size() > 0) {
-                            if (isFrist) {
-                                mac = allUserDerviceBaen.getSpace().get(0).getDevice().getDevice_mac();
-                                textViews.get(1).setText(list.get(0).trim());
-                                isFrist = false;
-                            }
-                        }
-                    }
                     break;
                 case StatisConstans.MSG_RECEIVED_BOUND:
                     startActivity(new Intent(MainActivity.this, LodingActivity.class));
@@ -184,6 +179,17 @@ public class MainActivity extends BaseBusActivity {
     protected void initView(Bundle savedInstanceState) {
         instans = this;
         App.getInstance().addActivity(this);
+        if (getIntent().getExtras() != null) {
+            bundle = getIntent().getExtras();
+            if (bundle.getSerializable("userData") != null) {
+                userData = (UserData) bundle.getSerializable("userData");
+                initRechclerView();
+            } else {
+                LodingRequest();
+            }
+        } else {
+            LodingRequest();
+        }
         textViews.get(3).setOnClickListener(this);
         imageViews.get(2).setOnClickListener(this);
         imageViews.get(3).setOnClickListener(this);
@@ -225,10 +231,14 @@ public class MainActivity extends BaseBusActivity {
         switch (v.getId()) {
             case R.id.tv_room:
                 if (list != null && list.size() > 0) {
-                    ListPopupWindow popupWindow = new ListPopupWindow(MainActivity.this, textViews.get(1), list, new ListPopupWindow.downOnclick() {
+                    //防止重复按按钮
+                    if (popupWindow != null && popupWindow.isShowing()) {
+                        return;
+                    }
+                    popupWindow = new ListPopupWindow(MainActivity.this, textViews.get(1), list, new ListPopupWindow.downOnclick() {
                         @Override
                         public void onDownItemClick(int position) {
-                            mac = allUserDerviceBaen.getSpace().get(position).getDevice().getDevice_mac();
+                            mac = userData.getUserDevs().get(position).getDevice_mac();
                             textViews.get(1).setText(list.get(position).trim());
                             stopTimer();
                             startTimer();
@@ -450,17 +460,10 @@ public class MainActivity extends BaseBusActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (getIntent().getExtras() != null) {
-            bundle = getIntent().getExtras();
-            if (bundle.getSerializable("userData") != null) {
-                userData = (UserData) bundle.getSerializable("userData");
-                initRechclerView();
-            } else {
-                LodingRequest();
-            }
-        } else {
+        if (!TextUtils.isEmpty(getIntent().getStringExtra("success"))) {
             LodingRequest();
         }
+        startTimer();
     }
 
     @Override
@@ -469,7 +472,7 @@ public class MainActivity extends BaseBusActivity {
         stopTimer();
     }
 
-    public void request(String host, int location) {
+    public void request(final String host, final int location) {
         while (GpsUtils.isServerClose(socket)) {
             try {
                 // 1.连接服务器
@@ -484,7 +487,13 @@ public class MainActivity extends BaseBusActivity {
                     }
                 }));
             } catch (Exception e) {
-                request(host, location);
+                ThreadPoolUtils threadPoolUtils = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 1);
+                threadPoolUtils.execute(new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        request(host, location);
+                    }
+                }));
                 Log.d("ConnectionManager", "AbsClient*****已经建立连接");
                 e.printStackTrace();
             }
@@ -501,7 +510,7 @@ public class MainActivity extends BaseBusActivity {
                 public void run() {
                     handler.sendEmptyMessage(StatisConstans.MSG_CYCLIC_TRANSMISSION);
                 }
-            }, 0, 3000);
+            }, 0, 2000);
         }
     }
 
@@ -532,12 +541,6 @@ public class MainActivity extends BaseBusActivity {
 
 
     private void initRechclerView() {
-        AllDeviceInfoRequest allDeviceInfoRequest = new AllDeviceInfoRequest(sharedPreferencesDB, this, handler);
-        try {
-            allDeviceInfoRequest.requestCode();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         try {
             DataServerConfigRequest dataServerConfigRequest = new DataServerConfigRequest(sharedPreferencesDB, handler, MainActivity.this);
             dataServerConfigRequest.requestCode();
@@ -549,14 +552,14 @@ public class MainActivity extends BaseBusActivity {
     public void upData() {
         selectorImageViews.get(0).setVisibility(View.VISIBLE);
         selectorImageViews.get(1).setVisibility(View.GONE);
-        if (isOff) {
-            if (!TextUtils.isEmpty(pmAllData.getoNstate()) && pmAllData.getoNstate().equals("开机")) {
-                selectorImageViews.get(0).toggle(true);
-            } else {
-                selectorImageViews.get(0).toggle(false);
-            }
-            isOff = false;
+//        if (isOff) {
+        if (!TextUtils.isEmpty(pmAllData.getoNstate()) && pmAllData.getoNstate().equals("开机")) {
+            selectorImageViews.get(0).toggle(true);
+        } else {
+            selectorImageViews.get(0).toggle(false);
         }
+//            isOff = false;
+//        }
         aimPercent = ((double) pmAllData.getIndoorPmThickness() / 225d) * 100d;
         double sensorIndoorTemp = (double) pmAllData.getSensorIndoorTemp() / 10;
         double sensorOutdoorTemp = (double) pmAllData.getSensorOutdoorTemp() / 10;
@@ -599,4 +602,5 @@ public class MainActivity extends BaseBusActivity {
         textViews.get(7).setText("--℃");
         textViews.get(8).setText("--");
     }
+
 }

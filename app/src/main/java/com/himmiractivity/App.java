@@ -19,12 +19,6 @@ public class App extends Application {
     private List<Activity> activityList = new LinkedList<>();
     //为了实现每次使用该类时不创建新的对象而创建的静态对象
     private static App instance;
-    private Handler handler = new Handler(new Handler.Callback() {
-        @Override
-        public boolean handleMessage(Message msg) {
-            return false;
-        }
-    });
 
     //实例化一次
     public synchronized static App getInstance() {
@@ -39,9 +33,9 @@ public class App extends Application {
         super.onCreate();
         Fresco.initialize(this);
         x.Ext.init(this);
-        MyCrashHandler handler = MyCrashHandler.getInstance(this.handler);
-        handler.init(getApplicationContext());
-        Thread.setDefaultUncaughtExceptionHandler(handler);
+//        MyCrashHandler handler = MyCrashHandler.getInstance(this.handler);
+//        handler.init(getApplicationContext());
+//        Thread.setDefaultUncaughtExceptionHandler(handler);
     }
 
     // add Activity

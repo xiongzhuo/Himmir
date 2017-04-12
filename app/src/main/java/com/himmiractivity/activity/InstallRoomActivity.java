@@ -16,7 +16,7 @@ import com.himmiractivity.Adapter.RoomAdapter;
 import com.himmiractivity.Utils.ToastUtil;
 import com.himmiractivity.base.BaseBusActivity;
 import com.himmiractivity.entity.ArticleInfo;
-import com.himmiractivity.entity.DafalutUserRoom;
+import com.himmiractivity.entity.UserRoom;
 import com.himmiractivity.interfaces.StatisConstans;
 import com.himmiractivity.request.DefaultUserRoomRequest;
 import com.himmiractivity.view.HomeDialog;
@@ -41,15 +41,14 @@ public class InstallRoomActivity extends BaseBusActivity {
     HomeDialog homeDialog;
     ArticleInfo articleInfo;
     RoomAdapter adapter;
-    List<DafalutUserRoom> list = new ArrayList<>();
-
+    List<UserRoom> list = new ArrayList<>();
     private Handler handler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
             switch (msg.what) {
                 case StatisConstans.MSG_RECEIVED_REGULAR:
                     articleInfo = (ArticleInfo) msg.obj;
-                    list = articleInfo.getDafalutUserRoom();
+                    list = articleInfo.getUserRoom();
                     adapter = new RoomAdapter(
                             InstallRoomActivity.this, list);
                     listview.setAdapter(adapter);
@@ -73,11 +72,12 @@ public class InstallRoomActivity extends BaseBusActivity {
         initTitleBar();
         setRightView("确定", true);
         tvAddRoom.setOnClickListener(this);
-        if (getIntent().getExtras().getSerializable("list") != null) {
+        if (getIntent().getExtras().getSerializable("articleInfo") != null) {
             Bundle bundle = getIntent().getExtras();
-            list = (List<DafalutUserRoom>) bundle.getSerializable("list");
+            articleInfo = (ArticleInfo) bundle.getSerializable("articleInfo");
             adapter = new RoomAdapter(
-                    InstallRoomActivity.this, list);
+                    InstallRoomActivity.this, articleInfo.getUserRoom());
+            adapter.setPosition2(bundle.getInt("position", -1));
             listview.setAdapter(adapter);
         } else {
             try {
@@ -101,18 +101,7 @@ public class InstallRoomActivity extends BaseBusActivity {
                 finish();
                 break;
             case R.id.btn_right:
-                if (adapter.getPosition2() < 0) {
-                    ToastUtil.show(InstallRoomActivity.this, "至少选择一个房间");
-                    return;
-                }
-                Intent intent = new Intent();
-                Bundle bun = new Bundle();
-                bun.putSerializable(StatisConstans.KEY_SAVE_LABLE,
-                        (Serializable) adapter.getData());
-                bun.putInt("position", adapter.getPosition2());
-                intent.putExtras(bun);
-                setResult(Activity.RESULT_OK, intent);
-                finish();
+                comit();
                 break;
             case R.id.btn_canel:
                 homeDialog.close();
@@ -132,7 +121,7 @@ public class InstallRoomActivity extends BaseBusActivity {
                     ToastUtil.show(InstallRoomActivity.this, "请输入不同的房间名称");
                     return;
                 }
-                DafalutUserRoom dafalutUserRoom = new DafalutUserRoom();
+                UserRoom dafalutUserRoom = new UserRoom();
                 dafalutUserRoom.setRoom_name(homeDialog.getName());
                 list.add(dafalutUserRoom);
                 if (adapter != null) {
@@ -164,5 +153,21 @@ public class InstallRoomActivity extends BaseBusActivity {
                 break;
 
         }
+    }
+
+    private void comit() {
+        if (adapter.getPosition2() < 0) {
+            ToastUtil.show(InstallRoomActivity.this, "至少选择一个房间");
+            return;
+        }
+        Intent intent = new Intent();
+        Bundle bun = new Bundle();
+        bun.putSerializable(StatisConstans.KEY_SAVE_LABLE,
+                (Serializable) articleInfo);
+        bun.putInt("position", adapter.getPosition2());
+        intent.putExtras(bun);
+
+        setResult(Activity.RESULT_OK, intent);
+        finish();
     }
 }

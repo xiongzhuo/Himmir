@@ -15,8 +15,11 @@ import com.himmiractivity.interfaces.StatisConstans;
 import com.himmiractivity.request.ModifyPwdRequest;
 import com.himmiractivity.view.ClearEditText;
 
+import java.util.List;
+
 import activity.hamir.com.himmir.R;
 import butterknife.BindView;
+import butterknife.BindViews;
 
 /**
  * 修改密码
@@ -25,12 +28,8 @@ import butterknife.BindView;
 public class RevicePassActivity extends BaseBusActivity {
     @BindView(R.id.btn_revise_comit)
     Button btnReviseComit;
-    @BindView(R.id.et_old_pass)
-    ClearEditText etOldPass;
-    @BindView(R.id.et_new_pass)
-    ClearEditText etNewPass;
-    @BindView(R.id.et_pass_new_comit)
-    ClearEditText etPassNewComit;
+    @BindViews({R.id.et_old_pass, R.id.et_new_pass, R.id.et_pass_new_comit})
+    List<ClearEditText> clearEditTexts;
     private Handler handler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
@@ -80,9 +79,9 @@ public class RevicePassActivity extends BaseBusActivity {
 
     //验证是否通过
     private void confirmation() {
-        String oldPwd = etOldPass.getText().toString().trim();
-        String newPwd = etNewPass.getText().toString().trim();
-        String newPwdCimt = etPassNewComit.getText().toString().trim();
+        String oldPwd = clearEditTexts.get(0).getText().toString().trim();
+        String newPwd = clearEditTexts.get(1).getText().toString().trim();
+        String newPwdCimt = clearEditTexts.get(2).getText().toString().trim();
         if (TextUtils.isEmpty(oldPwd)) {
             ToastUtils.show(RevicePassActivity.this, "请输入您的旧密码", Toast.LENGTH_SHORT);
             return;

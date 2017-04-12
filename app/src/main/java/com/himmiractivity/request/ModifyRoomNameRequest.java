@@ -48,10 +48,11 @@ public class ModifyRoomNameRequest {
         }
         RequestParams params = new RequestParams(Configuration.URL_MODIFY_ROOM_NAME);
         params.addBodyParameter("mobile", sharedPreferencesDB.getString("phone", ""));
-        params.addBodyParameter("userDeviceUuid", sharedPreferencesDB.getString("userDeviceUuid", ""));
         params.addBodyParameter("userToken", sharedPreferencesDB.getString("token", ""));
-        params.addBodyParameter("userRoomId", userRoomId);
-        params.addBodyParameter("userRoomNewName", userRoomNewName);
+        params.addBodyParameter("userKey", sharedPreferencesDB.getString("key", ""));
+        params.addBodyParameter("userDevSn", userRoomId);
+        params.addBodyParameter("userDevNickName", userRoomNewName);
+        Log.d("dataServer", sharedPreferencesDB.getString("phone", "") + "===" + sharedPreferencesDB.getString("token", "") + "===" + sharedPreferencesDB.getString("key", "") + "===" + userRoomId + "===" + userRoomNewName);
         x.http().post(params, new Callback.CacheCallback<String>() {
             @Override
             public void onSuccess(String json) {

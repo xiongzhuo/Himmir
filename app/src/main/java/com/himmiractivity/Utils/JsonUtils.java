@@ -93,7 +93,7 @@ public class JsonUtils {
         JSONObject jsonObject = new JSONObject(json);
         boolean flag = jsonObject.optBoolean("flag", false);
         String msg = jsonObject.optString("msg", "");
-        if (flag) {
+         if (flag) {
             String obj = jsonObject.optString("data");
             Object o = getObject(obj, type);
             jsonResult.setData(o);

@@ -44,6 +44,7 @@ public class DataServerConfigRequest {
         RequestParams params = new RequestParams(Configuration.URL_GETDATASERVERCONFIG);
         params.addBodyParameter("mobile", sharedPreferencesDB.getString("phone", ""));
         params.addBodyParameter("userDeviceUuid", sharedPreferencesDB.getString("userDeviceUuid", ""));
+        params.addBodyParameter("userToken", sharedPreferencesDB.getString("token", ""));
         x.http().post(params, new Callback.CacheCallback<String>() {
             @Override
             public void onSuccess(String json) {

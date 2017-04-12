@@ -1,5 +1,6 @@
 package com.himmiractivity.activity;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -74,6 +75,7 @@ public class QquipManager extends BaseBusActivity implements AlxRefreshLoadMoreR
                 case StatisConstans.MSG_DELETE:
                     ImageBean destr = (ImageBean) msg.obj;
                     if (deletePosition != -1) {
+                        setResult(Activity.RESULT_OK);
                         rvcAdapter.removeData(deletePosition);
                         alertDialog.dismiss();
                     }
@@ -81,30 +83,33 @@ public class QquipManager extends BaseBusActivity implements AlxRefreshLoadMoreR
                 case StatisConstans.MSG_MODIFY_NAME:
                     ImageBean mostr = (ImageBean) msg.obj;
                     if (deletePosition != -1) {
-                        allUserDerviceBaen.getSpace().get(deletePosition).getUserRoom().setRoom_name(name);
+                        setResult(Activity.RESULT_OK);
+                        allUserDerviceBaen.getSpace().get(deletePosition).getUserdevice().setDevice_nickname(name);
                         rvcAdapter.setmDatas(allUserDerviceBaen.getSpace());
                     }
                     break;
                 //成功
                 case StatisConstans.MSG_QQUIP:
                     allUserDerviceBaen = (AllUserDerviceBaen) msg.obj;
-                    if (onLinePos < allUserDerviceBaen.getSpace().size()) {
-                        Log.d("device_mac", allUserDerviceBaen.getSpace().get(onLinePos).getDevice().getDevice_mac() + "onLinePos:" + onLinePos);
-                        ScoketOFFeON.sendMessage(socket, protocal, allUserDerviceBaen.getSpace().get(onLinePos).getDevice().getDevice_mac());
-                    }
+                    if (allUserDerviceBaen.getSpace() != null && allUserDerviceBaen.getSpace().size() > 0) {
+                        if (onLinePos < allUserDerviceBaen.getSpace().size()) {
+                            Log.d("device_mac", allUserDerviceBaen.getSpace().get(onLinePos).getDevice().getDevice_mac() + "onLinePos:" + onLinePos);
+                            ScoketOFFeON.sendMessage(socket, protocal, allUserDerviceBaen.getSpace().get(onLinePos).getDevice().getDevice_mac());
+                        }
 //                    mRecyclerView.setLayoutManager(new LinearLayoutManager(QquipManager.this));
-                    rvcAdapter = new RvcAdapter(QquipManager.this, allUserDerviceBaen.getSpace(), R.layout.list_item, true);
-                    rvcAdapter.setPullLoadMoreEnable(false);
-                    mRecyclerView.setPullLoadEnable(false);
-                    mRecyclerView.setAdapter(rvcAdapter);
-                    //设置Item增加、移除动画
-                    mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-                    //添加分割线
-                    mRecyclerView.addItemDecoration(new DividerItemDecoration(
-                            QquipManager.this, DividerItemDecoration.HORIZONTAL));
-                    rvcAdapter.setOnItemClickLitener(QquipManager.this);
-                    mRecyclerView.setLoadMoreListener(QquipManager.this);
-                    mRecyclerView.setOnRefreshListener(QquipManager.this);
+                        rvcAdapter = new RvcAdapter(QquipManager.this, allUserDerviceBaen.getSpace(), R.layout.list_item, true);
+                        rvcAdapter.setPullLoadMoreEnable(false);
+                        mRecyclerView.setPullLoadEnable(false);
+                        mRecyclerView.setAdapter(rvcAdapter);
+                        //设置Item增加、移除动画
+                        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+                        //添加分割线
+                        mRecyclerView.addItemDecoration(new DividerItemDecoration(
+                                QquipManager.this, DividerItemDecoration.HORIZONTAL));
+                        rvcAdapter.setOnItemClickLitener(QquipManager.this);
+                        mRecyclerView.setLoadMoreListener(QquipManager.this);
+                        mRecyclerView.setOnRefreshListener(QquipManager.this);
+                    }
                     break;
                 default:
                     break;
@@ -354,8 +359,13 @@ public class QquipManager extends BaseBusActivity implements AlxRefreshLoadMoreR
                         ToastUtils.show(QquipManager.this, "输入的姓名不能为空", Toast.LENGTH_LONG);
                         return;
                     }
+                    for (int i = 0; i < allUserDerviceBaen.getSpace().size(); i++) {
+                        if (name.equals(allUserDerviceBaen.getSpace().get(i).getUserdevice().getDevice_nickname())) {
+                            name = name + "-1";
+                        }
+                    }
                     try {
-                        ModifyRoomNameRequest modifyRoomNameRequest = new ModifyRoomNameRequest(QquipManager.this, sharedPreferencesDB, name, allUserDerviceBaen.getSpace().get(deletePosition).getUserRoom().getUser_room_id() + "", mHandler);
+                        ModifyRoomNameRequest modifyRoomNameRequest = new ModifyRoomNameRequest(QquipManager.this, sharedPreferencesDB, name, allUserDerviceBaen.getSpace().get(deletePosition).getUserdevice().getDevice_sn(), mHandler);
                         modifyRoomNameRequest.requestCode();
                     } catch (Exception e) {
                         e.printStackTrace();

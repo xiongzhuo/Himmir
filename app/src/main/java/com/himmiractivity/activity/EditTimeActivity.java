@@ -39,6 +39,7 @@ public class EditTimeActivity extends BaseBusActivity {
     private WheelView hour;
     private WheelView mins;
     String time;
+    AlertDialog dialog;
 
     @Override
     protected int getContentLayoutId() {
@@ -99,7 +100,11 @@ public class EditTimeActivity extends BaseBusActivity {
      * 显示时间
      */
     private void showTimeDialog(final String offandon, String string) {
-        final AlertDialog dialog = new AlertDialog.Builder(EditTimeActivity.this)
+        //防止重复按按钮
+        if (dialog != null && dialog.isShowing()) {
+            return;
+        }
+        dialog = new AlertDialog.Builder(EditTimeActivity.this)
                 .create();
         dialog.show();
         Window window = dialog.getWindow();

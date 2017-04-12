@@ -57,6 +57,7 @@ public class IntelligenceModeActivity extends BaseBusActivity {
     String mac;
     Protocal protocal;
     PmAllData pmAllData;
+    AlertDialog dialog;
     private boolean isFirst = true;//只有一次
     boolean muteMode;
     boolean coMode;
@@ -148,14 +149,18 @@ public class IntelligenceModeActivity extends BaseBusActivity {
         muteMode = checkBoxs.get(0).isChecked();
         coMode = checkBoxs.get(1).isChecked();
         pmMode = checkBoxs.get(2).isChecked();
-        String[] arrCO = textViews.get(0).getText().toString().trim().split(" ");
+        String[] arrCO = textViews.get(0).getText().toString().trim().split("\\ ");
         coNumber = Integer.parseInt(arrCO[0]);
-        String[] arrPM = textViews.get(1).getText().toString().trim().split(" ");
+        String[] arrPM = textViews.get(1).getText().toString().trim().split("\\ ");
         pmNumber = Integer.parseInt(arrPM[0]);
         ScoketOFFeON.sendNoopsycheMode(socket, protocal, mac, muteMode, coMode, pmMode, coNumber, pmNumber);
     }
 
     public void showinputPassdialog(String head, String headHit, final String isTool) {
+        //防止重复按按钮
+        if (dialog != null && dialog.isShowing()) {
+            return;
+        }
         LayoutInflater inflater = getLayoutInflater();
         final View view = inflater.inflate(R.layout.dialog_renname, null);
         Button btnComit = (Button) view.findViewById(R.id.btn_comit);
@@ -165,7 +170,7 @@ public class IntelligenceModeActivity extends BaseBusActivity {
         etNewName.setHint(headHit);
         tv_head.setText(head);
         etNewName.setInputType(InputType.TYPE_CLASS_NUMBER);
-        final AlertDialog dialog = new AlertDialog.Builder(IntelligenceModeActivity.this)
+        dialog = new AlertDialog.Builder(IntelligenceModeActivity.this)
                 .create();
         Window w = dialog.getWindow();
         if (w != null) {
@@ -202,7 +207,7 @@ public class IntelligenceModeActivity extends BaseBusActivity {
                         textViews.get(0).setText("800 ppm");
                         ToastUtils.show(IntelligenceModeActivity.this, "CO₂的最小值为800", Toast.LENGTH_LONG);
                     } else {
-                        textViews.get(0).setText(etNewName.getText().toString().trim() + "ppm");
+                        textViews.get(0).setText(etNewName.getText().toString().trim() + " ppm");
                     }
                 } else {
                     if (Integer.valueOf(etNewName.getText().toString().trim()) >= 1000) {

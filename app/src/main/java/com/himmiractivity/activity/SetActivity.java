@@ -36,6 +36,7 @@ import com.himmiractivity.Constant.Configuration;
 import com.himmiractivity.Utils.ChangePhotosUtils;
 import com.himmiractivity.Utils.FiledUtil;
 import com.himmiractivity.Utils.IntentUtilsTwo;
+import com.himmiractivity.Utils.ToastUtil;
 import com.himmiractivity.Utils.ToastUtils;
 import com.himmiractivity.Utils.UiUtil;
 import com.himmiractivity.base.BaseBusActivity;
@@ -63,7 +64,6 @@ import butterknife.BindViews;
  */
 
 public class SetActivity extends BaseBusActivity {
-    private ImageLoader im = ImageLoader.getInstance();
     public final String IMAGE_UNSPECIFIED = "image/*";
     private List<File> files;// 图片文件集合
     public static final int P_CAMERA = 1;
@@ -99,6 +99,7 @@ public class SetActivity extends BaseBusActivity {
                 //成功
                 case StatisConstans.MSG_RECEIVED_REGULAR:
                     ModifyNameData modifyNameData = (ModifyNameData) msg.obj;
+                    ToastUtil.show(SetActivity.this, "修改成功");
                     tvTitle.setText(modifyNameData.getUserName());
                     break;
                 case StatisConstans.MSG_IMAGE_SUCCES:
@@ -108,13 +109,11 @@ public class SetActivity extends BaseBusActivity {
                          * 圆形头像加载
                          * */
                         Uri uri = Uri.parse(MediaStore.Images.Media.insertImage(SetActivity.this.getContentResolver(), photo, null, null));
-                        DraweeController circleImageController = Fresco.newDraweeControllerBuilder()
+                        simImage.setController(Fresco.newDraweeControllerBuilder()
                                 .setUri(uri)
                                 .setTapToRetryEnabled(true)
                                 .setOldController(simImage.getController())
-                                .build();
-                        simImage.setController(circleImageController);
-//                        simImage.setImageBitmap(photo);
+                                .build());
                         isResult = true;
                     }
                     break;
@@ -134,8 +133,6 @@ public class SetActivity extends BaseBusActivity {
     @Override
     protected void initView(Bundle savedInstanceState) {
         App.getInstance().addActivity(this);
-        im.init(ImageLoaderConfiguration
-                .createDefault(SetActivity.this));
         if (getIntent().getExtras() != null) {
             bundle = getIntent().getExtras();
             if (bundle.getSerializable("userData") != null) {
@@ -144,12 +141,11 @@ public class SetActivity extends BaseBusActivity {
                 /**
                  * 圆形头像加载
                  * */
-                DraweeController circleImageController = Fresco.newDraweeControllerBuilder()
+                simImage.setController(Fresco.newDraweeControllerBuilder()
                         .setUri(Configuration.HOST + userData.getUserImage())
                         .setTapToRetryEnabled(true)
                         .setOldController(simImage.getController())
-                        .build();
-                simImage.setController(circleImageController);
+                        .build());
             }
         }
         files = new ArrayList<>();
@@ -213,7 +209,7 @@ public class SetActivity extends BaseBusActivity {
             case R.id.ll_equip:
                 Intent intentEq = new Intent();
                 intentEq.setClass(this, QquipManager.class);
-                startActivity(intentEq);
+                startActivityForResult(intentEq, StatisConstans.MSG_SUCCCE_TURS);
                 break;
             case R.id.cir_image:
                 getPhoto();
@@ -229,6 +225,10 @@ public class SetActivity extends BaseBusActivity {
                 openPopupWindow();
                 break;
             case R.id.tv_title:
+                //防止重复按按钮
+                if (dialog != null && dialog.isShowing()) {
+                    return;
+                }
                 dialog = new ResetNameDialog(SetActivity.this);
                 Window w = dialog.getWindow();
                 if (w != null) {
@@ -405,6 +405,9 @@ public class SetActivity extends BaseBusActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == StatisConstans.MSG_SUCCCE_TURS && resultCode == Activity.RESULT_OK) {
+            setResult(Activity.RESULT_OK);
+        }
         /* 拍照 */
         if (requestCode == P_CAMERA) {
             // 设置文件保存路径这里放在跟目录下

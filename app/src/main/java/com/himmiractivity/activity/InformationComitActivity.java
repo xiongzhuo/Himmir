@@ -14,10 +14,11 @@ import android.widget.TextView;
 import com.himmiractivity.Utils.GpsUtils;
 import com.himmiractivity.Utils.ToastUtil;
 import com.himmiractivity.base.BaseBusActivity;
-import com.himmiractivity.entity.DafalutUserRoom;
+import com.himmiractivity.entity.ArticleInfo;
 import com.himmiractivity.entity.DataServerBean;
 import com.himmiractivity.entity.DeviceInfoBean;
 import com.himmiractivity.entity.ImageBean;
+import com.himmiractivity.entity.UserRoom;
 import com.himmiractivity.interfaces.StatisConstans;
 import com.himmiractivity.mining.app.zxing.ScoketOFFeON;
 import com.himmiractivity.request.DataServerConfigRequest;
@@ -34,26 +35,15 @@ import java.util.List;
 
 import activity.hamir.com.himmir.R;
 import butterknife.BindView;
+import butterknife.BindViews;
 
 public class InformationComitActivity extends BaseBusActivity {
-    @BindView(R.id.et_username)
-    ClearEditText etUsername;
-    @BindView(R.id.et_full_address)
-    ClearEditText etFullAddress;
-    @BindView(R.id.tv_city_choise)
-    Button tvCityChoise;
-    @BindView(R.id.tv_install_site)
-    Button tvInstallSite;
-    @BindView(R.id.tv_unit_type)
-    TextView tvUnitType;
-    @BindView(R.id.tv_manufacturing_date)
-    TextView tvManufacturingDate;
-    @BindView(R.id.bt_stroe)
-    ClearEditText btStroe;
+    @BindViews({R.id.et_username, R.id.et_full_address, R.id.bt_stroe, R.id.et_nice})
+    List<ClearEditText> clearEditTexts;
     @BindView(R.id.btn_choose_room)
     Button btnChooseRoom;
-    @BindView(R.id.btn_qr_next)
-    Button btnQrNext;
+    @BindViews({R.id.tv_unit_type, R.id.tv_manufacturing_date, R.id.tv_city_choise, R.id.tv_install_site, R.id.et_nice})
+    List<TextView> textViews;
     DataServerBean dataServerBean;
     DeviceInfoBean deviceInfoBean;
     String server_number;
@@ -65,7 +55,8 @@ public class InformationComitActivity extends BaseBusActivity {
     ChangeAddressDialog mChangeAddressDialog;
     ChangeAddressDialog dialog;
     public final int ACTIVITY_MORE_MESSAGE = 169;
-    List<DafalutUserRoom> list;
+    List<UserRoom> list;
+    private ArticleInfo articleInfo;
     int position = -1;
     Socket socket;
     Protocal protocal;
@@ -90,6 +81,7 @@ public class InformationComitActivity extends BaseBusActivity {
                     ImageBean imageBean = (ImageBean) msg.obj;
                     ToastUtil.show(InformationComitActivity.this, imageBean.getSuccess());
                     Intent intent = new Intent(InformationComitActivity.this, MainActivity.class);
+                    intent.putExtra("success", "true");
                     startActivity(intent);
                     break;
                 case StatisConstans.MSG_ENABLED_SUCCESSFUL:
@@ -114,18 +106,20 @@ public class InformationComitActivity extends BaseBusActivity {
     protected void initView(Bundle savedInstanceState) {
         setMidTxt("信息确认");
         initTitleBar();
-        tvCityChoise.setOnClickListener(this);
-        tvInstallSite.setOnClickListener(this);
+        setRightView("绑定", true);
+        textViews.get(2).setOnClickListener(this);
+        textViews.get(3).setOnClickListener(this);
         btnChooseRoom.setOnClickListener(this);
-        btnQrNext.setOnClickListener(this);
         if (getIntent().getExtras() != null) {
             Bundle bundle = getIntent().getExtras();
             deviceInfoBean = (DeviceInfoBean) bundle.getSerializable("device_info");
             server_number = bundle.getString("server_number");
             mac = bundle.getString("mac");
             ip = bundle.getString("ip");
-            tvUnitType.setText(deviceInfoBean.getDeviceInfo().getDevice_type());
-            tvManufacturingDate.setText(deviceInfoBean.getDeviceInfo().getDevice_shipmenttime());
+            Log.d("mac", "mac:" + mac);
+            Log.d("mac", "ip:" + ip);
+            textViews.get(0).setText(deviceInfoBean.getDeviceInfo().getDevice_type());
+            textViews.get(1).setText(deviceInfoBean.getDeviceInfo().getDevice_shipmenttime());
 
         }
         try {
@@ -144,8 +138,8 @@ public class InformationComitActivity extends BaseBusActivity {
         provinceChoise = sharedPreferencesDB.getString("province", "");
         cityChoise = sharedPreferencesDB.getString("city", "");
         areaChoise = sharedPreferencesDB.getString("area", "");
-        tvCityChoise.setText(provinceChoise + "省-" + cityChoise + "市-" + areaChoise);
-        tvInstallSite.setText(provinceSite + "省-" + citySite + "市-" + areaSite);
+        textViews.get(2).setText(provinceChoise + "省-" + cityChoise + "市-" + areaChoise);
+        textViews.get(3).setText(provinceSite + "省-" + citySite + "市-" + areaSite);
     }
 
     @Override
@@ -158,7 +152,15 @@ public class InformationComitActivity extends BaseBusActivity {
                     list.clear();
                 }
                 position = bundle.getInt("position");
-                list = (List<DafalutUserRoom>) bundle.get(StatisConstans.KEY_SAVE_LABLE);
+                articleInfo = (ArticleInfo) bundle.get(StatisConstans.KEY_SAVE_LABLE);
+                list = articleInfo.getUserRoom();
+                String name = list.get(position).getRoom_name();
+                for (int i = 0; i < articleInfo.getUserDevsNickname().size(); i++) {
+                    if (articleInfo.getUserDevsNickname().get(i).getDevice_nickname().equals(name)) {
+                        name = name + "-1";
+                    }
+                }
+                textViews.get(4).setText(name);
                 btnChooseRoom.setText(list.get(position).getRoom_name());
             }
         }
@@ -171,16 +173,17 @@ public class InformationComitActivity extends BaseBusActivity {
                 finish();
 //                startActivity(new Intent(InformationComitActivity.this, EditTimeActivity.class));
                 break;
-            case R.id.btn_qr_next:
+            case R.id.btn_right:
                 confirmation();
                 break;
             case R.id.btn_choose_room:
                 Intent intent = new Intent(InformationComitActivity.this,
                         InstallRoomActivity.class);
                 Bundle extras = new Bundle();
-                if (list != null && list.size() > 0) {
-                    extras.putSerializable("list", (Serializable) list);
+                if (articleInfo != null) {
+                    extras.putSerializable("articleInfo", (Serializable) articleInfo);
                 }
+                extras.putInt("position", position);
                 intent.putExtras(extras);
                 InformationComitActivity.this.startActivityForResult(intent,
                         ACTIVITY_MORE_MESSAGE);
@@ -200,7 +203,7 @@ public class InformationComitActivity extends BaseBusActivity {
                                 provinceChoise = province;
                                 cityChoise = city;
                                 areaChoise = area;
-                                tvCityChoise.setText(provinceChoise + "省-" + cityChoise + "市-" + areaChoise);
+                                textViews.get(2).setText(provinceChoise + "省-" + cityChoise + "市-" + areaChoise);
                             }
                         });
                 break;
@@ -219,7 +222,7 @@ public class InformationComitActivity extends BaseBusActivity {
                                 provinceSite = province;
                                 citySite = city;
                                 areaSite = area;
-                                tvInstallSite.setText(provinceSite + "省-" + citySite + "市-" + areaSite);
+                                textViews.get(3).setText(provinceSite + "省-" + citySite + "市-" + areaSite);
                             }
                         });
                 break;
@@ -231,10 +234,11 @@ public class InformationComitActivity extends BaseBusActivity {
 
     //验证信息是否通过
     private void confirmation() {
-        String name = etUsername.getText().toString().trim();
-        String address = etFullAddress.getText().toString().trim();
-        String stroe = btStroe.getText().toString().trim();
+        String name = clearEditTexts.get(0).getText().toString().trim();
+        String address = clearEditTexts.get(1).getText().toString().trim();
+        String stroe = clearEditTexts.get(2).getText().toString().trim();
         String room = btnChooseRoom.getText().toString().trim();
+        String device = textViews.get(4).getText().toString().trim();
         if (!isdeploy) {
             ToastUtil.show(this, "请重新激活配置档!");
             return;
@@ -250,8 +254,20 @@ public class InformationComitActivity extends BaseBusActivity {
         } else if (TextUtils.isEmpty(room) || room.contains("选择安装房间")) {
             ToastUtil.show(this, "请选择安装房间");
             return;
+        } else if (TextUtils.isEmpty(device)) {
+            ToastUtil.show(this, "请输入设备昵称");
+            return;
         }
-        ReceiveUserDeviceInfoRequest receiveUserDeviceInfoRequest = new ReceiveUserDeviceInfoRequest(sharedPreferencesDB, InformationComitActivity.this, handler, room, name, deviceInfoBean.getDeviceInfo().getDevice_mac(), deviceInfoBean.getDeviceInfo().getDevice_sn());
+        for (int i = 0; i < articleInfo.getUserDevsNickname().size(); i++) {
+            if (articleInfo.getUserDevsNickname().get(i).getDevice_nickname().equals(name)) {
+                name = name + "-1";
+                textViews.get(4).setText(name);
+                ToastUtil.show(InformationComitActivity.this, "设备名称重复");
+                return;
+            }
+        }
+
+        ReceiveUserDeviceInfoRequest receiveUserDeviceInfoRequest = new ReceiveUserDeviceInfoRequest(sharedPreferencesDB, InformationComitActivity.this, handler, room, name, mac, deviceInfoBean.getDeviceInfo().getDevice_sn(), device);
         try {
             receiveUserDeviceInfoRequest.setBuyAddress(provinceChoise + "省", cityChoise + "市", areaChoise, stroe);
             receiveUserDeviceInfoRequest.setinstallAddress(provinceSite + "省", citySite + "市", areaSite, address);
@@ -275,25 +291,21 @@ public class InformationComitActivity extends BaseBusActivity {
     }
 
     public void request(String host, int location) {
-        while (GpsUtils.isServerClose(socket)) {
-            try {
-                // 1.连接服务器
-                socket = new Socket(host, location);
-                Log.d("ConnectionManager", "AbsClient*****已经建立连接");
-                protocal = new Protocal();
-//            ThreadPoolUtils threadPoolUtils = new ThreadPoolUtils().execute();
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        ScoketOFFeON.receMessage(socket, protocal, handler);
-                    }
-                }).start();
-                ScoketOFFeON.sendMessage(socket, protocal, dataServerBean, server_number, mac);
-
-            } catch (Exception e) {
-                request(host, location);
-                e.printStackTrace();
-            }
+        try {
+            // 1.连接服务器
+            socket = new Socket(host, location);
+            Log.d("ConnectionManager", "AbsClient*****已经建立连接");
+            protocal = new Protocal();
+            ThreadPoolUtils threadPoolUtils = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 1);
+            threadPoolUtils.execute(new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    ScoketOFFeON.receMessage(socket, protocal, handler);
+                }
+            }));
+            ScoketOFFeON.sendMessage(socket, protocal, dataServerBean, server_number, mac);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

@@ -5,6 +5,8 @@ import java.io.Serializable;
 public class Space implements Serializable {
     private boolean onLine;
 
+    private Userdevice Userdevice;
+
     private UserRoom userRoom;
 
     private DeviceFreshAirData deviceFreshAirData;
@@ -15,54 +17,12 @@ public class Space implements Serializable {
 
     private InstallAddress installAddress;
 
-    public boolean isOnLine() {
-        return onLine;
+    public void setUserdevice(Userdevice Userdevice) {
+        this.Userdevice = Userdevice;
     }
 
-    public void setOnLine(boolean onLine) {
-        this.onLine = onLine;
-    }
-
-    public class UserRoom {
-        private String room_name;
-
-        private int user_room_id;
-
-        private String create_time;
-
-        private String user_key;
-
-        public void setRoom_name(String room_name) {
-            this.room_name = room_name;
-        }
-
-        public String getRoom_name() {
-            return this.room_name;
-        }
-
-        public void setUser_room_id(int user_room_id) {
-            this.user_room_id = user_room_id;
-        }
-
-        public int getUser_room_id() {
-            return this.user_room_id;
-        }
-
-        public String getCreate_time() {
-            return create_time;
-        }
-
-        public void setCreate_time(String create_time) {
-            this.create_time = create_time;
-        }
-
-        public void setUser_key(String user_key) {
-            this.user_key = user_key;
-        }
-
-        public String getUser_key() {
-            return this.user_key;
-        }
+    public Userdevice getUserdevice() {
+        return this.Userdevice;
     }
 
     public void setUserRoom(UserRoom userRoom) {
@@ -105,6 +65,119 @@ public class Space implements Serializable {
         return this.installAddress;
     }
 
+    public boolean isOnLine() {
+        return onLine;
+    }
+
+    public void setOnLine(boolean onLine) {
+        this.onLine = onLine;
+    }
+
+    public class Userdevice {
+        private String device_mac;
+
+        private String device_sn;
+
+        private String create_time;
+
+        private int user_device_id;
+
+        private String user_key;
+
+        private String device_nickname;
+
+        public void setDevice_mac(String device_mac) {
+            this.device_mac = device_mac;
+        }
+
+        public String getDevice_mac() {
+            return this.device_mac;
+        }
+
+        public void setDevice_sn(String device_sn) {
+            this.device_sn = device_sn;
+        }
+
+        public String getDevice_sn() {
+            return this.device_sn;
+        }
+
+        public void setCreate_time(String create_time) {
+            this.create_time = create_time;
+        }
+
+        public String getCreate_time() {
+            return this.create_time;
+        }
+
+        public void setUser_device_id(int user_device_id) {
+            this.user_device_id = user_device_id;
+        }
+
+        public int getUser_device_id() {
+            return this.user_device_id;
+        }
+
+        public void setUser_key(String user_key) {
+            this.user_key = user_key;
+        }
+
+        public String getUser_key() {
+            return this.user_key;
+        }
+
+        public void setDevice_nickname(String device_nickname) {
+            this.device_nickname = device_nickname;
+        }
+
+        public String getDevice_nickname() {
+            return this.device_nickname;
+        }
+
+    }
+
+    public class UserRoom {
+        private String room_name;
+
+        private int user_room_id;
+
+        private String create_time;
+
+        private String user_key;
+
+        public void setRoom_name(String room_name) {
+            this.room_name = room_name;
+        }
+
+        public String getRoom_name() {
+            return this.room_name;
+        }
+
+        public void setUser_room_id(int user_room_id) {
+            this.user_room_id = user_room_id;
+        }
+
+        public int getUser_room_id() {
+            return this.user_room_id;
+        }
+
+        public void setCreate_time(String create_time) {
+            this.create_time = create_time;
+        }
+
+        public String getCreate_time() {
+            return this.create_time;
+        }
+
+        public void setUser_key(String user_key) {
+            this.user_key = user_key;
+        }
+
+        public String getUser_key() {
+            return this.user_key;
+        }
+    }
+
     public class DeviceFreshAirData {
     }
 
@@ -121,11 +194,11 @@ public class Space implements Serializable {
 
         private String buy_time;
 
-        private int county_id;
+        private String county_id;
 
         private String city_name;
 
-        private int province_id;
+        private String province_id;
 
         private String town_id;
 
@@ -133,7 +206,7 @@ public class Space implements Serializable {
 
         private String buy_info;
 
-        private int city_id;
+        private String city_id;
 
         public void setDevice_sn(String device_sn) {
             this.device_sn = device_sn;
@@ -175,19 +248,19 @@ public class Space implements Serializable {
             return this.province_name;
         }
 
-        public String getBuy_time() {
-            return buy_time;
-        }
-
         public void setBuy_time(String buy_time) {
             this.buy_time = buy_time;
         }
 
-        public void setCounty_id(int county_id) {
+        public String getBuy_time() {
+            return this.buy_time;
+        }
+
+        public void setCounty_id(String county_id) {
             this.county_id = county_id;
         }
 
-        public int getCounty_id() {
+        public String getCounty_id() {
             return this.county_id;
         }
 
@@ -199,11 +272,11 @@ public class Space implements Serializable {
             return this.city_name;
         }
 
-        public void setProvince_id(int province_id) {
+        public void setProvince_id(String province_id) {
             this.province_id = province_id;
         }
 
-        public int getProvince_id() {
+        public String getProvince_id() {
             return this.province_id;
         }
 
@@ -231,16 +304,16 @@ public class Space implements Serializable {
             return this.buy_info;
         }
 
-        public void setCity_id(int city_id) {
+        public void setCity_id(String city_id) {
             this.city_id = city_id;
         }
 
-        public int getCity_id() {
+        public String getCity_id() {
             return this.city_id;
         }
     }
 
-    public class Device {
+    public class Device implements Serializable {
         private String device_shipmenttime;
 
         private String device_mac;
@@ -259,6 +332,13 @@ public class Space implements Serializable {
 
         private String device_keyintime;
 
+        public void setDevice_shipmenttime(String device_shipmenttime) {
+            this.device_shipmenttime = device_shipmenttime;
+        }
+
+        public String getDevice_shipmenttime() {
+            return this.device_shipmenttime;
+        }
 
         public void setDevice_mac(String device_mac) {
             this.device_mac = device_mac;
@@ -300,6 +380,13 @@ public class Space implements Serializable {
             return this.device_2code;
         }
 
+        public void setDevice_producttime(String device_producttime) {
+            this.device_producttime = device_producttime;
+        }
+
+        public String getDevice_producttime() {
+            return this.device_producttime;
+        }
 
         public void setDevice_type(String device_type) {
             this.device_type = device_type;
@@ -309,28 +396,12 @@ public class Space implements Serializable {
             return this.device_type;
         }
 
-        public String getDevice_shipmenttime() {
-            return device_shipmenttime;
-        }
-
-        public String getDevice_producttime() {
-            return device_producttime;
+        public void setDevice_keyintime(String device_keyintime) {
+            this.device_keyintime = device_keyintime;
         }
 
         public String getDevice_keyintime() {
-            return device_keyintime;
-        }
-
-        public void setDevice_shipmenttime(String device_shipmenttime) {
-            this.device_shipmenttime = device_shipmenttime;
-        }
-
-        public void setDevice_producttime(String device_producttime) {
-            this.device_producttime = device_producttime;
-        }
-
-        public void setDevice_keyintime(String device_keyintime) {
-            this.device_keyintime = device_keyintime;
+            return this.device_keyintime;
         }
     }
 
@@ -347,11 +418,11 @@ public class Space implements Serializable {
 
         private int device_install_address_id;
 
-        private int county_id;
+        private String county_id;
 
         private String city_name;
 
-        private int province_id;
+        private String province_id;
 
         private String town_id;
 
@@ -359,8 +430,15 @@ public class Space implements Serializable {
 
         private String install_info;
 
-        private int city_id;
+        private String city_id;
 
+        public String getInstall_time() {
+            return install_time;
+        }
+
+        public void setInstall_time(String install_time) {
+            this.install_time = install_time;
+        }
 
         public void setDevice_sn(String device_sn) {
             this.device_sn = device_sn;
@@ -386,14 +464,6 @@ public class Space implements Serializable {
             return this.county_name;
         }
 
-        public String getInstall_time() {
-            return install_time;
-        }
-
-        public void setInstall_time(String install_time) {
-            this.install_time = install_time;
-        }
-
         public void setProvince_name(String province_name) {
             this.province_name = province_name;
         }
@@ -410,11 +480,11 @@ public class Space implements Serializable {
             return this.device_install_address_id;
         }
 
-        public void setCounty_id(int county_id) {
+        public void setCounty_id(String county_id) {
             this.county_id = county_id;
         }
 
-        public int getCounty_id() {
+        public String getCounty_id() {
             return this.county_id;
         }
 
@@ -426,11 +496,11 @@ public class Space implements Serializable {
             return this.city_name;
         }
 
-        public void setProvince_id(int province_id) {
+        public void setProvince_id(String province_id) {
             this.province_id = province_id;
         }
 
-        public int getProvince_id() {
+        public String getProvince_id() {
             return this.province_id;
         }
 
@@ -458,11 +528,11 @@ public class Space implements Serializable {
             return this.install_info;
         }
 
-        public void setCity_id(int city_id) {
+        public void setCity_id(String city_id) {
             this.city_id = city_id;
         }
 
-        public int getCity_id() {
+        public String getCity_id() {
             return this.city_id;
         }
     }

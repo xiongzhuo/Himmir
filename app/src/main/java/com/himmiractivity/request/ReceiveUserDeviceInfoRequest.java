@@ -37,18 +37,20 @@ public class ReceiveUserDeviceInfoRequest {
     String buyDetailAddress;
     String installProvince;
     String installCity;
+    String devNickName;
     String installCounnty;
     String installDetailAddress;
     String deviceSn;
     private DialogView dialogView;
 
-    public ReceiveUserDeviceInfoRequest(SharedPreferencesDB sharedPreferencesDB, Context context, Handler handler, String userRoom, String userTureName, String deviceMac, String deviceSn) {
+    public ReceiveUserDeviceInfoRequest(SharedPreferencesDB sharedPreferencesDB, Context context, Handler handler, String userRoom, String userTureName, String deviceMac, String deviceSn, String devNickName) {
         this.sharedPreferencesDB = sharedPreferencesDB;
         this.context = context;
         this.handler = handler;
         this.userRoom = userRoom;
         this.userTureName = userTureName;
         this.deviceMac = deviceMac;
+        this.devNickName = devNickName;
         this.deviceSn = deviceSn;
     }
 
@@ -72,6 +74,7 @@ public class ReceiveUserDeviceInfoRequest {
             dialogView.show();
             dialogView.setMessage("加载中");
         }
+        Log.d("dataServer", userRoom + ":" + userTureName + ":" + deviceMac + ":" + buyProvince + ":" + buyProvince + ":" + buyCity);
         RequestParams params = new RequestParams(Configuration.URL_RECEIVEUSERDEVICE);
         params.addBodyParameter("mobile", sharedPreferencesDB.getString("phone", ""));
         params.addBodyParameter("userDeviceUuid", sharedPreferencesDB.getString("userDeviceUuid", ""));
@@ -89,6 +92,8 @@ public class ReceiveUserDeviceInfoRequest {
         params.addBodyParameter("installCounnty", installCounnty);
         params.addBodyParameter("installDetailAddress", installDetailAddress);
         params.addBodyParameter("deviceSn", deviceSn);
+        params.addBodyParameter("devNickName", devNickName);
+
         x.http().post(params, new Callback.CacheCallback<String>() {
             @Override
             public void onSuccess(String json) {

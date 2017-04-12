@@ -19,29 +19,23 @@ import com.himmiractivity.request.CodeRequest;
 import com.himmiractivity.request.ResetPwdRequest;
 import com.himmiractivity.view.ClearEditText;
 
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import activity.hamir.com.himmir.R;
 import butterknife.BindView;
+import butterknife.BindViews;
 
 /**
  * 忘记密码
  */
 
 public class ForgotPassActivity extends BaseBusActivity {
-    @BindView(R.id.btn_identify)
-    Button btnIdentify;
-    @BindView(R.id.btn_rese_pass)
-    Button btnResePass;
-    @BindView(R.id.et_phone)
-    ClearEditText etPhone;
-    @BindView(R.id.et_code)
-    ClearEditText etCode;
-    @BindView(R.id.et_pass)
-    ClearEditText etPass;
-    @BindView(R.id.et_pass_comit)
-    ClearEditText etPassComit;
+    @BindViews({R.id.btn_identify, R.id.btn_rese_pass})
+    List<Button> buttons;
+    @BindViews({R.id.et_phone, R.id.et_code, R.id.et_pass, R.id.et_pass_comit})
+    List<ClearEditText> clearEditTexts;
     private int seconds = 61;
     private Timer timer = new Timer();
     private Handler handler = new Handler(new Handler.Callback() {
@@ -56,8 +50,8 @@ public class ForgotPassActivity extends BaseBusActivity {
                     break;
                 // 验证码 手机号码已绑定其它账号
                 case StatisConstans.MSG_RECEIVED_BOUND:
-                    btnIdentify.setText("获取验证码");
-                    btnIdentify.setEnabled(true);
+                    buttons.get(0).setText("获取验证码");
+                    buttons.get(0).setEnabled(true);
                     break;
                 // 验证码 手机号码正常
                 case StatisConstans.MSG_RECEIVED_REGULAR:
@@ -89,8 +83,8 @@ public class ForgotPassActivity extends BaseBusActivity {
         App.getInstance().addActivity(this);
         setMidTxt("忘记密码");
         initTitleBar();
-        btnResePass.setOnClickListener(this);
-        btnIdentify.setOnClickListener(this);
+        buttons.get(1).setOnClickListener(this);
+        buttons.get(0).setOnClickListener(this);
     }
 
     @Override
@@ -120,14 +114,14 @@ public class ForgotPassActivity extends BaseBusActivity {
     }
 
     private void identify() {
-        String phone = etPhone.getText().toString();
+        String phone = clearEditTexts.get(0).getText().toString();
         if (TextUtils.isEmpty(phone)) {
             ToastUtil.show(this, "手机号码不能为空!");
         } else if (!CheckMobileAndEmail.isMobileNO(phone)) {
             ToastUtil.show(this, "手机号码格式错误");
         } else {
-            btnIdentify.setText("正在发送...");
-            btnIdentify.setEnabled(false);
+            buttons.get(0).setText("正在发送...");
+            buttons.get(0).setEnabled(false);
             CodeRequest codeRequest = new CodeRequest(ForgotPassActivity.this, phone, "reset", handler);
             try {
                 codeRequest.requestCode();// 调短信验证码接口
@@ -139,10 +133,10 @@ public class ForgotPassActivity extends BaseBusActivity {
 
     //验证信息是否通过
     private void confirmation() {
-        String phone = etPhone.getText().toString().trim();
-        String code = etCode.getText().toString().trim();
-        String pass = etPass.getText().toString().trim();
-        String passComit = etPassComit.getText().toString().trim();
+        String phone = clearEditTexts.get(0).getText().toString().trim();
+        String code = clearEditTexts.get(1).getText().toString().trim();
+        String pass = clearEditTexts.get(2).getText().toString().trim();
+        String passComit = clearEditTexts.get(3).getText().toString().trim();
         if (TextUtils.isEmpty(phone)) {
             ToastUtil.show(this, "手机号码不能为空!");
             return;
@@ -179,11 +173,11 @@ public class ForgotPassActivity extends BaseBusActivity {
             @Override
             public void run() {
                 if (seconds == 0) {
-                    btnIdentify.setText(R.string.btn_get_identify);
+                    buttons.get(0).setText(R.string.btn_get_identify);
                     task.cancel();
-                    btnIdentify.setEnabled(true);
+                    buttons.get(0).setEnabled(true);
                 } else {
-                    btnIdentify.setText(--seconds
+                    buttons.get(0).setText(--seconds
                             + getString(R.string.btn_seconds));
                 }
             }

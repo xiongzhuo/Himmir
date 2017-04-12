@@ -7,23 +7,19 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.RadioButton;
 
-import com.himmiractivity.entity.DafalutUserRoom;
+import com.himmiractivity.entity.UserRoom;
 
 import java.util.List;
 
 import activity.hamir.com.himmir.R;
 
-/**
- * Created by Administrator on 2017/3/21.
- */
-
 public class RoomAdapter extends BaseAdapter {
-    private List<DafalutUserRoom> data;
+    private List<UserRoom> data;
     private LayoutInflater inflater;
     private Context context;
     private int position2 = -1;
 
-    public RoomAdapter(Context mContext, List<DafalutUserRoom> data) {
+    public RoomAdapter(Context mContext, List<UserRoom> data) {
         this.data = data;
         inflater = LayoutInflater.from(mContext);
         context = mContext;
@@ -52,18 +48,18 @@ public class RoomAdapter extends BaseAdapter {
         this.position2 = position;
     }
 
-    public void setData(List<DafalutUserRoom> data) {
+    public void setData(List<UserRoom> data) {
         this.data = data;
         notifyDataSetChanged();
     }
 
-    public List<DafalutUserRoom> getData() {
+    public List<UserRoom> getData() {
         return data;
     }
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        final DafalutUserRoom dafalutUserRoom = data.get(position);
+        final UserRoom dafalutUserRoom = data.get(position);
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.head_item,
                     null);
@@ -75,14 +71,14 @@ public class RoomAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 if (!dafalutUserRoom.isChecK()) {
-                    for (DafalutUserRoom dafalutUserRoom : data) {
+                    for (UserRoom dafalutUserRoom : data) {
                         dafalutUserRoom.setChecK(false);
                     }
                     dafalutUserRoom.setChecK(!dafalutUserRoom.isChecK());
                     setPosition2(position);
                     notifyDataSetChanged();
                 } else {
-                    for (DafalutUserRoom dafalutUserRoom : data) {
+                    for (UserRoom dafalutUserRoom : data) {
                         dafalutUserRoom.setChecK(false);
                     }
                     setPosition2(-1);
@@ -105,7 +101,7 @@ public class RoomAdapter extends BaseAdapter {
 
     public void setSaveRdio(String str) {
         int index = 0;
-        for (DafalutUserRoom dafalutUserRoom : data) {
+        for (UserRoom dafalutUserRoom : data) {
             if (str == dafalutUserRoom.getRoom_name()) {
                 dafalutUserRoom.setChecK(true);
                 setPosition2(index);

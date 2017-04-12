@@ -74,12 +74,8 @@ public class SwipeBackLayout extends FrameLayout {
         mContentView = (View) decorChild.getParent();
     }
 
-    /**
-     * �¼����ز���
-     */
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        //����ViewPager��ͻ����
         ViewPager mViewPager = getTouchViewPager(mViewPagers, ev);
         Log.i(TAG, "mViewPager = " + mViewPager);
 
@@ -94,7 +90,6 @@ public class SwipeBackLayout extends FrameLayout {
                 break;
             case MotionEvent.ACTION_MOVE:
                 int moveX = (int) ev.getRawX();
-                // �������������SildingFinishLayout���������touch�¼�
                 if (moveX - downX > mTouchSlop
                         && Math.abs((int) ev.getRawY() - downY) < mTouchSlop) {
                     return true;
@@ -136,12 +131,6 @@ public class SwipeBackLayout extends FrameLayout {
         return true;
     }
 
-    /**
-     * ��ȡSwipeBackLayout�����ViewPager�ļ���
-     *
-     * @param mViewPagers
-     * @param parent
-     */
     private void getAlLViewPager(List<ViewPager> mViewPagers, ViewGroup parent) {
         int childCount = parent.getChildCount();
         for (int i = 0; i < childCount; i++) {
@@ -155,13 +144,6 @@ public class SwipeBackLayout extends FrameLayout {
     }
 
 
-    /**
-     * ��������touch��ViewPager
-     *
-     * @param mViewPagers
-     * @param ev
-     * @return
-     */
     private ViewPager getTouchViewPager(List<ViewPager> mViewPagers, MotionEvent ev) {
         if (mViewPagers == null || mViewPagers.size() == 0) {
             return null;
@@ -206,20 +188,13 @@ public class SwipeBackLayout extends FrameLayout {
     }
 
 
-    /**
-     * ����������
-     */
     private void scrollRight() {
         final int delta = (viewWidth + mContentView.getScrollX());
-        // ����startScroll����������һЩ�����Ĳ�����������computeScroll()�����е���scrollTo������item
         mScroller.startScroll(mContentView.getScrollX(), 0, -delta + 1, 0,
                 Math.abs(delta));
         postInvalidate();
     }
 
-    /**
-     * ��������ʼλ��
-     */
     private void scrollOrigin() {
         int delta = mContentView.getScrollX();
         mScroller.startScroll(mContentView.getScrollX(), 0, -delta, 0,
@@ -229,7 +204,6 @@ public class SwipeBackLayout extends FrameLayout {
 
     @Override
     public void computeScroll() {
-        // ����startScroll��ʱ��scroller.computeScrollOffset()����true��
         if (mScroller.computeScrollOffset()) {
             mContentView.scrollTo(mScroller.getCurrX(), mScroller.getCurrY());
             postInvalidate();

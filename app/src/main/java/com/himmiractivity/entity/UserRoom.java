@@ -6,7 +6,7 @@ import java.io.Serializable;
  * Created by Administrator on 2017/3/21.
  */
 
-public class DafalutUserRoom implements Serializable {
+public class UserRoom implements Serializable {
     boolean isChecK;
     private String room_name;
 

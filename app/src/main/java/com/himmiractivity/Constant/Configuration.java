@@ -5,11 +5,12 @@ package com.himmiractivity.Constant;
  */
 
 public class Configuration {
-    //    public static final String HOST = "http://192.168.0.88:8086";
-    public static final String HOST = "http://192.168.0.80:8080";
+    public static final String HOST = "http://smart.hnliuxing.com:8086";
+//    public static final String HOST = "http://192.168.0.88:8086";
+//    public static final String HOST = "http://192.168.0.80:8080";
 //    public static final String HOST = "http://hongren.bingjun.cn/";
     /**
-     * 短信验证码
+     * 获取所有设备
      */
     public static final String URL_DERVICE = HOST
             + "/finalapi/user/user/getAllDeviceInfo";
@@ -51,8 +52,11 @@ public class Configuration {
     /**
      * 获取默认房间地址
      */
+//    public static final String URL_GETDEFAULTUSERROOM = HOST
+//            + "/finalapi/user/user/getDefaultUserRoom";
     public static final String URL_GETDEFAULTUSERROOM = HOST
-            + "/finalapi/user/user/getDefaultUserRoom";
+            + "/finalapi/user/user/getDefaultUserRoomsAndDevs";
+
     /**
      * 发送二维吗
      */
@@ -76,6 +80,12 @@ public class Configuration {
     /**
      * 用户房间重命名
      */
+//    public static final String URL_MODIFY_ROOM_NAME = HOST
+//            + "/finalapi/user/user/modifyRoomName";
+    /**
+     * 设备重命名
+     */
     public static final String URL_MODIFY_ROOM_NAME = HOST
-            + "/finalapi/user/user/modifyRoomName";
+            + "/finalapi/user/user/modifDecNickName";
+
 }

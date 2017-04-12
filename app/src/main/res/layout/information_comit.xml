@@ -118,13 +118,13 @@
                         android:textSize="16sp" />
 
 
-                    <Button
+                    <TextView
                         android:id="@+id/tv_city_choise"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/dp10"
                         android:background="@drawable/edittext_bg"
-                        android:gravity="left"
+                        android:gravity="center_vertical"
                         android:hint="点击选择地址"
                         android:padding="@dimen/dp10"
                         android:text=""
@@ -137,6 +137,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/dp10"
                         android:background="@drawable/edittext_bg"
+                        android:gravity="center_vertical"
                         android:hint="门店全称"
                         android:maxLength="30"
                         android:padding="@dimen/dp10"
@@ -159,13 +160,13 @@
                         android:textSize="16sp" />
 
 
-                    <Button
+                    <TextView
                         android:id="@+id/tv_install_site"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/dp10"
                         android:background="@drawable/edittext_bg"
-                        android:gravity="left"
+                        android:gravity="center_vertical"
                         android:hint="点击选择地址"
                         android:padding="@dimen/dp10"
                         android:text=""
@@ -200,26 +201,42 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginTop="30dp"
+                    android:layout_marginTop="@dimen/dp10"
                     android:background="@null"
                     android:button="@null"
+                    android:padding="@dimen/dp10"
                     android:text="选择安装房间"
                     android:textColor="@color/green"
                     android:textSize="20sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp10"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:text="设备昵称："
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+
+                    <com.himmiractivity.view.ClearEditText
+                        android:id="@+id/et_nice"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:background="@drawable/edittext_bg"
+                        android:hint="设备昵称"
+                        android:maxLength="15"
+                        android:padding="@dimen/dp10"
+                        android:text=""
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+                </LinearLayout>
             </LinearLayout>
-
-
-            <Button
-                android:id="@+id/btn_qr_next"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:layout_marginLeft="30dp"
-                android:layout_marginRight="30dp"
-                android:background="@drawable/loding_bg_sel"
-                android:padding="10dp"
-                android:text="绑定"
-                android:textColor="@color/white" />
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

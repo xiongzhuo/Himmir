@@ -17,20 +17,19 @@ import com.himmiractivity.interfaces.StatisConstans;
 import com.himmiractivity.request.LodingRequest;
 import com.himmiractivity.view.ClearEditText;
 
+import java.util.List;
+
 import activity.hamir.com.himmir.R;
 import butterknife.BindView;
+import butterknife.BindViews;
 
 public class LodingActivity extends BaseBusActivity {
-    @BindView(R.id.et_password)
-    ClearEditText etPassword;
-    @BindView(R.id.et_user)
-    ClearEditText etUser;
+    @BindViews({R.id.et_password, R.id.et_user})
+    List<ClearEditText> clearEditTexts;
+    @BindViews({R.id.tv_register, R.id.tv_forgot})
+    List<TextView> textViews;
     @BindView(R.id.btn_loding)
     Button btnLoding;
-    @BindView(R.id.tv_register)
-    TextView tvRegister;
-    @BindView(R.id.tv_forgot)
-    TextView tvForgot;
     String user, pass;
 
     private Handler handler = new Handler(new Handler.Callback() {
@@ -70,8 +69,8 @@ public class LodingActivity extends BaseBusActivity {
 
     @Override
     protected void initView(Bundle savedInstanceState) {
-        tvForgot.setOnClickListener(this);
-        tvRegister.setOnClickListener(this);
+        textViews.get(0).setOnClickListener(this);
+        textViews.get(1).setOnClickListener(this);
         btnLoding.setOnClickListener(this);
     }
 
@@ -100,8 +99,8 @@ public class LodingActivity extends BaseBusActivity {
 
     //验证信息是否通过
     private void confirmation() {
-        user = etUser.getText().toString().trim();
-        pass = etPassword.getText().toString().trim();
+        user = clearEditTexts.get(1).getText().toString().trim();
+        pass = clearEditTexts.get(0).getText().toString().trim();
         if (TextUtils.isEmpty(user)) {
             ToastUtil.show(this, "手机号码不能为空!");
             return;
