@@ -126,7 +126,7 @@ public class PercentView extends View {
     /**
      * 灰色
      */
-//    private int grayColor;
+    private int grayColor;
     /**
      * 间隔的角度
      */
@@ -215,8 +215,8 @@ public class PercentView extends View {
         spaceWidth = context.getResources().getDimensionPixelOffset(R.dimen.dp12);
         scrollCircleRadius = context.getResources().getDimensionPixelOffset(R.dimen.dp4);
         percentTextSize = context.getResources().getDimensionPixelOffset(R.dimen.dp8);
-        textSizeAim = context.getResources().getDimensionPixelOffset(R.dimen.sp50);
-        textSizeTag = context.getResources().getDimensionPixelOffset(R.dimen.sp15);
+        textSizeAim = context.getResources().getDimensionPixelOffset(R.dimen.sp40);
+        textSizeTag = context.getResources().getDimensionPixelOffset(R.dimen.sp14);
         textSizeButtom = context.getResources().getDimensionPixelOffset(R.dimen.sp12);
         pinkColor = context.getResources().getColor(R.color.bar_gray);
         greenColor = context.getResources().getColor(R.color.percent_green);
@@ -231,7 +231,7 @@ public class PercentView extends View {
         redColorfour = context.getResources().getColor(R.color.percent_pink_f_four);
         redColorfive = context.getResources().getColor(R.color.percent_pink_f_five);
 //        deepRedColor = context.getResources().getColor(R.color.percent_deep_red);
-//        grayColor = context.getResources().getColor(R.color.percent_gray);
+        grayColor = context.getResources().getColor(R.color.percent_gray);
 
 
         pos = new float[2];
@@ -474,7 +474,9 @@ public class PercentView extends View {
      */
     private void paintText(Canvas canvas) {
         if (!TextUtils.isEmpty(tag) && !TextUtils.isEmpty(aim)) {
-            if (aimPercent >= 0 && aimPercent <= 33.3) {
+            if (aimPercent <= 0) {
+                textPaint.setColor(grayColor);
+            } else if (aimPercent > 0 && aimPercent <= 33.3) {
                 textPaint.setColor(greenColorthree);
             } else if (aimPercent > 33.3 && aimPercent <= 66.6) {
                 textPaint.setColor(pinkRedColorthree);
@@ -484,7 +486,7 @@ public class PercentView extends View {
             textPaint.setTextSize(textSizeTag);
             textPaint.setTextAlign(Paint.Align.CENTER);
             textPaint.setStrokeWidth(2);
-            canvas.drawText(tag, width / 2, radius / 2 + textSizeTag, textPaint);
+            canvas.drawText(tag, width / 2, radius / 2 + 8, textPaint);
             textPaint.setColor(Color.parseColor("#019E97"));
             textPaint.setTextSize(textSizeButtom);
             textPaint.setStrokeWidth(1);
@@ -493,7 +495,9 @@ public class PercentView extends View {
 //            float centerLength = textPaint.measureText(aim + "%");
 //            float rightOffest = textSizeAim / 2;
 //            canvas.drawText("你击败了", width / 2 - leftLength / 2 - centerLength / 2 + rightOffest, radius + textSizeAim, textPaint);
-            if (aimPercent >= 0 && aimPercent <= 33.3) {
+            if (aimPercent <= 0) {
+                textPaint.setColor(grayColor);
+            } else if (aimPercent > 0 && aimPercent <= 33.3) {
                 textPaint.setColor(greenColorthree);
             } else if (aimPercent > 33.3 && aimPercent <= 66.6) {
                 textPaint.setColor(pinkRedColorthree);
@@ -504,14 +508,17 @@ public class PercentView extends View {
             textPaint.setColor(Color.parseColor("#019E97"));
             textPaint.setTextSize(textSizeAim);
             textPaint.setStrokeWidth(1);
-            if (aimPercent >= 0 && aimPercent <= 33.3) {
+
+            if (aimPercent <= 0) {
+                textPaint.setColor(grayColor);
+            } else if (aimPercent > 0 && aimPercent <= 33.3) {
                 textPaint.setColor(greenColorthree);
             } else if (aimPercent > 33.3 && aimPercent <= 66.6) {
                 textPaint.setColor(pinkRedColorthree);
             } else {
                 textPaint.setColor(redColorfour);
             }
-            canvas.drawText(aim, width / 2, radius + textSizeButtom, textPaint);
+            canvas.drawText(aim, width / 2, radius + 5, textPaint);
 
         }
 
@@ -525,8 +532,8 @@ public class PercentView extends View {
      */
     public void setAngel(double aimPercent) {
         //两边监测
-        if (aimPercent < 1) {
-            aimPercent = 1;
+        if (aimPercent < 0) {
+            aimPercent = -1;
         } else if (aimPercent > 99) {
             aimPercent = 99;
         }

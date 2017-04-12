@@ -8,7 +8,8 @@ public interface StatisConstans {
     String BROADCAST_HONGREN_SUCC = "suceess";//成功
     String BROADCAST_HONGREN_KILL = "fail";//失败
     String BROADCAST_HONGREN_DATA = "data";
-
+    //相册权限
+    int MY_PERMISSIONS_REQUEST_CAMERA = 11;
     //相册权限
     int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 10;
     //定位权限

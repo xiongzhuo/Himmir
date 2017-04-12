@@ -76,7 +76,7 @@ public class MainActivity extends BaseBusActivity {
     List<SelectorImageView> selectorImageViews;
     @BindViews({R.id.tv_hz_valus, R.id.tv_room, R.id.tv_ug, R.id.tv_city, R.id.tv_co2, R.id.tv_out_side, R.id.tv_temp_indoor, R.id.tv_temp_out_side, R.id.tv_speed})
     List<TextView> textViews;
-    private Double aimPercent = (0d / 225d) * 100d;
+    private Double aimPercent = -1d;
     Bundle bundle;
     ListPopupWindow popupWindow = null;
     UserData userData;
@@ -128,22 +128,7 @@ public class MainActivity extends BaseBusActivity {
                 //成功
                 case StatisConstans.MSG_RECEIVED_REGULAR:
                     userData = (UserData) msg.obj;
-                    if (userData.getUserDevs() != null && userData.getUserDevs().size() > 0) {
-                        space = userData.getUserDevs();
-                        list = new ArrayList<>();
-                        for (int i = 0; i < space.size(); i++) {
-                            if (!TextUtils.isEmpty(space.get(i).getDevice_nickname())) {
-                                list.add(space.get(i).getDevice_nickname());
-                            } else {
-                                list.add("无名");
-                            }
-                        }
-                        if (list.size() > 0) {
-                            mac = userData.getUserDevs().get(0).getDevice_mac();
-                            textViews.get(1).setText(list.get(0).trim());
-                        }
-                    }
-                    initRechclerView();
+                    initialization();
                     break;
                 case StatisConstans.CONFIG_REGULAR:
                     dataServerBean = (DataServerBean) msg.obj;
@@ -183,7 +168,7 @@ public class MainActivity extends BaseBusActivity {
             bundle = getIntent().getExtras();
             if (bundle.getSerializable("userData") != null) {
                 userData = (UserData) bundle.getSerializable("userData");
-                initRechclerView();
+                initialization();
             } else {
                 LodingRequest();
             }
@@ -218,6 +203,25 @@ public class MainActivity extends BaseBusActivity {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void initialization() {
+        if (userData.getUserDevs() != null && userData.getUserDevs().size() > 0) {
+            space = userData.getUserDevs();
+            list = new ArrayList<>();
+            for (int i = 0; i < space.size(); i++) {
+                if (!TextUtils.isEmpty(space.get(i).getDevice_nickname())) {
+                    list.add(space.get(i).getDevice_nickname());
+                } else {
+                    list.add("无名");
+                }
+            }
+            if (list.size() > 0) {
+                mac = userData.getUserDevs().get(0).getDevice_mac();
+                textViews.get(1).setText(list.get(0).trim());
+            }
+        }
+        initRechclerView();
     }
 
     @Override
@@ -366,6 +370,18 @@ public class MainActivity extends BaseBusActivity {
     }
 
     @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        getIntent().putExtras(intent);
+        String name = getIntent().getStringExtra("success");
+        if (name.equals("true")) {
+            LodingRequest();
+        }
+        Log.d("success", "name" + name);
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == StatisConstans.MSG_IMAGE_REQUEST && resultCode == Activity.RESULT_OK) {
@@ -460,7 +476,7 @@ public class MainActivity extends BaseBusActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (!TextUtils.isEmpty(getIntent().getStringExtra("success"))) {
+        if (getIntent().getIntExtra("s", 0) == 2) {
             LodingRequest();
         }
         startTimer();
@@ -583,23 +599,23 @@ public class MainActivity extends BaseBusActivity {
         }
         Log.d("xiongzhuo", "跟新数据跟新数据" + pmAllData.getCo2Thickness());
         textViews.get(4).setText(pmAllData.getCo2Thickness() + "");
-        textViews.get(6).setText(sensorIndoorTemp + "℃");
-        textViews.get(7).setText(sensorOutdoorTemp + "℃");
+        textViews.get(6).setText(sensorIndoorTemp + "");
+        textViews.get(7).setText(sensorOutdoorTemp + "");
         textViews.get(8).setText(pmAllData.getBlowingRate() + "");
     }
 
     public void restoreData() {
         selectorImageViews.get(0).setVisibility(View.GONE);
         selectorImageViews.get(1).setVisibility(View.VISIBLE);
-        aimPercent = (0d / 225d) * 100d;
+        aimPercent = -1d;
         percentView.setAngel(aimPercent);
         percentView.setRankText("PM2.5室内", "--");
 
         textViews.get(0).setText("--");
         textViews.get(4).setTextColor(ContextCompat.getColor(MainActivity.this, R.color.green));
         textViews.get(4).setText("--");
-        textViews.get(6).setText("--℃");
-        textViews.get(7).setText("--℃");
+        textViews.get(6).setText("--");
+        textViews.get(7).setText("--");
         textViews.get(8).setText("--");
     }
 

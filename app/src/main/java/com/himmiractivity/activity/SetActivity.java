@@ -100,7 +100,13 @@ public class SetActivity extends BaseBusActivity {
                 case StatisConstans.MSG_RECEIVED_REGULAR:
                     ModifyNameData modifyNameData = (ModifyNameData) msg.obj;
                     ToastUtil.show(SetActivity.this, "修改成功");
-                    tvTitle.setText(modifyNameData.getUserName());
+                    if (!TextUtils.isEmpty(dialog.getName())) {
+                        tvTitle.setText(dialog.getName());
+                    } else {
+                        tvTitle.setText(modifyNameData.getUserName());
+                    }
+
+                    isResult = true;
                     break;
                 case StatisConstans.MSG_IMAGE_SUCCES:
                     imageBean = (ImageBean) msg.obj;
@@ -187,7 +193,7 @@ public class SetActivity extends BaseBusActivity {
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.CAMERA},
-                    StatisConstans.MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
+                    StatisConstans.MY_PERMISSIONS_REQUEST_CAMERA);
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     StatisConstans.MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
@@ -323,7 +329,7 @@ public class SetActivity extends BaseBusActivity {
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 callPhone();
             } else {
-                Toast.makeText(SetActivity.this, "请你允许才能打电话", Toast.LENGTH_SHORT).show();
+                Toast.makeText(SetActivity.this, "请您允许才能打电话", Toast.LENGTH_SHORT).show();
             }
             return;
         } else if (requestCode == StatisConstans.MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE) {
@@ -332,7 +338,15 @@ public class SetActivity extends BaseBusActivity {
                 ChangePhotosUtils
                         .changePhotos(SetActivity.this);
             } else {
-                Toast.makeText(SetActivity.this, "请你允许才能选取图片或者拍照", Toast.LENGTH_SHORT).show();
+                Toast.makeText(SetActivity.this, "请您允许才能选取图片", Toast.LENGTH_SHORT).show();
+            }
+        } else if (requestCode == StatisConstans.MY_PERMISSIONS_REQUEST_CAMERA) {
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                ChangePhotosUtils
+                        .changePhotos(SetActivity.this);
+            } else {
+                Toast.makeText(SetActivity.this, "请您允许才能拍照", Toast.LENGTH_SHORT).show();
             }
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -436,7 +450,7 @@ public class SetActivity extends BaseBusActivity {
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inSampleSize = 2;
 
-                photo = Bitmap.createScaledBitmap(photo, 70, 70, true);
+//                photo = Bitmap.createScaledBitmap(photo, 70, 70, true);
 //                photo.compress(Bitmap.CompressFormat.JPEG, 15, stream);
 
                 imageDir = Environment.getExternalStorageDirectory()
@@ -452,7 +466,7 @@ public class SetActivity extends BaseBusActivity {
                 if (files.size() > 0) {
                     files.remove(0);
                 }
-                FiledUtil.saveBitmap(photo, f);
+//                FiledUtil.saveBitmap(photo, f);
                 files.add(f);
                 String url = imageDir + "/" + imageName;
 //                TaskDetailImageUploadRequest taskDetailImageUploadRequest = new TaskDetailImageUploadRequest(sharedPreferencesDB, SetActivity.this, handler, files);

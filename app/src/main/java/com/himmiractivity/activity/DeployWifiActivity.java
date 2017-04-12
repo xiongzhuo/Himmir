@@ -1,5 +1,6 @@
 package com.himmiractivity.activity;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ import com.himmiractivity.Utils.ToastUtil;
 import com.himmiractivity.Utils.ToastUtils;
 import com.himmiractivity.Utils.WifiUtils;
 import com.himmiractivity.base.BaseBusActivity;
+import com.himmiractivity.interfaces.StatisConstans;
 import com.himmiractivity.view.DialogView;
 
 import activity.hamir.com.himmir.R;

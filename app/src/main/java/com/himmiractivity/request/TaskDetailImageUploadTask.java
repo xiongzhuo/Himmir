@@ -79,7 +79,7 @@ public class TaskDetailImageUploadTask extends
 //            Log.i("json", ImageUtil.getUrl(Configuration.URL_GETIMAGEUPLOADS, map));
             String json = imageUploadForm.uploadForm(map, "image", file, file.getName(), ImageUtil.getUrl(Configuration.URL_GETIMAGEUPLOADS, map));
 //            json = FiledUtil.toUtf8(json);
-//            Log.i("json", json);
+            Log.i("json", json);
 //            boolean succ = SocketHttpRequester.post(Configuration.URL_GETIMAGEUPLOADS, map,
 //                    formFile);
 

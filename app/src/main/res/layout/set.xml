@@ -42,7 +42,6 @@
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="15dp"
             android:contentDescription="@null"
             android:scaleType="centerCrop"
             fresco:failureImage="@drawable/error"
@@ -63,12 +62,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginBottom="15dp"
             android:layout_weight="1"
             android:gravity="center"
+            android:padding="15dp"
             android:text="name"
             android:textColor="@android:color/black"
-            android:textSize="22sp" />
+            android:textSize="16sp" />
     </LinearLayout>
 
     <ScrollView
