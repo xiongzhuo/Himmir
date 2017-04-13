@@ -37,8 +37,8 @@
                 android:hint="请输入手机号码"
                 android:inputType="number"
                 android:maxLength="11"
-                android:paddingLeft="15dp"
-                android:paddingRight="15dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
                 android:textColor="@android:color/black"
                 android:textColorHint="@android:color/darker_gray" />
 
@@ -51,8 +51,8 @@
                 android:hint="请输入密码"
                 android:inputType="textPassword"
                 android:maxLength="16"
-                android:paddingLeft="15dp"
-                android:paddingRight="15dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
                 android:textColor="@android:color/black"
                 android:textColorHint="@android:color/darker_gray" />
         </LinearLayout>

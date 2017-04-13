@@ -48,6 +48,7 @@ import com.himmiractivity.mining.app.zxing.ScoketOFFeON;
 import com.himmiractivity.request.AllDeviceInfoRequest;
 import com.himmiractivity.request.DataServerConfigRequest;
 import com.himmiractivity.request.LodingRequest;
+import com.himmiractivity.request.OutdoorPMRequest;
 import com.himmiractivity.service.Protocal;
 import com.himmiractivity.util.ThreadPoolUtils;
 import com.himmiractivity.view.ListPopupWindow;
@@ -101,6 +102,9 @@ public class MainActivity extends BaseBusActivity {
             switch (msg.what) {
                 case StatisConstans.MSG_CYCLIC_TRANSMISSION:
                     ScoketOFFeON.sendMessage(socket, protocal, mac);
+                    break;
+                case StatisConstans.MSG_OUTDOOR_PM:
+
                     break;
                 case StatisConstans.MSG_ENABLED_SUCCESSFUL:
                     // 发送 一个无序广播
@@ -428,6 +432,8 @@ public class MainActivity extends BaseBusActivity {
 //                System.out.println(stringBuilder.toString());
                 if (!TextUtils.isEmpty(address.getLocality())) {
                     textViews.get(3).setText(address.getLocality().substring(0, address.getLocality().length() - 1));
+                    OutdoorPMRequest outdoorPMRequest = new OutdoorPMRequest(MainActivity.this, sharedPreferencesDB, textViews.get(3).getText().toString().trim(), handler);
+                    outdoorPMRequest.requestCode();
                     sharedPreferencesDB.setString("province", address.getAdminArea().substring(0, address.getLocality().length() - 1));
                     sharedPreferencesDB.setString("city", address.getLocality().substring(0, address.getLocality().length() - 1));
                     sharedPreferencesDB.setString("area", address.getSubLocality());

@@ -9,6 +9,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.himmiractivity.App;
+import com.himmiractivity.Constant.Configuration;
 import com.himmiractivity.Utils.ToastUtil;
 import com.himmiractivity.base.BaseBusActivity;
 import com.himmiractivity.view.DialogView;
@@ -70,7 +71,7 @@ public class HelpActivity extends BaseBusActivity {
         webSettings.setJavaScriptEnabled(true);
         webSettings.setDefaultTextEncodingName("utf-8");
         // webView.loadUrl("file:///android_asset/test.html");
-        webView.loadUrl("https://www.baidu.com/");
+        webView.loadUrl(Configuration.URL_HELP);
         // webView.loadUrl("javascript:resetFontSize('20px')");
         // install callback function
 //        webView.addJavascriptInterface(new AndroidBridge(), "android");

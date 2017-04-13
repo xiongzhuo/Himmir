@@ -88,4 +88,16 @@ public class Configuration {
     public static final String URL_MODIFY_ROOM_NAME = HOST
             + "/finalapi/user/user/modifDecNickName";
 
+    /**
+     * 使用帮助
+     */
+    public static final String URL_HELP = HOST
+            + "/finalapi/protocol/help.html";
+
+    /**
+     * 获取PM2.5室外
+     */
+    public static final String URL_OUTDOOR_PM = HOST
+            + "/finalapi/protocol/help.html";
+
 }
