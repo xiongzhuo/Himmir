@@ -98,6 +98,6 @@ public class Configuration {
      * 获取PM2.5室外
      */
     public static final String URL_OUTDOOR_PM = HOST
-            + "/finalapi/protocol/help.html";
+            + "/finalapi/user/user/getPM25";
 
 }

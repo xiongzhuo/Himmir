@@ -84,7 +84,6 @@ public class CodeRequest {
 
             @Override
             public boolean onCache(String result) {
-                handler.sendEmptyMessage(StatisConstans.MSG_RECEIVED_BOUND);
                 return false;
             }
         });

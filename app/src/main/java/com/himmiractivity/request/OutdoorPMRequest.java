@@ -12,6 +12,7 @@ import com.himmiractivity.Utils.SharedPreferencesDB;
 import com.himmiractivity.Utils.ToastUtil;
 import com.himmiractivity.entity.JsonResult;
 import com.himmiractivity.entity.PhoneCode;
+import com.himmiractivity.entity.PmBean;
 import com.himmiractivity.interfaces.StatisConstans;
 
 import org.xutils.common.Callback;
@@ -37,21 +38,21 @@ public class OutdoorPMRequest {
     }
 
     public void requestCode() throws Exception {
-        RequestParams params = new RequestParams(Configuration.URL_SENDCODE);
+        RequestParams params = new RequestParams(Configuration.URL_OUTDOOR_PM);
         params.addBodyParameter("mobile", sharedPreferencesDB.getString("phone", ""));
         params.addBodyParameter("userToken", sharedPreferencesDB.getString("token", ""));
         params.addBodyParameter("cityName", cityName);
         x.http().post(params, new Callback.CacheCallback<String>() {
             @Override
             public void onSuccess(String json) {
-                JsonResult<PhoneCode> result = new JsonResult<PhoneCode>();
+                JsonResult<PmBean> result = new JsonResult<PmBean>();
                 try {
-                    Log.i("CodeRequest", json);
+                    Log.i("URL_OUTDOOR_PM", json);
                     if (TextUtils.isEmpty(json)) {
                         return;
                     }
                     result = JsonUtils.parseJson(json,
-                            new TypeToken<PhoneCode>() {
+                            new TypeToken<PmBean>() {
                             }.getType());
                     //手机号码已经被其它账号绑定
                     if (!result.isFlag()) {
@@ -69,7 +70,6 @@ public class OutdoorPMRequest {
             @Override
             public void onError(Throwable ex, boolean isOnCallback) {
                 ToastUtil.show(context, "请求失败");
-                handler.sendEmptyMessage(StatisConstans.MSG_RECEIVED_BOUND);
             }
 
             @Override
@@ -84,7 +84,6 @@ public class OutdoorPMRequest {
 
             @Override
             public boolean onCache(String result) {
-                handler.sendEmptyMessage(StatisConstans.MSG_RECEIVED_BOUND);
                 return false;
             }
         });

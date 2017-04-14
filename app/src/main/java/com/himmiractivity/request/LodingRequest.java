@@ -32,10 +32,12 @@ public class LodingRequest {
     private Handler handler;
     private DialogView dialogView;
     SharedPreferencesDB sharedPreferencesDB;
+    boolean isDialog;
 
-    public LodingRequest(SharedPreferencesDB sharedPreferencesDB, Context context, String pwd, String mobile, String userDeviceUuid, Handler handler) {
+    public LodingRequest(SharedPreferencesDB sharedPreferencesDB, Context context, String pwd, String mobile, String userDeviceUuid, Handler handler, boolean isDialog) {
         this.context = context;
         this.pwd = pwd;
+        this.isDialog = isDialog;
         this.mobile = mobile;
         this.userDeviceUuid = userDeviceUuid;
         this.sharedPreferencesDB = sharedPreferencesDB;
@@ -43,10 +45,12 @@ public class LodingRequest {
     }
 
     public void requestCode() throws Exception {
-        if (null == dialogView) {
-            dialogView = new DialogView(context);
-            dialogView.show();
-            dialogView.setMessage("登陆中");
+        if (isDialog) {
+            if (null == dialogView) {
+                dialogView = new DialogView(context);
+                dialogView.show();
+                dialogView.setMessage("登陆中");
+            }
         }
         RequestParams params = new RequestParams(Configuration.URL_LOGIN);
         params.addBodyParameter("pwd", MD5.MD5(pwd));

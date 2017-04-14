@@ -23,6 +23,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,15 +38,13 @@ import com.himmiractivity.Utils.ToastUtil;
 import com.himmiractivity.Utils.ToastUtils;
 import com.himmiractivity.Utils.WifiUtils;
 import com.himmiractivity.base.BaseBusActivity;
-import com.himmiractivity.entity.AllUserDerviceBaen;
+import com.himmiractivity.circular_progress_bar.CircularProgressBar;
 import com.himmiractivity.entity.DataServerBean;
 import com.himmiractivity.entity.PmAllData;
-import com.himmiractivity.entity.Space;
+import com.himmiractivity.entity.PmBean;
 import com.himmiractivity.entity.UserData;
-import com.himmiractivity.entity.UserRoom;
 import com.himmiractivity.interfaces.StatisConstans;
 import com.himmiractivity.mining.app.zxing.ScoketOFFeON;
-import com.himmiractivity.request.AllDeviceInfoRequest;
 import com.himmiractivity.request.DataServerConfigRequest;
 import com.himmiractivity.request.LodingRequest;
 import com.himmiractivity.request.OutdoorPMRequest;
@@ -67,6 +66,10 @@ import butterknife.BindView;
 import butterknife.BindViews;
 
 public class MainActivity extends BaseBusActivity {
+    @BindView(R.id.progress)
+    CircularProgressBar progressBar;
+    @BindView(R.id.ll_content)
+    LinearLayout ll_content;
     Location mlocation;
     LocationManager mLocationManager;
     @BindView(R.id.percent_view)
@@ -104,7 +107,8 @@ public class MainActivity extends BaseBusActivity {
                     ScoketOFFeON.sendMessage(socket, protocal, mac);
                     break;
                 case StatisConstans.MSG_OUTDOOR_PM:
-
+                    PmBean pmBean = (PmBean) msg.obj;
+                    textViews.get(2).setText(pmBean.getPm25());
                     break;
                 case StatisConstans.MSG_ENABLED_SUCCESSFUL:
                     // 发送 一个无序广播
@@ -132,6 +136,8 @@ public class MainActivity extends BaseBusActivity {
                 //成功
                 case StatisConstans.MSG_RECEIVED_REGULAR:
                     userData = (UserData) msg.obj;
+                    ll_content.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
                     initialization();
                     break;
                 case StatisConstans.CONFIG_REGULAR:
@@ -172,6 +178,8 @@ public class MainActivity extends BaseBusActivity {
             bundle = getIntent().getExtras();
             if (bundle.getSerializable("userData") != null) {
                 userData = (UserData) bundle.getSerializable("userData");
+                ll_content.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.GONE);
                 initialization();
             } else {
                 LodingRequest();
@@ -364,7 +372,7 @@ public class MainActivity extends BaseBusActivity {
             startActivity(new Intent(this, LodingActivity.class));
             finish();
         } else {
-            LodingRequest lodingRequest = new LodingRequest(sharedPreferencesDB, this, sharedPreferencesDB.getString("userpwd", ""), sharedPreferencesDB.getString("username", ""), sharedPreferencesDB.getString("userDeviceUuid", ""), handler);
+            LodingRequest lodingRequest = new LodingRequest(sharedPreferencesDB, this, sharedPreferencesDB.getString("userpwd", ""), sharedPreferencesDB.getString("username", ""), sharedPreferencesDB.getString("userDeviceUuid", ""), handler, false);
             try {
                 lodingRequest.requestCode();
             } catch (Exception e) {

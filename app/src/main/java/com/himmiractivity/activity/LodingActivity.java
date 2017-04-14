@@ -114,7 +114,7 @@ public class LodingActivity extends BaseBusActivity {
             ToastUtil.show(this, "密码长度为6-16位");
             return;
         }
-        LodingRequest lodingRequest = new LodingRequest(sharedPreferencesDB, LodingActivity.this, pass, user, sharedPreferencesDB.getString("userDeviceUuid", ""), handler);
+        LodingRequest lodingRequest = new LodingRequest(sharedPreferencesDB, LodingActivity.this, pass, user, sharedPreferencesDB.getString("userDeviceUuid", ""), handler, true);
         try {
             lodingRequest.requestCode();
         } catch (Exception e) {
