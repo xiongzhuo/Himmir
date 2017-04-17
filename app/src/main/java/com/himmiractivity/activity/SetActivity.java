@@ -72,8 +72,8 @@ public class SetActivity extends BaseBusActivity {
     private String imageName;
     private String imageDir;
     private Bitmap photo;
-    @BindView(R.id.btn_back)
-    ImageView btnBack;
+    @BindViews({R.id.btn_back, R.id.iv_shared_device})
+    List<ImageView> imageViews;
     @BindViews({R.id.ll_equip, R.id.ll_message, R.id.ll_feedback, R.id.ll_phone, R.id.ll_help, R.id.ll_chanage_pass, R.id.ll_exit})
     List<LinearLayout> linearLayouts;
     AlertDialog alertDialog;
@@ -163,7 +163,8 @@ public class SetActivity extends BaseBusActivity {
         linearLayouts.get(4).setOnClickListener(this);
         linearLayouts.get(5).setOnClickListener(this);
         linearLayouts.get(6).setOnClickListener(this);
-        btnBack.setOnClickListener(this);
+        imageViews.get(0).setOnClickListener(this);
+        imageViews.get(1).setOnClickListener(this);
         tvTitle.setOnClickListener(this);
         simImage.setOnClickListener(this);
 
@@ -231,6 +232,9 @@ public class SetActivity extends BaseBusActivity {
                 break;
             case R.id.cir_image:
                 getPhoto();
+                break;
+            case R.id.iv_shared_device:
+                startActivity(new Intent(SetActivity.this, SharedDeviceActivity.class));
                 break;
             //我的消息
             case R.id.ll_message:
