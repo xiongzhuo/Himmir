@@ -61,6 +61,8 @@ import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.net.ssl.SSLSocket;
+
 import activity.hamir.com.himmir.R;
 import butterknife.BindView;
 import butterknife.BindViews;
@@ -88,7 +90,7 @@ public class MainActivity extends BaseBusActivity {
     private List<String> list;
     private List<UserData.UserRoom> space;
     public static MainActivity instans;
-    Socket socket;
+    SSLSocket socket;
     Protocal protocal;
     DataServerBean dataServerBean;
     String mac;
@@ -104,7 +106,13 @@ public class MainActivity extends BaseBusActivity {
         public boolean handleMessage(Message msg) {
             switch (msg.what) {
                 case StatisConstans.MSG_CYCLIC_TRANSMISSION:
-                    ScoketOFFeON.sendMessage(socket, protocal, mac);
+                    ThreadPoolUtils threadPoolUtilsTwo = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 1);
+                    threadPoolUtilsTwo.execute(new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            ScoketOFFeON.sendMessage(socket, protocal, mac);
+                        }
+                    }));
                     break;
                 case StatisConstans.MSG_OUTDOOR_PM:
                     PmBean pmBean = (PmBean) msg.obj;
@@ -284,7 +292,13 @@ public class MainActivity extends BaseBusActivity {
                         textViews.get(0).setText(hz + "");
                         isRevise = true;
                         hzNumeber = hz;
-                        ScoketOFFeON.sendBlowingRate(socket, protocal, mac, hzNumeber);
+                        ThreadPoolUtils threadPoolUtils = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 1);
+                        threadPoolUtils.execute(new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                ScoketOFFeON.sendBlowingRate(socket, protocal, mac, hzNumeber);
+                            }
+                        }));
                     }
                 } else {
                     ToastUtils.show(MainActivity.this, "设备离线", Toast.LENGTH_SHORT);
@@ -302,7 +316,13 @@ public class MainActivity extends BaseBusActivity {
                         textViews.get(0).setText(hz + "");
                         isRevise = true;
                         hzNumeber = hz;
-                        ScoketOFFeON.sendBlowingRate(socket, protocal, mac, hzNumeber);
+                        ThreadPoolUtils threadPoolUtils = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 1);
+                        threadPoolUtils.execute(new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                ScoketOFFeON.sendBlowingRate(socket, protocal, mac, hzNumeber);
+                            }
+                        }));
                     }
                 } else {
                     ToastUtils.show(MainActivity.this, "设备离线", Toast.LENGTH_SHORT);
@@ -323,7 +343,13 @@ public class MainActivity extends BaseBusActivity {
                 if (protocal == null) {
                     protocal = new Protocal();
                 }
-                ScoketOFFeON.sendMessage(socket, protocal, mac, selectorImageViews.get(0).isChecked());
+                ThreadPoolUtils threadPoolUtils = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 1);
+                threadPoolUtils.execute(new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ScoketOFFeON.sendMessage(socket, protocal, mac, selectorImageViews.get(0).isChecked());
+                    }
+                }));
                 break;
             default:
                 break;

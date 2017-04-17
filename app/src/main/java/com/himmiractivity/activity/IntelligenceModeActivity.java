@@ -153,7 +153,14 @@ public class IntelligenceModeActivity extends BaseBusActivity {
         coNumber = Integer.parseInt(arrCO[0]);
         String[] arrPM = textViews.get(1).getText().toString().trim().split("\\ ");
         pmNumber = Integer.parseInt(arrPM[0]);
-        ScoketOFFeON.sendNoopsycheMode(socket, protocal, mac, muteMode, coMode, pmMode, coNumber, pmNumber);
+        ThreadPoolUtils threadPoolUtils = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 1);
+        threadPoolUtils.execute(new Thread(new Runnable() {
+            @Override
+            public void run() {
+                ScoketOFFeON.sendNoopsycheMode(socket, protocal, mac, muteMode, coMode, pmMode, coNumber, pmNumber);
+            }
+        }));
+
     }
 
     public void showinputPassdialog(String head, String headHit, final String isTool) {

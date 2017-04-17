@@ -94,7 +94,13 @@ public class QquipManager extends BaseBusActivity implements AlxRefreshLoadMoreR
                     if (allUserDerviceBaen.getSpace() != null && allUserDerviceBaen.getSpace().size() > 0) {
                         if (onLinePos < allUserDerviceBaen.getSpace().size()) {
                             Log.d("device_mac", allUserDerviceBaen.getSpace().get(onLinePos).getDevice().getDevice_mac() + "onLinePos:" + onLinePos);
-                            ScoketOFFeON.sendMessage(socket, protocal, allUserDerviceBaen.getSpace().get(onLinePos).getDevice().getDevice_mac());
+                            ThreadPoolUtils threadPoolUtils = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 1);
+                            threadPoolUtils.execute(new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ScoketOFFeON.sendMessage(socket, protocal, allUserDerviceBaen.getSpace().get(onLinePos).getDevice().getDevice_mac());
+                                }
+                            }));
                         }
 //                    mRecyclerView.setLayoutManager(new LinearLayoutManager(QquipManager.this));
                         rvcAdapter = new RvcAdapter(QquipManager.this, allUserDerviceBaen.getSpace(), R.layout.list_item, true);
@@ -163,7 +169,13 @@ public class QquipManager extends BaseBusActivity implements AlxRefreshLoadMoreR
                 if (onLinePos >= allUserDerviceBaen.getSpace().size())
                     return;
                 Log.d("device_mac", allUserDerviceBaen.getSpace().get(onLinePos).getDevice().getDevice_mac() + "onLinePos:" + onLinePos);
-                ScoketOFFeON.sendMessage(socket, protocal, allUserDerviceBaen.getSpace().get(onLinePos).getDevice().getDevice_mac());
+                ThreadPoolUtils threadPoolUtils = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 1);
+                threadPoolUtils.execute(new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ScoketOFFeON.sendMessage(socket, protocal, allUserDerviceBaen.getSpace().get(onLinePos).getDevice().getDevice_mac());
+                    }
+                }));
             }
         }
     };
@@ -207,7 +219,14 @@ public class QquipManager extends BaseBusActivity implements AlxRefreshLoadMoreR
 //                startActivity(new Intent(this, EditTimeActivity.class));
                 Log.d("device_mac", mac);
                 if (allUserDerviceBaen.getSpace().get(deletePosition).isOnLine()) {
-                    ScoketOFFeON.sendTimingMessage(socket, protocal, mac);
+                    ThreadPoolUtils threadPoolUtils = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 1);
+                    threadPoolUtils.execute(new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            ScoketOFFeON.sendTimingMessage(socket, protocal, mac);
+                        }
+                    }));
+
                 } else {
                     ToastUtil.show(QquipManager.this, "校时失败，请检查网络连接");
                 }

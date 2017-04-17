@@ -203,7 +203,13 @@ public class FixedTimeActivity extends BaseBusActivity {
         t1Switch = checkBoxes.get(0).isChecked();
         t2Switch = checkBoxes.get(1).isChecked();
         t3Switch = checkBoxes.get(2).isChecked();
-        ScoketOFFeON.sendTimingCommand(socket, protocal, mac, timingMode, t1Switch, t2Switch, t3Switch, t1start, t1Stop, t2start, t2Stop, t3start, t3Stop);
+        ThreadPoolUtils threadPoolUtils = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 1);
+        threadPoolUtils.execute(new Thread(new Runnable() {
+            @Override
+            public void run() {
+                ScoketOFFeON.sendTimingCommand(socket, protocal, mac, timingMode, t1Switch, t2Switch, t3Switch, t1start, t1Stop, t2start, t2Stop, t3start, t3Stop);
+            }
+        }));
     }
 
     private void registerBoradcastReceiver() {

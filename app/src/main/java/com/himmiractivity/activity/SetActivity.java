@@ -139,6 +139,7 @@ public class SetActivity extends BaseBusActivity {
     @Override
     protected void initView(Bundle savedInstanceState) {
         App.getInstance().addActivity(this);
+        getWrite();
         if (getIntent().getExtras() != null) {
             bundle = getIntent().getExtras();
             if (bundle.getSerializable("userData") != null) {
@@ -200,6 +201,17 @@ public class SetActivity extends BaseBusActivity {
         } else {
             ChangePhotosUtils
                     .changePhotos(SetActivity.this);
+        }
+    }
+
+    public void getWrite() {
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    StatisConstans.MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
+        } else {
         }
     }
 
@@ -277,7 +289,7 @@ public class SetActivity extends BaseBusActivity {
                 break;
             //退出登陆
             case R.id.ll_exit:
-                sharedPreferencesDB.setString("username", "");
+//                sharedPreferencesDB.setString("username", "");
                 sharedPreferencesDB.setString("userpwd", "");
                 Intent intent = new Intent();
                 intent.setClass(this, LodingActivity.class);
@@ -335,8 +347,8 @@ public class SetActivity extends BaseBusActivity {
         } else if (requestCode == StatisConstans.MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE) {
             if (grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                ChangePhotosUtils
-                        .changePhotos(SetActivity.this);
+//                ChangePhotosUtils
+//                        .changePhotos(SetActivity.this);
             } else {
                 Toast.makeText(SetActivity.this, "请您允许才能选取图片", Toast.LENGTH_SHORT).show();
             }
@@ -369,7 +381,7 @@ public class SetActivity extends BaseBusActivity {
         w.setGravity(Gravity.BOTTOM);
         w.getDecorView().setPadding(0, 0, 0, 0);
         //获得window窗口的属性
-        android.view.WindowManager.LayoutParams lp = w.getAttributes();
+        WindowManager.LayoutParams lp = w.getAttributes();
         //设置窗口宽度为充满全屏
         lp.width = WindowManager.LayoutParams.MATCH_PARENT;
         //设置窗口高度为包裹内容
@@ -466,7 +478,7 @@ public class SetActivity extends BaseBusActivity {
                 if (files.size() > 0) {
                     files.remove(0);
                 }
-//                FiledUtil.saveBitmap(photo, f);
+                FiledUtil.saveBitmap(photo, f);
                 files.add(f);
                 String url = imageDir + "/" + imageName;
 //                TaskDetailImageUploadRequest taskDetailImageUploadRequest = new TaskDetailImageUploadRequest(sharedPreferencesDB, SetActivity.this, handler, files);

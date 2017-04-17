@@ -69,6 +69,9 @@ public class LodingActivity extends BaseBusActivity {
 
     @Override
     protected void initView(Bundle savedInstanceState) {
+        if (!TextUtils.isEmpty(sharedPreferencesDB.getString("username", ""))) {
+            clearEditTexts.get(1).setText(sharedPreferencesDB.getString("username", ""));
+        }
         textViews.get(0).setOnClickListener(this);
         textViews.get(1).setOnClickListener(this);
         btnLoding.setOnClickListener(this);

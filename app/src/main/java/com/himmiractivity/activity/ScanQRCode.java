@@ -133,7 +133,10 @@ public class ScanQRCode extends BaseBusActivity {
         if (requestCode == StatisConstans.MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE) {
             if (grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                setIvQrCode();
+                Intent intent = new Intent();
+                intent.setClass(ScanQRCode.this, MipcaActivityCaptureActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivityForResult(intent, SCANNIN_GREQUEST_CODE);
             } else {
                 Toast.makeText(ScanQRCode.this, "请你允许才能扫描二维码", Toast.LENGTH_SHORT).show();
             }
