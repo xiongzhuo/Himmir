@@ -36,6 +36,7 @@ import com.himmiractivity.Constant.Configuration;
 import com.himmiractivity.Utils.ChangePhotosUtils;
 import com.himmiractivity.Utils.FiledUtil;
 import com.himmiractivity.Utils.IntentUtilsTwo;
+import com.himmiractivity.Utils.SharedPreferencesDB;
 import com.himmiractivity.Utils.ToastUtil;
 import com.himmiractivity.Utils.ToastUtils;
 import com.himmiractivity.Utils.UiUtil;
@@ -99,7 +100,6 @@ public class SetActivity extends BaseBusActivity {
                 //成功
                 case StatisConstans.MSG_RECEIVED_REGULAR:
                     ModifyNameData modifyNameData = (ModifyNameData) msg.obj;
-                    ToastUtil.show(SetActivity.this, "修改成功");
                     if (!TextUtils.isEmpty(dialog.getName())) {
                         tvTitle.setText(dialog.getName());
                     } else {
@@ -234,8 +234,6 @@ public class SetActivity extends BaseBusActivity {
                 break;
             case R.id.iv_shared_device:
                 Intent intentShared = new Intent(SetActivity.this, SharedDeviceActivity.class);
-                intentShared.putExtra(StatisConstans.USER_SHARE_NAME, userData.getUserShareName());
-                intentShared.putExtra(StatisConstans.USER_SHARE_CODE, userData.getUserShareCode());
                 startActivity(intentShared);
                 break;
             //我的消息
@@ -404,7 +402,7 @@ public class SetActivity extends BaseBusActivity {
         tv_service_phone = (TextView) view.findViewById(R.id.tv_service_phone);
         TextView tv_cancel = (TextView) view.findViewById(R.id.tv_cancel);
         tv_sell_phone.setOnClickListener(this);
-        tv_sell_phone.setOnClickListener(this);
+        tv_service_phone.setOnClickListener(this);
         tv_cancel.setOnClickListener(this);
         ll_dimis.setOnClickListener(new View.OnClickListener() {
             @Override

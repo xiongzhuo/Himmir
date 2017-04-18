@@ -146,6 +146,8 @@ public class MainActivity extends BaseBusActivity {
                     userData = (UserData) msg.obj;
                     ll_content.setVisibility(View.VISIBLE);
                     progressBar.setVisibility(View.GONE);
+                    sharedPreferencesDB.setString(StatisConstans.USER_SHARE_NAME, userData.getUserShareName());
+                    sharedPreferencesDB.setString(StatisConstans.USER_SHARE_CODE, userData.getUserShareCode());
                     initialization();
                     break;
                 case StatisConstans.CONFIG_REGULAR:
@@ -187,6 +189,8 @@ public class MainActivity extends BaseBusActivity {
             bundle = getIntent().getExtras();
             if (bundle.getSerializable("userData") != null) {
                 userData = (UserData) bundle.getSerializable("userData");
+                sharedPreferencesDB.setString(StatisConstans.USER_SHARE_NAME, userData.getUserShareName());
+                sharedPreferencesDB.setString(StatisConstans.USER_SHARE_CODE, userData.getUserShareCode());
                 ll_content.setVisibility(View.VISIBLE);
                 progressBar.setVisibility(View.GONE);
                 initialization();

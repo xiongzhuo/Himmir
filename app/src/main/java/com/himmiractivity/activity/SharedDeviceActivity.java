@@ -71,7 +71,8 @@ public class SharedDeviceActivity extends BaseBusActivity {
                 finish();
                 break;
             case R.id.ll_my_qrcode:
-                startActivity(new Intent(SharedDeviceActivity.this, MyQrcodeActivity.class));
+                Intent intentMy = new Intent(SharedDeviceActivity.this, MyQrcodeActivity.class);
+                startActivity(intentMy);
                 break;
             case R.id.ll_projection_screen:
                 if (ContextCompat.checkSelfPermission(this,
@@ -124,7 +125,6 @@ public class SharedDeviceActivity extends BaseBusActivity {
             case SCANNIN_GREQUEST_CODE:
                 if (resultCode == RESULT_OK) {
                     //二维吗扫描结果
-
                 }
                 break;
         }

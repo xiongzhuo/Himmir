@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.os.Build;
 import android.util.Log;
 import android.view.Display;
@@ -210,6 +211,26 @@ public class Utils {
             Log.i("log", "生成二维码错误" + e.getMessage());
             return null;
         }
+    }
+
+    public static final Bitmap addLogo(Bitmap qrBitmap, Bitmap logoBitmap) {
+        int qrBitmapWidth = qrBitmap.getWidth();
+        int qrBitmapHeight = qrBitmap.getHeight();
+        int logoBitmapWidth = logoBitmap.getWidth();
+        int logoBitmapHeight = logoBitmap.getHeight();
+        Bitmap blankBitmap = Bitmap.createBitmap(qrBitmapWidth, qrBitmapHeight, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(blankBitmap);
+        canvas.drawBitmap(qrBitmap, 0, 0, null);
+        canvas.save(Canvas.ALL_SAVE_FLAG);
+        float scaleSize = 1.0f;
+        while ((logoBitmapWidth / scaleSize) > (qrBitmapWidth / 5) || (logoBitmapHeight / scaleSize) > (qrBitmapHeight / 5)) {
+            scaleSize *= 2;
+        }
+        float sx = 1.0f / scaleSize;
+        canvas.scale(sx, sx, qrBitmapWidth / 2, qrBitmapHeight / 2);
+        canvas.drawBitmap(logoBitmap, (qrBitmapWidth - logoBitmapWidth) / 2, (qrBitmapHeight - logoBitmapHeight) / 2, null);
+        canvas.restore();
+        return blankBitmap;
     }
 
 

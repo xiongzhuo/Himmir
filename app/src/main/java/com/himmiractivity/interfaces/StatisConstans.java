@@ -26,10 +26,10 @@ public interface StatisConstans {
     String DEVICE_INFO = "device_info";
     String RESULT = "result";
     String BITMAP = "bitmap";
-    String USER_SHARE_CODE = "user_share_code";//成功
-    String USER_SHARE_NAME = "user_share_name";//成功
-    String BROADCAST_HONGREN_SUCC = "suceess";//成功
-    String BROADCAST_HONGREN_KILL = "fail";//失败
+    String USER_SHARE_CODE = "user_share_code";//二维码
+    String USER_SHARE_NAME = "user_share_name";//二维码共享名
+    String BROADCAST_HONGREN_SUCC = "suceess";
+    String BROADCAST_HONGREN_KILL = "fail";
     String BROADCAST_HONGREN_DATA = "data";
     //相册权限
     int MY_PERMISSIONS_REQUEST_CAMERA = 11;
