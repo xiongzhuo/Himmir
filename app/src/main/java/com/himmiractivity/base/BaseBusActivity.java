@@ -39,6 +39,9 @@ import activity.hamir.com.himmir.R;
 import butterknife.ButterKnife;
 
 public abstract class BaseBusActivity extends AutoLayoutActivity implements View.OnClickListener {
+    // 两次点击按钮之间的点击间隔不能少于1000毫秒
+    private static final int MIN_CLICK_DELAY_TIME = 1000;
+    private static long lastClickTime;
     protected Context mContext;
     View mTitleView;
     ImageView mLeftView;// 左侧按钮
@@ -65,9 +68,9 @@ public abstract class BaseBusActivity extends AutoLayoutActivity implements View
                     new String[]{Manifest.permission.READ_PHONE_STATE},
                     StatisConstans.MY_PERMISSIONS_REQUEST_READ_PHONE_STATE);
         } else {
-            if (TextUtils.isEmpty(sharedPreferencesDB.getString("userDeviceUuid", ""))) {
+            if (TextUtils.isEmpty(sharedPreferencesDB.getString(StatisConstans.USERDEVICEUUID, ""))) {
                 String imei = ((TelephonyManager) this.getSystemService(TELEPHONY_SERVICE)).getDeviceId();
-                sharedPreferencesDB.setString("userDeviceUuid", imei);
+                sharedPreferencesDB.setString(StatisConstans.USERDEVICEUUID, imei);
             }
         }
         ButterKnife.bind(this);
@@ -138,6 +141,8 @@ public abstract class BaseBusActivity extends AutoLayoutActivity implements View
      * 加载页面布局文件
      */
     protected abstract int getContentLayoutId();
+
+    public abstract void onMultiClick(View v);
 
     /**
      * 页面控件初始化
@@ -261,9 +266,9 @@ public abstract class BaseBusActivity extends AutoLayoutActivity implements View
         if (requestCode == StatisConstans.MY_PERMISSIONS_REQUEST_READ_PHONE_STATE) {
             if (grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                if (TextUtils.isEmpty(sharedPreferencesDB.getString("userDeviceUuid", ""))) {
+                if (TextUtils.isEmpty(sharedPreferencesDB.getString(StatisConstans.USERDEVICEUUID, ""))) {
                     String imei = ((TelephonyManager) this.getSystemService(TELEPHONY_SERVICE)).getDeviceId();
-                    sharedPreferencesDB.setString("userDeviceUuid", imei);
+                    sharedPreferencesDB.setString(StatisConstans.USERDEVICEUUID, imei);
                 }
             } else {
                 // Permission Denied
@@ -286,6 +291,16 @@ public abstract class BaseBusActivity extends AutoLayoutActivity implements View
                 mRightView.setVisibility(View.VISIBLE);
                 mRightView.setOnClickListener(this);
             }
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        long curClickTime = System.currentTimeMillis();
+        if ((curClickTime - lastClickTime) >= MIN_CLICK_DELAY_TIME) {
+            // 超过点击间隔后再将lastClickTime重置为当前点击时间
+            lastClickTime = curClickTime;
+            onMultiClick(v);
         }
     }
 }

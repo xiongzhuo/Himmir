@@ -12,7 +12,6 @@ import com.himmiractivity.Utils.MD5;
 import com.himmiractivity.Utils.SharedPreferencesDB;
 import com.himmiractivity.Utils.ToastUtil;
 import com.himmiractivity.entity.JsonResult;
-import com.himmiractivity.entity.LodingBean;
 import com.himmiractivity.entity.ModifyNameData;
 import com.himmiractivity.interfaces.StatisConstans;
 import com.himmiractivity.view.DialogView;
@@ -48,10 +47,10 @@ public class ModifyPwdRequest {
             dialogView.setMessage("加载中");
         }
         RequestParams params = new RequestParams(Configuration.URL_MODIFYPWD);
-        params.addBodyParameter("mobile", sharedPreferencesDB.getString("phone", ""));
+        params.addBodyParameter("mobile", sharedPreferencesDB.getString(StatisConstans.PHONE, ""));
         params.addBodyParameter("newPwd", MD5.MD5(newPwd));
-        params.addBodyParameter("userDeviceUuid", sharedPreferencesDB.getString("userDeviceUuid", ""));
-        params.addBodyParameter("userToken", sharedPreferencesDB.getString("token", ""));
+        params.addBodyParameter("userDeviceUuid", sharedPreferencesDB.getString(StatisConstans.USERDEVICEUUID, ""));
+        params.addBodyParameter("userToken", sharedPreferencesDB.getString(StatisConstans.TOKEN, ""));
         params.addBodyParameter("pwd", MD5.MD5(pwd));
         x.http().post(params, new Callback.CacheCallback<String>() {
             @Override
@@ -80,7 +79,7 @@ public class ModifyPwdRequest {
 
             @Override
             public void onError(Throwable ex, boolean isOnCallback) {
-                ToastUtil.show(context, "请求失败");
+                ToastUtil.show(context, "网络请求失败");
                 if (null != dialogView) {
                     dialogView.cancel();
                 }

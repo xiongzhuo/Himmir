@@ -35,6 +35,16 @@
                 android:text="设置"
                 android:textColor="@color/white"
                 android:textSize="18sp" />
+
+            <ImageView
+                android:id="@+id/iv_shared_device"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:padding="10dp"
+                android:paddingRight="15dp"
+                android:src="@drawable/add" />
         </RelativeLayout>
 
         <com.facebook.drawee.view.SimpleDraweeView

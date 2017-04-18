@@ -93,7 +93,7 @@ public class ForgotPassActivity extends BaseBusActivity {
     }
 
     @Override
-    public void onClick(View view) {
+    public void onMultiClick(View view) {
         switch (view.getId()) {
             case R.id.btn_left:
                 finish();
@@ -159,7 +159,7 @@ public class ForgotPassActivity extends BaseBusActivity {
             ToastUtil.show(this, "两次密码不一致");
             return;
         }
-        ResetPwdRequest resetPwdRequest = new ResetPwdRequest(ForgotPassActivity.this, phone, pass, sharedPreferencesDB.getString("userDeviceUuid", ""), code, handler);
+        ResetPwdRequest resetPwdRequest = new ResetPwdRequest(ForgotPassActivity.this, phone, pass, sharedPreferencesDB.getString(StatisConstans.USERDEVICEUUID, ""), code, handler);
         try {
             resetPwdRequest.requestCode();
         } catch (Exception e) {

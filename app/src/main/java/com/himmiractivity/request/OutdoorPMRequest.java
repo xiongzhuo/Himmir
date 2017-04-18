@@ -69,7 +69,7 @@ public class OutdoorPMRequest {
 
             @Override
             public void onError(Throwable ex, boolean isOnCallback) {
-                ToastUtil.show(context, "请求失败");
+                ToastUtil.show(context, "网络请求失败");
             }
 
             @Override

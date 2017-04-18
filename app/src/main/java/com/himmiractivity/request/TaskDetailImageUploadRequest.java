@@ -50,9 +50,9 @@ public class TaskDetailImageUploadRequest {
             dialogView.setMessage("加载中");
         }
         RequestParams params = new RequestParams(Configuration.URL_GETIMAGEUPLOADS);
-        params.addBodyParameter("mobile", sharedPreferencesDB.getString("phone", ""));
-        params.addBodyParameter("userDeviceUuid", sharedPreferencesDB.getString("userDeviceUuid", ""));
-        params.addBodyParameter("userToken", sharedPreferencesDB.getString("token", ""));
+        params.addBodyParameter("mobile", sharedPreferencesDB.getString(StatisConstans.PHONE, ""));
+        params.addBodyParameter("userDeviceUuid", sharedPreferencesDB.getString(StatisConstans.USERDEVICEUUID, ""));
+        params.addBodyParameter("userToken", sharedPreferencesDB.getString(StatisConstans.TOKEN, ""));
 //        for (File file : files) {
 //            params.addBodyParameter("image", file);
 //        }

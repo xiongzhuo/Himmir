@@ -39,7 +39,7 @@
                     android:layout_weight="1"
                     android:drawableBottom="@drawable/iv_btoom"
                     android:gravity="center"
-                    android:text="暂无房间"
+                    android:text="暂无设备"
                     android:textColor="@color/white"
                     android:textSize="18sp" />
 

@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.himmiractivity.App;
 import com.himmiractivity.Utils.StringUtil;
 import com.himmiractivity.base.BaseBusActivity;
+import com.himmiractivity.interfaces.StatisConstans;
 import com.himmiractivity.view.widget.NumericwheelTwoAdapter;
 import com.himmiractivity.view.widget.WheelView;
 
@@ -52,8 +53,8 @@ public class EditTimeActivity extends BaseBusActivity {
         setMidTxt("编辑事件段");
         initTitleBar();
         setRightView("确定", true);
-        if (getIntent().getStringExtra("time") != null) {
-            time = getIntent().getStringExtra("time");
+        if (getIntent().getStringExtra(StatisConstans.TIME) != null) {
+            time = getIntent().getStringExtra(StatisConstans.TIME);
             String split = " - ";
             try {
                 List<String> arr = StringUtil.getSubString(time, split);
@@ -73,23 +74,23 @@ public class EditTimeActivity extends BaseBusActivity {
     }
 
     @Override
-    public void onClick(View view) {
+    public void onMultiClick(View view) {
         switch (view.getId()) {
             case R.id.btn_left:
                 finish();
                 break;
             case R.id.btn_right:
                 Intent intent = new Intent();
-                intent.putExtra("on", tvOnTime.getText().toString().trim());
-                intent.putExtra("off", tvOffTime.getText().toString().trim());
+                intent.putExtra(StatisConstans.NO, tvOnTime.getText().toString().trim());
+                intent.putExtra(StatisConstans.OFF, tvOffTime.getText().toString().trim());
                 setResult(Activity.RESULT_OK, intent);
                 finish();
                 break;
             case R.id.time_off:
-                showTimeDialog("off", tvOffTime.getText().toString().trim());
+                showTimeDialog(StatisConstans.OFF, tvOffTime.getText().toString().trim());
                 break;
             case R.id.time_on:
-                showTimeDialog("on", tvOnTime.getText().toString().trim());
+                showTimeDialog(StatisConstans.NO, tvOnTime.getText().toString().trim());
                 break;
             default:
                 break;
@@ -142,7 +143,7 @@ public class EditTimeActivity extends BaseBusActivity {
             public void onClick(View v) {
                 // TODO Auto-generated method stub
                 String str = String.format("%02d", hour.getCurrentItem()) + ":" + String.format("%02d", mins.getCurrentItem());
-                if (offandon.equals("off")) {
+                if (offandon.equals(StatisConstans.OFF)) {
                     tvOffTime.setText(str);
                 } else {
                     tvOnTime.setText(str);

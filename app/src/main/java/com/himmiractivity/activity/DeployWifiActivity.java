@@ -82,7 +82,7 @@ public class DeployWifiActivity extends BaseBusActivity implements OnSmartLinkLi
     }
 
     @Override
-    public void onClick(View v) {
+    public void onMultiClick(View v) {
         switch (v.getId()) {
             case R.id.btn_next:
                 if (TextUtils.isEmpty(etWifiPass.getText().toString().trim())) {

@@ -43,10 +43,10 @@ public class DefaultUserRoomRequest {
             dialogView.setMessage("加载中");
         }
         RequestParams params = new RequestParams(Configuration.URL_GETDEFAULTUSERROOM);
-        params.addBodyParameter("mobile", sharedPreferencesDB.getString("phone", ""));
-        params.addBodyParameter("userDeviceUuid", sharedPreferencesDB.getString("userDeviceUuid", ""));
-        params.addBodyParameter("userToken", sharedPreferencesDB.getString("token", ""));
-        params.addBodyParameter("userKey", sharedPreferencesDB.getString("key", ""));
+        params.addBodyParameter("mobile", sharedPreferencesDB.getString(StatisConstans.PHONE, ""));
+        params.addBodyParameter("userDeviceUuid", sharedPreferencesDB.getString(StatisConstans.USERDEVICEUUID, ""));
+        params.addBodyParameter("userToken", sharedPreferencesDB.getString(StatisConstans.TOKEN, ""));
+        params.addBodyParameter("userKey", sharedPreferencesDB.getString(StatisConstans.KEY, ""));
         x.http().post(params, new Callback.CacheCallback<String>() {
             @Override
             public void onSuccess(String json) {
@@ -74,7 +74,7 @@ public class DefaultUserRoomRequest {
 
             @Override
             public void onError(Throwable ex, boolean isOnCallback) {
-                ToastUtil.show(context, "请求失败");
+                ToastUtil.show(context, "网络请求失败");
                 if (null != dialogView) {
                     dialogView.cancel();
                 }

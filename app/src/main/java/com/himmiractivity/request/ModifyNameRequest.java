@@ -40,10 +40,10 @@ public class ModifyNameRequest {
 
     public void requestCode() throws Exception {
         RequestParams params = new RequestParams(Configuration.URL_MODIFYNAME);
-        params.addBodyParameter("mobile", sharedPreferencesDB.getString("phone", ""));
+        params.addBodyParameter("mobile", sharedPreferencesDB.getString(StatisConstans.PHONE, ""));
         params.addBodyParameter("newName", newName);
-        params.addBodyParameter("userDeviceUuid", sharedPreferencesDB.getString("userDeviceUuid", ""));
-        params.addBodyParameter("userToken", sharedPreferencesDB.getString("token", ""));
+        params.addBodyParameter("userDeviceUuid", sharedPreferencesDB.getString(StatisConstans.USERDEVICEUUID, ""));
+        params.addBodyParameter("userToken", sharedPreferencesDB.getString(StatisConstans.TOKEN, ""));
         x.http().post(params, new Callback.CacheCallback<String>() {
             @Override
             public void onSuccess(String json) {
@@ -77,7 +77,7 @@ public class ModifyNameRequest {
 
             @Override
             public void onError(Throwable ex, boolean isOnCallback) {
-                ToastUtil.show(context, "请求失败");
+                ToastUtil.show(context, "网络请求失败");
             }
 
             @Override

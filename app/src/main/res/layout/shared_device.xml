@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/title_bar"
+        layout="@layout/title_top_view"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingBottom="20dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:paddingTop="20dp">
+
+        <LinearLayout
+            android:id="@+id/ll_my_qrcode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_my_qrcode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1"
+                android:background="#00000000"
+                android:drawableLeft="@drawable/equip_manage"
+                android:drawablePadding="10dp"
+                android:gravity="center_vertical"
+                android:orientation="vertical"
+                android:padding="5dp"
+                android:text="我的二维码"
+                android:textColor="@android:color/black"
+                android:textSize="16sp" />
+
+            <ImageView
+                android:layout_width="9dp"
+                android:layout_height="17dp"
+                android:layout_gravity="center_vertical"
+                android:scaleType="fitXY"
+                android:visibility="gone" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/ll_projection_screen"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_screen"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1"
+                android:background="#00000000"
+                android:drawableLeft="@drawable/phone"
+                android:drawablePadding="10dp"
+                android:gravity="center_vertical"
+                android:orientation="vertical"
+                android:padding="5dp"
+                android:text="TV投屏"
+                android:textColor="@android:color/black"
+                android:textSize="16sp" />
+
+            <ImageView
+                android:layout_width="9dp"
+                android:layout_height="17dp"
+                android:layout_gravity="center_vertical"
+                android:scaleType="fitXY"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_add_shared"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_add_shared"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1"
+                android:background="#00000000"
+                android:drawableLeft="@drawable/help"
+                android:drawablePadding="10dp"
+                android:gravity="center_vertical"
+                android:orientation="vertical"
+                android:padding="5dp"
+                android:text="添加分享"
+                android:textColor="@android:color/black"
+                android:textSize="16sp" />
+
+            <ImageView
+                android:layout_width="9dp"
+                android:layout_height="17dp"
+                android:layout_gravity="center_vertical"
+                android:scaleType="fitXY"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_manager_shared"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_manager_shared"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1"
+                android:background="#00000000"
+                android:drawableLeft="@drawable/change_pw"
+                android:drawablePadding="10dp"
+                android:gravity="center_vertical"
+                android:orientation="vertical"
+                android:padding="5dp"
+                android:text="管理分享"
+                android:textColor="@android:color/black"
+                android:textSize="16sp" />
+
+            <ImageView
+                android:layout_width="9dp"
+                android:layout_height="17dp"
+                android:layout_gravity="center_vertical"
+                android:scaleType="fitXY"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_added_shared"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_added_shared"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1"
+                android:background="#00000000"
+                android:drawableLeft="@drawable/exit"
+                android:drawablePadding="10dp"
+                android:gravity="center_vertical"
+                android:orientation="vertical"
+                android:padding="5dp"
+                android:text="已加分享"
+                android:textColor="@android:color/black"
+                android:textSize="16sp" />
+
+            <ImageView
+                android:layout_width="9dp"
+                android:layout_height="17dp"
+                android:layout_gravity="center_vertical"
+                android:scaleType="fitXY"
+                android:visibility="gone" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

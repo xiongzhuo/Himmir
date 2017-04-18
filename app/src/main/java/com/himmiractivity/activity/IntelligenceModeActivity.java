@@ -98,7 +98,7 @@ public class IntelligenceModeActivity extends BaseBusActivity {
     @Override
     protected void initView(Bundle savedInstanceState) {
         App.getInstance().addActivity(this);
-        mac = getIntent().getStringExtra("mac");
+        mac = getIntent().getStringExtra(StatisConstans.MAC);
         setMidTxt("智能模式");
         initTitleBar();
         setRightView("确定", true);
@@ -109,8 +109,8 @@ public class IntelligenceModeActivity extends BaseBusActivity {
         threadPoolUtils.execute(new Thread(new Runnable() {
             @Override
             public void run() {
-                String ip = sharedPreferencesDB.getString("ip", "");
-                String port = sharedPreferencesDB.getString("port", "");
+                String ip = sharedPreferencesDB.getString(StatisConstans.IP, "");
+                String port = sharedPreferencesDB.getString(StatisConstans.PORT, "");
                 request(ip, Integer.valueOf(port));
             }
         }));
@@ -122,7 +122,7 @@ public class IntelligenceModeActivity extends BaseBusActivity {
     }
 
     @Override
-    public void onClick(View v) {
+    public void onMultiClick(View v) {
         switch (v.getId()) {
             case R.id.btn_left:
                 finish();
@@ -259,7 +259,7 @@ public class IntelligenceModeActivity extends BaseBusActivity {
             } else if (action.equalsIgnoreCase(StatisConstans.BROADCAST_HONGREN_DATA)) {
                 if (isFirst) {
                     //得到数据
-                    pmAllData = (PmAllData) intent.getExtras().getSerializable("pm_all_data");
+                    pmAllData = (PmAllData) intent.getExtras().getSerializable(StatisConstans.PM_ALL_DATA);
                     if (pmAllData.getFanFreq() > 9) {
                         handler.sendEmptyMessage(StatisConstans.MSG_ENABLED_SUCCESSFUL);
                     } else {

@@ -106,7 +106,7 @@ public class SplashActivity extends FragmentActivity implements OnClickListener 
             startActivity(new Intent(this, LodingActivity.class));
             finish();
         } else {
-            LodingRequest lodingRequest = new LodingRequest(sharedDB, this, sharedDB.getString("userpwd", ""), sharedDB.getString("username", ""), sharedDB.getString("userDeviceUuid", ""), handler, false);
+            LodingRequest lodingRequest = new LodingRequest(sharedDB, this, sharedDB.getString(StatisConstans.USERPWD, ""), sharedDB.getString(StatisConstans.USERNAME, ""), sharedDB.getString(StatisConstans.USERDEVICEUUID, ""), handler, false);
             try {
                 lodingRequest.requestCode();
             } catch (Exception e) {

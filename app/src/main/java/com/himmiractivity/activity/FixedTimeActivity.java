@@ -105,7 +105,7 @@ public class FixedTimeActivity extends BaseBusActivity {
     @Override
     protected void initView(Bundle savedInstanceState) {
         App.getInstance().addActivity(this);
-        mac = getIntent().getStringExtra("mac");
+        mac = getIntent().getStringExtra(StatisConstans.MAC);
         setMidTxt("定时");
         initTitleBar();
         setRightView("确定", true);
@@ -115,8 +115,8 @@ public class FixedTimeActivity extends BaseBusActivity {
         threadPoolUtils.execute(new Thread(new Runnable() {
             @Override
             public void run() {
-                String ip = sharedPreferencesDB.getString("ip", "");
-                String port = sharedPreferencesDB.getString("port", "");
+                String ip = sharedPreferencesDB.getString(StatisConstans.IP, "");
+                String port = sharedPreferencesDB.getString(StatisConstans.PORT, "");
                 request(ip, Integer.valueOf(port));
             }
         }));
@@ -148,7 +148,7 @@ public class FixedTimeActivity extends BaseBusActivity {
     }
 
     @Override
-    public void onClick(View v) {
+    public void onMultiClick(View v) {
         switch (v.getId()) {
             case R.id.btn_left:
                 finish();
@@ -159,19 +159,19 @@ public class FixedTimeActivity extends BaseBusActivity {
             case R.id.iv_time_one:
                 intent = new Intent();
                 intent.setClass(this, EditTimeActivity.class);
-                intent.putExtra("time", checkBoxes.get(0).getText().toString().trim());
+                intent.putExtra(StatisConstans.TIME, checkBoxes.get(0).getText().toString().trim());
                 startActivityForResult(intent, StatisConstans.TIME_ONE_REQUEST);
                 break;
             case R.id.iv_time_two:
                 intent = new Intent();
                 intent.setClass(this, EditTimeActivity.class);
-                intent.putExtra("time", checkBoxes.get(1).getText().toString().trim());
+                intent.putExtra(StatisConstans.TIME, checkBoxes.get(1).getText().toString().trim());
                 startActivityForResult(intent, StatisConstans.TIME_TWO_REQUEST);
                 break;
             case R.id.iv_time_three:
                 intent = new Intent();
                 intent.setClass(this, EditTimeActivity.class);
-                intent.putExtra("time", checkBoxes.get(2).getText().toString().trim());
+                intent.putExtra(StatisConstans.TIME, checkBoxes.get(2).getText().toString().trim());
                 startActivityForResult(intent, StatisConstans.TIME_THREE_REQUEST);
                 break;
             default:
@@ -239,7 +239,7 @@ public class FixedTimeActivity extends BaseBusActivity {
                 if (isFirst) {
                     //得到数据的广播
                     Bundle bundle = intent.getExtras();
-                    pmAllData = (PmAllData) bundle.getSerializable("pm_all_data");
+                    pmAllData = (PmAllData) bundle.getSerializable(StatisConstans.PM_ALL_DATA);
                     if (pmAllData.getFanFreq() > 9) {
                         handler.sendEmptyMessage(StatisConstans.MSG_ENABLED_SUCCESSFUL);
                     } else {

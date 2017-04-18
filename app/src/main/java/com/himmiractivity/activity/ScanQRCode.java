@@ -47,10 +47,10 @@ public class ScanQRCode extends BaseBusActivity {
                     Intent intent = new Intent();
                     intent.setClass(ScanQRCode.this, InformationComitActivity.class);
                     Bundle bundle = new Bundle();
-                    bundle.putSerializable("device_info", deviceInfoBean);
-                    bundle.putString("server_number", code);
-                    bundle.putString("mac", smartLinkedModule.getMac());
-                    bundle.putString("ip", smartLinkedModule.getIp());
+                    bundle.putSerializable(StatisConstans.DEVICE_INFO, deviceInfoBean);
+                    bundle.putString(StatisConstans.SERVER_NUMBER, code);
+                    bundle.putString(StatisConstans.MAC, smartLinkedModule.getMac());
+                    bundle.putString(StatisConstans.IP, smartLinkedModule.getIp());
                     intent.putExtras(bundle);
                     startActivity(intent);
                     break;
@@ -84,7 +84,7 @@ public class ScanQRCode extends BaseBusActivity {
     }
 
     @Override
-    public void onClick(View v) {
+    public void onMultiClick(View v) {
         switch (v.getId()) {
             case R.id.iv_qr_code:
                 setIvQrCode();
@@ -153,7 +153,7 @@ public class ScanQRCode extends BaseBusActivity {
                 if (resultCode == RESULT_OK) {
                     Bundle bundle = data.getExtras();
                     //显示扫描到的内容
-                    etCodeNumber.setText(bundle.getString("result"));
+                    etCodeNumber.setText(bundle.getString(StatisConstans.RESULT));
                 }
                 break;
         }

@@ -8,12 +8,10 @@ import android.util.Log;
 import com.google.common.reflect.TypeToken;
 import com.himmiractivity.Constant.Configuration;
 import com.himmiractivity.Utils.JsonUtils;
-import com.himmiractivity.Utils.MD5;
 import com.himmiractivity.Utils.SharedPreferencesDB;
 import com.himmiractivity.Utils.ToastUtil;
 import com.himmiractivity.entity.ImageBean;
 import com.himmiractivity.entity.JsonResult;
-import com.himmiractivity.entity.LodingBean;
 import com.himmiractivity.interfaces.StatisConstans;
 import com.himmiractivity.view.DialogView;
 
@@ -48,9 +46,9 @@ public class DeleteDeviceRequest {
             dialogView.setMessage("加载中");
         }
         RequestParams params = new RequestParams(Configuration.URL_DELETEDEVICE);
-        params.addBodyParameter("mobile", sharedPreferencesDB.getString("phone", ""));
-        params.addBodyParameter("userDeviceUuid", sharedPreferencesDB.getString("userDeviceUuid", ""));
-        params.addBodyParameter("userToken", sharedPreferencesDB.getString("token", ""));
+        params.addBodyParameter("mobile", sharedPreferencesDB.getString(StatisConstans.PHONE, ""));
+        params.addBodyParameter("userDeviceUuid", sharedPreferencesDB.getString(StatisConstans.USERDEVICEUUID, ""));
+        params.addBodyParameter("userToken", sharedPreferencesDB.getString(StatisConstans.TOKEN, ""));
         params.addBodyParameter("deviceSn", deviceSn);
         params.addBodyParameter("userRoomId", userRoomId);
         x.http().post(params, new Callback.CacheCallback<String>() {
@@ -77,7 +75,7 @@ public class DeleteDeviceRequest {
 
             @Override
             public void onError(Throwable ex, boolean isOnCallback) {
-                ToastUtil.show(context, "请求失败");
+                ToastUtil.show(context, "网络请求失败");
                 if (null != dialogView) {
                     dialogView.cancel();
                 }

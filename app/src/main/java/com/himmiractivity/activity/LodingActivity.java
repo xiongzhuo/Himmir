@@ -39,11 +39,11 @@ public class LodingActivity extends BaseBusActivity {
                 //成功
                 case StatisConstans.MSG_RECEIVED_REGULAR:
                     UserData userData = (UserData) msg.obj;
-                    sharedPreferencesDB.setString("token", userData.getToken());
-                    sharedPreferencesDB.setString("phone", userData.getUserMobile());
-                    sharedPreferencesDB.setString("key", userData.getUserKey());
-                    sharedPreferencesDB.setString("username", user);
-                    sharedPreferencesDB.setString("userpwd", pass);
+                    sharedPreferencesDB.setString(StatisConstans.TOKEN, userData.getToken());
+                    sharedPreferencesDB.setString(StatisConstans.PHONE, userData.getUserMobile());
+                    sharedPreferencesDB.setString(StatisConstans.KEY, userData.getUserKey());
+                    sharedPreferencesDB.setString(StatisConstans.USERNAME, user);
+                    sharedPreferencesDB.setString(StatisConstans.USERPWD, pass);
                     Intent intent = new Intent();
                     intent.setClass(LodingActivity.this, MainActivity.class);
                     Bundle bundle = new Bundle();
@@ -53,7 +53,7 @@ public class LodingActivity extends BaseBusActivity {
                     finish();
                     break;
                 case StatisConstans.MSG_RECEIVED_BOUND:
-                    ToastUtil.show(LodingActivity.this, "请求失败");
+                    ToastUtil.show(LodingActivity.this, "网络请求失败");
                     break;
                 default:
                     break;
@@ -69,8 +69,8 @@ public class LodingActivity extends BaseBusActivity {
 
     @Override
     protected void initView(Bundle savedInstanceState) {
-        if (!TextUtils.isEmpty(sharedPreferencesDB.getString("username", ""))) {
-            clearEditTexts.get(1).setText(sharedPreferencesDB.getString("username", ""));
+        if (!TextUtils.isEmpty(sharedPreferencesDB.getString(StatisConstans.USERNAME, ""))) {
+            clearEditTexts.get(1).setText(sharedPreferencesDB.getString(StatisConstans.USERNAME, ""));
         }
         textViews.get(0).setOnClickListener(this);
         textViews.get(1).setOnClickListener(this);
@@ -84,7 +84,7 @@ public class LodingActivity extends BaseBusActivity {
 
 
     @Override
-    public void onClick(View view) {
+    public void onMultiClick(View view) {
         switch (view.getId()) {
             case R.id.btn_loding:
                 confirmation();
@@ -117,7 +117,7 @@ public class LodingActivity extends BaseBusActivity {
             ToastUtil.show(this, "密码长度为6-16位");
             return;
         }
-        LodingRequest lodingRequest = new LodingRequest(sharedPreferencesDB, LodingActivity.this, pass, user, sharedPreferencesDB.getString("userDeviceUuid", ""), handler, true);
+        LodingRequest lodingRequest = new LodingRequest(sharedPreferencesDB, LodingActivity.this, pass, user, sharedPreferencesDB.getString(StatisConstans.USERDEVICEUUID, ""), handler, true);
         try {
             lodingRequest.requestCode();
         } catch (Exception e) {

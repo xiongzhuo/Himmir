@@ -46,9 +46,9 @@ public class DeviceInfoRequest {
             dialogView.setMessage("加载中");
         }
         RequestParams params = new RequestParams(Configuration.URL_GETDEVICEINFO);
-        params.addBodyParameter("mobile", sharedPreferencesDB.getString("phone", ""));
-        params.addBodyParameter("userDeviceUuid", sharedPreferencesDB.getString("userDeviceUuid", ""));
-        params.addBodyParameter("userToken", sharedPreferencesDB.getString("token", ""));
+        params.addBodyParameter("mobile", sharedPreferencesDB.getString(StatisConstans.PHONE, ""));
+        params.addBodyParameter("userDeviceUuid", sharedPreferencesDB.getString(StatisConstans.USERDEVICEUUID, ""));
+        params.addBodyParameter("userToken", sharedPreferencesDB.getString(StatisConstans.TOKEN, ""));
         params.addBodyParameter("device2Code", device2Code);
         params.addBodyParameter("deviceMac", deviceMac);
         params.addBodyParameter("userKey", sharedPreferencesDB.getString("key", ""));
@@ -79,7 +79,7 @@ public class DeviceInfoRequest {
 
             @Override
             public void onError(Throwable ex, boolean isOnCallback) {
-                ToastUtil.show(context, "请求失败");
+                ToastUtil.show(context, "网络请求失败");
                 if (null != dialogView) {
                     dialogView.cancel();
                 }

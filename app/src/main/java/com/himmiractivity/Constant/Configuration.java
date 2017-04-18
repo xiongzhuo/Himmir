@@ -30,8 +30,39 @@ public class Configuration {
     public static final String URL_LOGIN = HOST
             + "/finalapi/user/user/login";
     /**
-     * 用户昵称修改
+     * 修改共享名
      */
+    public static final String URL_MODIFY_SHARE_NAME = HOST
+            + "/finalapi/user/user/modifyShareName";
+
+    /**
+     * 取共享用户List
+     */
+    public static final String URL_GETCHARE_USERLIST = HOST
+            + "/finalapi/user/user/getchareUserlist";
+    /**
+     * 删除指定共享用户BYUserKey
+     */
+    public static final String URL_DEL_CHARE_USER = HOST
+            + "/finalapi/user/user/DelChareUser";
+    /**
+     * 取共享到的用户List
+     */
+    public static final String URL_GETSHARED_USERLIST = HOST
+            + "/finalapi/user/user/getSharedUserlist";
+    /**
+     * 取指定共享用户设备List
+     */
+    public static final String URL_GET_DEVLIST_BY_SHARE_USER_KEY = HOST
+            + "/finalapi/user/user/getDevlistByShareUserKey";
+    /**
+     * 取指定共享用户设备List
+     */
+    public static final String URL_GET_ALL_SHARE_USER_DEVLIST_BY_USER_KEY = HOST
+            + "/finalapi/user/user/getAllShareUserDevlistByUserKey";
+    /*
+    * 用户昵称修改
+    */
     public static final String URL_MODIFYNAME = HOST
             + "/finalapi/user/user/modifyName";
     /**

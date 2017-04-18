@@ -64,7 +64,7 @@ public class RevicePassActivity extends BaseBusActivity {
     }
 
     @Override
-    public void onClick(View view) {
+    public void onMultiClick(View view) {
         switch (view.getId()) {
             case R.id.btn_left:
                 finish();

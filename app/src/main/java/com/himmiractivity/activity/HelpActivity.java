@@ -83,7 +83,7 @@ public class HelpActivity extends BaseBusActivity {
     }
 
     @Override
-    public void onClick(View v) {
+    public void onMultiClick(View v) {
         switch (v.getId()) {
             case R.id.btn_left:
                 finish();

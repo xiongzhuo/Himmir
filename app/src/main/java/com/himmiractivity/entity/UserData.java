@@ -30,6 +30,9 @@ public class UserData implements Serializable {
     private String registerTime;
 
     private String loginLasttime;
+    private String userShareName;
+
+    private String userShareCode;
 
     public List<UserRoom> getUserDevs() {
         return userDevs;
@@ -53,6 +56,22 @@ public class UserData implements Serializable {
 
     public int getUseId() {
         return this.useId;
+    }
+
+    public String getUserShareName() {
+        return userShareName;
+    }
+
+    public String getUserShareCode() {
+        return userShareCode;
+    }
+
+    public void setUserShareName(String userShareName) {
+        this.userShareName = userShareName;
+    }
+
+    public void setUserShareCode(String userShareCode) {
+        this.userShareCode = userShareCode;
     }
 
     public void setUserName(String userName) {
@@ -176,5 +195,6 @@ public class UserData implements Serializable {
         public void setUser_token(String user_token) {
             this.user_token = user_token;
         }
+
     }
 }

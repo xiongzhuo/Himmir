@@ -50,9 +50,9 @@ public class TaskDetailImageUploadTask extends
 
         sharedDB = SharedPreferencesDB.getInstance(context);
 //        map.put("fileType", "1");
-        map.put("userToken", sharedDB.getString("token", ""));
-        map.put("userDeviceUuid", sharedDB.getString("userDeviceUuid", ""));
-        map.put("mobile", sharedDB.getString("phone", ""));
+        map.put("userToken", sharedDB.getString(StatisConstans.TOKEN, ""));
+        map.put("userDeviceUuid", sharedDB.getString(StatisConstans.USERDEVICEUUID, ""));
+        map.put("mobile", sharedDB.getString(StatisConstans.PHONE, ""));
         this.file = file;
 //        map.put("image", getBitmapByte(bitmap).toString());
 //        for (File file : files) {

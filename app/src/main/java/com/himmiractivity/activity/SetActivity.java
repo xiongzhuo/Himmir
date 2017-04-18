@@ -105,7 +105,6 @@ public class SetActivity extends BaseBusActivity {
                     } else {
                         tvTitle.setText(modifyNameData.getUserName());
                     }
-
                     isResult = true;
                     break;
                 case StatisConstans.MSG_IMAGE_SUCCES:
@@ -222,7 +221,7 @@ public class SetActivity extends BaseBusActivity {
     }
 
     @Override
-    public void onClick(View v) {
+    public void onMultiClick(View v) {
         switch (v.getId()) {
             //设备管理
             case R.id.ll_equip:
@@ -234,7 +233,10 @@ public class SetActivity extends BaseBusActivity {
                 getPhoto();
                 break;
             case R.id.iv_shared_device:
-                startActivity(new Intent(SetActivity.this, SharedDeviceActivity.class));
+                Intent intentShared = new Intent(SetActivity.this, SharedDeviceActivity.class);
+                intentShared.putExtra(StatisConstans.USER_SHARE_NAME, userData.getUserShareName());
+                intentShared.putExtra(StatisConstans.USER_SHARE_CODE, userData.getUserShareCode());
+                startActivity(intentShared);
                 break;
             //我的消息
             case R.id.ll_message:
@@ -257,7 +259,6 @@ public class SetActivity extends BaseBusActivity {
                     w.setWindowAnimations(R.style.mystyle1);
                 }
                 dialog.show();
-                //只用下面这一行弹出对话框时需要点击输入框才能弹出软键盘
                 dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
                 int width = getWindowManager().getDefaultDisplay().getWidth();
                 dialog.getWindow().setLayout((int) (width * 0.8),
@@ -294,7 +295,7 @@ public class SetActivity extends BaseBusActivity {
             //退出登陆
             case R.id.ll_exit:
 //                sharedPreferencesDB.setString("username", "");
-                sharedPreferencesDB.setString("userpwd", "");
+                sharedPreferencesDB.setString(StatisConstans.USERPWD, "");
                 Intent intent = new Intent();
                 intent.setClass(this, LodingActivity.class);
                 startActivity(intent);

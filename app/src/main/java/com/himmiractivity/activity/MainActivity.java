@@ -36,6 +36,7 @@ import com.himmiractivity.Utils.GpsUtils;
 import com.himmiractivity.Utils.SocketSingle;
 import com.himmiractivity.Utils.ToastUtil;
 import com.himmiractivity.Utils.ToastUtils;
+import com.himmiractivity.Utils.Utils;
 import com.himmiractivity.Utils.WifiUtils;
 import com.himmiractivity.base.BaseBusActivity;
 import com.himmiractivity.circular_progress_bar.CircularProgressBar;
@@ -54,7 +55,6 @@ import com.himmiractivity.view.ListPopupWindow;
 import com.himmiractivity.view.PercentView;
 import com.himmiractivity.view.SelectorImageView;
 
-import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -136,7 +136,7 @@ public class MainActivity extends BaseBusActivity {
                     Intent intentData = new Intent();
                     intentData.setAction(StatisConstans.BROADCAST_HONGREN_DATA);
                     Bundle bundle = new Bundle();
-                    bundle.putSerializable("pm_all_data", pmAllData);
+                    bundle.putSerializable(StatisConstans.PM_ALL_DATA, pmAllData);
                     // 要发送的内容
                     intentData.putExtras(bundle);
                     MainActivity.this.sendBroadcast(intentData);
@@ -150,8 +150,8 @@ public class MainActivity extends BaseBusActivity {
                     break;
                 case StatisConstans.CONFIG_REGULAR:
                     dataServerBean = (DataServerBean) msg.obj;
-                    sharedPreferencesDB.setString("ip", dataServerBean.getDataServerConfig().getPrimary_server_address());
-                    sharedPreferencesDB.setString("port", dataServerBean.getDataServerConfig().getPrimary_server_port() + "");
+                    sharedPreferencesDB.setString(StatisConstans.IP, dataServerBean.getDataServerConfig().getPrimary_server_address());
+                    sharedPreferencesDB.setString(StatisConstans.PORT, dataServerBean.getDataServerConfig().getPrimary_server_port() + "");
                     ThreadPoolUtils threadPoolUtils = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 1);
                     threadPoolUtils.execute(new Thread(new Runnable() {
                         @Override
@@ -177,6 +177,7 @@ public class MainActivity extends BaseBusActivity {
     protected int getContentLayoutId() {
         return R.layout.activity_main;
     }
+
 
     @Override
     protected void initView(Bundle savedInstanceState) {
@@ -251,7 +252,7 @@ public class MainActivity extends BaseBusActivity {
 
 
     @Override
-    public void onClick(View v) {
+    public void onMultiClick(View v) {
         switch (v.getId()) {
             case R.id.tv_room:
                 if (list != null && list.size() > 0) {
@@ -273,11 +274,13 @@ public class MainActivity extends BaseBusActivity {
                 }
                 break;
             case R.id.iv_add:
-                //判断是否开启了WI-FI
-                if (WifiUtils.isWifiConnected(MainActivity.this)) {
-                    startActivity(new Intent(MainActivity.this, DeployWifiActivity.class));
-                } else {
-                    ToastUtils.show(MainActivity.this, "设备WI-FI未开启", Toast.LENGTH_SHORT);
+                if (Utils.isFastClick()) {
+                    //判断是否开启了WI-FI
+                    if (WifiUtils.isWifiConnected(MainActivity.this)) {
+                        startActivity(new Intent(MainActivity.this, DeployWifiActivity.class));
+                    } else {
+                        ToastUtils.show(MainActivity.this, "设备WI-FI未开启", Toast.LENGTH_SHORT);
+                    }
                 }
                 break;
             case R.id.btn_speed_add:
@@ -329,27 +332,31 @@ public class MainActivity extends BaseBusActivity {
                 }
                 break;
             case R.id.iv_set:
-                Intent intent = new Intent();
-                intent.setClass(MainActivity.this, SetActivity.class);
-                Bundle bundle = new Bundle();
-                if (userData != null) {
-                    bundle.putSerializable("userData", userData);
+                if (Utils.isFastClick()) {
+                    Intent intent = new Intent();
+                    intent.setClass(MainActivity.this, SetActivity.class);
+                    Bundle bundle = new Bundle();
+                    if (userData != null) {
+                        bundle.putSerializable("userData", userData);
+                    }
+                    intent.putExtras(bundle);
+                    startActivityForResult(intent, StatisConstans.MSG_IMAGE_REQUEST);
                 }
-                intent.putExtras(bundle);
-                startActivityForResult(intent, StatisConstans.MSG_IMAGE_REQUEST);
                 break;
             case R.id.iv_off_on_controller:
-                selectorImageViews.get(0).toggle(!selectorImageViews.get(0).isChecked());
-                if (protocal == null) {
-                    protocal = new Protocal();
-                }
-                ThreadPoolUtils threadPoolUtils = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 1);
-                threadPoolUtils.execute(new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        ScoketOFFeON.sendMessage(socket, protocal, mac, selectorImageViews.get(0).isChecked());
+                if (Utils.isFastClick()) {
+                    selectorImageViews.get(0).toggle(!selectorImageViews.get(0).isChecked());
+                    if (protocal == null) {
+                        protocal = new Protocal();
                     }
-                }));
+                    ThreadPoolUtils threadPoolUtils = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 1);
+                    threadPoolUtils.execute(new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            ScoketOFFeON.sendMessage(socket, protocal, mac, selectorImageViews.get(0).isChecked());
+                        }
+                    }));
+                }
                 break;
             default:
                 break;
@@ -394,11 +401,11 @@ public class MainActivity extends BaseBusActivity {
     };
 
     public void LodingRequest() {
-        if (TextUtils.isEmpty(sharedPreferencesDB.getString("userpwd", "")) || TextUtils.isEmpty(sharedPreferencesDB.getString("username", ""))) {
+        if (TextUtils.isEmpty(sharedPreferencesDB.getString(StatisConstans.USERPWD, "")) || TextUtils.isEmpty(sharedPreferencesDB.getString(StatisConstans.USERNAME, ""))) {
             startActivity(new Intent(this, LodingActivity.class));
             finish();
         } else {
-            LodingRequest lodingRequest = new LodingRequest(sharedPreferencesDB, this, sharedPreferencesDB.getString("userpwd", ""), sharedPreferencesDB.getString("username", ""), sharedPreferencesDB.getString("userDeviceUuid", ""), handler, false);
+            LodingRequest lodingRequest = new LodingRequest(sharedPreferencesDB, this, sharedPreferencesDB.getString(StatisConstans.USERPWD, ""), sharedPreferencesDB.getString(StatisConstans.USERNAME, ""), sharedPreferencesDB.getString(StatisConstans.USERDEVICEUUID, ""), handler, false);
             try {
                 lodingRequest.requestCode();
             } catch (Exception e) {
@@ -412,7 +419,7 @@ public class MainActivity extends BaseBusActivity {
         super.onNewIntent(intent);
         setIntent(intent);
         getIntent().putExtras(intent);
-        String name = getIntent().getStringExtra("success");
+        String name = getIntent().getStringExtra(StatisConstans.SUCCESS);
         if (name.equals("true")) {
             LodingRequest();
         }
@@ -468,9 +475,9 @@ public class MainActivity extends BaseBusActivity {
                     textViews.get(3).setText(address.getLocality().substring(0, address.getLocality().length() - 1));
                     OutdoorPMRequest outdoorPMRequest = new OutdoorPMRequest(MainActivity.this, sharedPreferencesDB, textViews.get(3).getText().toString().trim(), handler);
                     outdoorPMRequest.requestCode();
-                    sharedPreferencesDB.setString("province", address.getAdminArea().substring(0, address.getLocality().length() - 1));
-                    sharedPreferencesDB.setString("city", address.getLocality().substring(0, address.getLocality().length() - 1));
-                    sharedPreferencesDB.setString("area", address.getSubLocality());
+                    sharedPreferencesDB.setString(StatisConstans.PROVINCE, address.getAdminArea().substring(0, address.getLocality().length() - 1));
+                    sharedPreferencesDB.setString(StatisConstans.CITY, address.getLocality().substring(0, address.getLocality().length() - 1));
+                    sharedPreferencesDB.setString(StatisConstans.AREA, address.getSubLocality());
                 }
             }
         } catch (Exception e) {
@@ -581,8 +588,8 @@ public class MainActivity extends BaseBusActivity {
 
     @Override
     protected void onDestroy() {
-        sharedPreferencesDB.setString("ip", "");
-        sharedPreferencesDB.setString("port", "");
+        sharedPreferencesDB.setString(StatisConstans.IP, "");
+        sharedPreferencesDB.setString(StatisConstans.PORT, "");
 //        try {
 //            if (socket != null) {
 //                socket.close();

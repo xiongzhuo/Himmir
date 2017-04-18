@@ -76,10 +76,10 @@ public class ReceiveUserDeviceInfoRequest {
         }
         Log.d("dataServer", userRoom + ":" + userTureName + ":" + deviceMac + ":" + buyProvince + ":" + buyProvince + ":" + buyCity);
         RequestParams params = new RequestParams(Configuration.URL_RECEIVEUSERDEVICE);
-        params.addBodyParameter("mobile", sharedPreferencesDB.getString("phone", ""));
-        params.addBodyParameter("userDeviceUuid", sharedPreferencesDB.getString("userDeviceUuid", ""));
-        params.addBodyParameter("userToken", sharedPreferencesDB.getString("token", ""));
-        params.addBodyParameter("userKey", sharedPreferencesDB.getString("key", ""));
+        params.addBodyParameter("mobile", sharedPreferencesDB.getString(StatisConstans.PHONE, ""));
+        params.addBodyParameter("userDeviceUuid", sharedPreferencesDB.getString(StatisConstans.USERDEVICEUUID, ""));
+        params.addBodyParameter("userToken", sharedPreferencesDB.getString(StatisConstans.TOKEN, ""));
+        params.addBodyParameter("userKey", sharedPreferencesDB.getString(StatisConstans.KEY, ""));
         params.addBodyParameter("userRoom", userRoom);
         params.addBodyParameter("userTureName", userTureName);
         params.addBodyParameter("deviceMac", deviceMac);
@@ -120,7 +120,7 @@ public class ReceiveUserDeviceInfoRequest {
 
             @Override
             public void onError(Throwable ex, boolean isOnCallback) {
-                ToastUtil.show(context, "请求失败");
+                ToastUtil.show(context, "网络请求失败");
                 if (null != dialogView) {
                     dialogView.cancel();
                 }

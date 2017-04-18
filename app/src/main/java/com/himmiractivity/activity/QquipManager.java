@@ -9,6 +9,7 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.text.TextUtils;
 import android.util.Log;
@@ -90,31 +91,33 @@ public class QquipManager extends BaseBusActivity implements AlxRefreshLoadMoreR
                     break;
                 //成功
                 case StatisConstans.MSG_QQUIP:
-                    allUserDerviceBaen = (AllUserDerviceBaen) msg.obj;
-                    if (allUserDerviceBaen.getSpace() != null && allUserDerviceBaen.getSpace().size() > 0) {
-                        if (onLinePos < allUserDerviceBaen.getSpace().size()) {
-                            Log.d("device_mac", allUserDerviceBaen.getSpace().get(onLinePos).getDevice().getDevice_mac() + "onLinePos:" + onLinePos);
-                            ThreadPoolUtils threadPoolUtils = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 1);
-                            threadPoolUtils.execute(new Thread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    ScoketOFFeON.sendMessage(socket, protocal, allUserDerviceBaen.getSpace().get(onLinePos).getDevice().getDevice_mac());
-                                }
-                            }));
-                        }
+                    if (msg.obj != null) {
+                        allUserDerviceBaen = (AllUserDerviceBaen) msg.obj;
+                        if (allUserDerviceBaen.getSpace() != null && allUserDerviceBaen.getSpace().size() > 0) {
+                            if (onLinePos < allUserDerviceBaen.getSpace().size()) {
+                                Log.d("device_mac", allUserDerviceBaen.getSpace().get(onLinePos).getDevice().getDevice_mac() + "onLinePos:" + onLinePos);
+                                ThreadPoolUtils threadPoolUtils = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 1);
+                                threadPoolUtils.execute(new Thread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        ScoketOFFeON.sendMessage(socket, protocal, allUserDerviceBaen.getSpace().get(onLinePos).getDevice().getDevice_mac());
+                                    }
+                                }));
+                            }
 //                    mRecyclerView.setLayoutManager(new LinearLayoutManager(QquipManager.this));
-                        rvcAdapter = new RvcAdapter(QquipManager.this, allUserDerviceBaen.getSpace(), R.layout.list_item, true);
-                        rvcAdapter.setPullLoadMoreEnable(false);
-                        mRecyclerView.setPullLoadEnable(false);
-                        mRecyclerView.setAdapter(rvcAdapter);
-                        //设置Item增加、移除动画
-                        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-                        //添加分割线
-                        mRecyclerView.addItemDecoration(new DividerItemDecoration(
-                                QquipManager.this, DividerItemDecoration.HORIZONTAL));
-                        rvcAdapter.setOnItemClickLitener(QquipManager.this);
-                        mRecyclerView.setLoadMoreListener(QquipManager.this);
-                        mRecyclerView.setOnRefreshListener(QquipManager.this);
+                            rvcAdapter = new RvcAdapter(QquipManager.this, allUserDerviceBaen.getSpace(), R.layout.list_item, true);
+                            rvcAdapter.setPullLoadMoreEnable(false);
+                            mRecyclerView.setPullLoadEnable(false);
+                            mRecyclerView.setAdapter(rvcAdapter);
+                            //设置Item增加、移除动画
+                            mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+                            //添加分割线
+                            mRecyclerView.addItemDecoration(new DividerItemDecoration(
+                                    QquipManager.this, DividerItemDecoration.HORIZONTAL));
+                            rvcAdapter.setOnItemClickLitener(QquipManager.this);
+                            mRecyclerView.setLoadMoreListener(QquipManager.this);
+                            mRecyclerView.setOnRefreshListener(QquipManager.this);
+                        }
                     }
                     break;
                 default:
@@ -152,14 +155,14 @@ public class QquipManager extends BaseBusActivity implements AlxRefreshLoadMoreR
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if (action.equalsIgnoreCase(StatisConstans.BROADCAST_HONGREN_SUCC)) {
-                ToastUtil.show(QquipManager.this, "编辑成功");
+                ToastUtil.show(QquipManager.this, "操作成功");
             } else if (action.equalsIgnoreCase(StatisConstans.BROADCAST_HONGREN_KILL)) {
-                ToastUtil.show(QquipManager.this, "编辑失败");
+                ToastUtil.show(QquipManager.this, "操作失败");
             } else if (action.equalsIgnoreCase(StatisConstans.BROADCAST_HONGREN_DATA)) {
                 //在线，反之为离线
                 if (onLinePos >= allUserDerviceBaen.getSpace().size())
                     return;
-                PmAllData pmAllData = (PmAllData) intent.getExtras().getSerializable("pm_all_data");
+                PmAllData pmAllData = (PmAllData) intent.getExtras().getSerializable(StatisConstans.PM_ALL_DATA);
                 Log.d("device_mac", "pmAllData.getFanFreq()" + pmAllData.getFanFreq());
                 if (pmAllData.getFanFreq() > 9) {
                     allUserDerviceBaen.getSpace().get(onLinePos).setOnLine(true);
@@ -207,7 +210,7 @@ public class QquipManager extends BaseBusActivity implements AlxRefreshLoadMoreR
     }
 
     @Override
-    public void onClick(View view) {
+    public void onMultiClick(View view) {
         switch (view.getId()) {
             case R.id.btn_left:
                 finish();
@@ -336,15 +339,15 @@ public class QquipManager extends BaseBusActivity implements AlxRefreshLoadMoreR
         if (choose.equals("rename")) {
             tv_hint.setVisibility(View.GONE);
             etNewName.setVisibility(View.VISIBLE);
-            btnComit.setTextColor(getResources().getColor(R.color.royalblue));
-            btnCanel.setTextColor(getResources().getColor(R.color.royalblue));
+            btnComit.setTextColor(ContextCompat.getColor(this, R.color.royalblue));
+            btnCanel.setTextColor(ContextCompat.getColor(this, R.color.royalblue));
 
         } else {
             tv_hint.setVisibility(View.VISIBLE);
             etNewName.setVisibility(View.GONE);
             tv_hint.setText(body);
-            btnComit.setTextColor(getResources().getColor(R.color.black));
-            btnCanel.setTextColor(getResources().getColor(R.color.black));
+            btnComit.setTextColor(ContextCompat.getColor(this, R.color.black));
+            btnCanel.setTextColor(ContextCompat.getColor(this, R.color.black));
         }
         tvHead.setText(head);
         btnCanel.setText(no);

@@ -12,7 +12,6 @@ import com.himmiractivity.Utils.SharedPreferencesDB;
 import com.himmiractivity.Utils.ToastUtil;
 import com.himmiractivity.entity.ImageBean;
 import com.himmiractivity.entity.JsonResult;
-import com.himmiractivity.entity.LodingBean;
 import com.himmiractivity.interfaces.StatisConstans;
 import com.himmiractivity.view.DialogView;
 
@@ -77,7 +76,7 @@ public class ModifyRoomNameRequest {
 
             @Override
             public void onError(Throwable ex, boolean isOnCallback) {
-                ToastUtil.show(context, "请求失败");
+                ToastUtil.show(context, "网络请求失败");
                 if (null != dialogView) {
                     dialogView.cancel();
                 }

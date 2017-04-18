@@ -90,7 +90,7 @@ public class RegisterActivity extends BaseBusActivity {
     }
 
     @Override
-    public void onClick(View view) {
+    public void onMultiClick(View view) {
         switch (view.getId()) {
             case R.id.btn_left:
                 finish();
@@ -156,7 +156,7 @@ public class RegisterActivity extends BaseBusActivity {
             ToastUtil.show(this, "两次密码不一致");
             return;
         }
-        RegisterRequest registerRequest = new RegisterRequest(RegisterActivity.this, pass, phone, sharedPreferencesDB.getString("userDeviceUuid", ""), code, handler);
+        RegisterRequest registerRequest = new RegisterRequest(RegisterActivity.this, pass, phone, sharedPreferencesDB.getString(StatisConstans.USERDEVICEUUID, ""), code, handler);
         try {
             registerRequest.requestCode();
         } catch (Exception e) {

@@ -3,6 +3,7 @@ package com.himmiractivity.view;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -48,15 +49,15 @@ public class ResetNameDialog extends Dialog {
         if (choose.equals("rename")) {
             tvHint.setVisibility(View.GONE);
             etNewName.setVisibility(View.VISIBLE);
-            btnComit.setTextColor(context.getResources().getColor(R.color.royalblue));
-            btnCanel.setTextColor(context.getResources().getColor(R.color.royalblue));
+            btnComit.setTextColor(ContextCompat.getColor(context, R.color.royalblue));
+            btnCanel.setTextColor(ContextCompat.getColor(context, R.color.royalblue));
 
         } else {
             tvHint.setVisibility(View.VISIBLE);
             etNewName.setVisibility(View.GONE);
             tvHint.setText(body);
-            btnComit.setTextColor(context.getResources().getColor(R.color.black));
-            btnCanel.setTextColor(context.getResources().getColor(R.color.black));
+            btnComit.setTextColor(ContextCompat.getColor(context, R.color.black));
+            btnCanel.setTextColor(ContextCompat.getColor(context, R.color.black));
         }
         tvHead.setVisibility(View.VISIBLE);
         tvHead.setText(head);

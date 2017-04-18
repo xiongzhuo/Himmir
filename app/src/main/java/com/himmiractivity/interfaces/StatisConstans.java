@@ -5,6 +5,29 @@ package com.himmiractivity.interfaces;
  */
 
 public interface StatisConstans {
+    String PM_ALL_DATA = "pm_all_data";
+    String TIME = "time";
+    String NO = "on";
+    String OFF = "off";
+    String SUCCESS = "success";//成功
+    String USERDEVICEUUID = "user_device_uuid";
+    String TOKEN = "token";
+    String PHONE = "phone";
+    String KEY = "key";
+    String USERNAME = "username";
+    String USERPWD = "userPwd";
+    String PORT = "port";
+    String PROVINCE = "province";
+    String CITY = "city";
+    String AREA = "area";
+    String IP = "ip";
+    String MAC = "mac";
+    String SERVER_NUMBER = "server_number";
+    String DEVICE_INFO = "device_info";
+    String RESULT = "result";
+    String BITMAP = "bitmap";
+    String USER_SHARE_CODE = "user_share_code";//成功
+    String USER_SHARE_NAME = "user_share_name";//成功
     String BROADCAST_HONGREN_SUCC = "suceess";//成功
     String BROADCAST_HONGREN_KILL = "fail";//失败
     String BROADCAST_HONGREN_DATA = "data";

@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
+import com.himmiractivity.interfaces.StatisConstans;
 import com.himmiractivity.mining.app.zxing.camera.CameraManager;
 import com.himmiractivity.mining.app.zxing.decoding.CaptureActivityHandler;
 import com.himmiractivity.mining.app.zxing.decoding.InactivityTimer;
@@ -113,8 +114,8 @@ public class MipcaActivityCaptureActivity extends Activity implements Callback {
         } else {
             Intent resultIntent = new Intent();
             Bundle bundle = new Bundle();
-            bundle.putString("result", resultString);
-            bundle.putParcelable("bitmap", barcode);
+            bundle.putString(StatisConstans.RESULT, resultString);
+            bundle.putParcelable(StatisConstans.BITMAP, barcode);
             resultIntent.putExtras(bundle);
             this.setResult(RESULT_OK, resultIntent);
         }

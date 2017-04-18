@@ -81,7 +81,7 @@ public class InformationComitActivity extends BaseBusActivity {
                     ImageBean imageBean = (ImageBean) msg.obj;
                     ToastUtil.show(InformationComitActivity.this, imageBean.getSuccess());
                     Intent intent = new Intent(InformationComitActivity.this, MainActivity.class);
-                    intent.putExtra("success", "true");
+                    intent.putExtra(StatisConstans.SUCCESS, "true");
                     startActivity(intent);
                     break;
                 case StatisConstans.MSG_ENABLED_SUCCESSFUL:
@@ -112,10 +112,10 @@ public class InformationComitActivity extends BaseBusActivity {
         btnChooseRoom.setOnClickListener(this);
         if (getIntent().getExtras() != null) {
             Bundle bundle = getIntent().getExtras();
-            deviceInfoBean = (DeviceInfoBean) bundle.getSerializable("device_info");
-            server_number = bundle.getString("server_number");
-            mac = bundle.getString("mac");
-            ip = bundle.getString("ip");
+            deviceInfoBean = (DeviceInfoBean) bundle.getSerializable(StatisConstans.DEVICE_INFO);
+            server_number = bundle.getString(StatisConstans.SERVER_NUMBER);
+            mac = bundle.getString(StatisConstans.MAC);
+            ip = bundle.getString(StatisConstans.IP);
             Log.d("mac", "mac:" + mac);
             Log.d("mac", "ip:" + ip);
             textViews.get(0).setText(deviceInfoBean.getDeviceInfo().getDevice_type());
@@ -132,12 +132,15 @@ public class InformationComitActivity extends BaseBusActivity {
 
     @Override
     protected void initData() {
-        provinceSite = sharedPreferencesDB.getString("province", "");
-        citySite = sharedPreferencesDB.getString("city", "");
-        areaSite = sharedPreferencesDB.getString("area", "");
-        provinceChoise = sharedPreferencesDB.getString("province", "");
-        cityChoise = sharedPreferencesDB.getString("city", "");
-        areaChoise = sharedPreferencesDB.getString("area", "");
+        String province = sharedPreferencesDB.getString(StatisConstans.PROVINCE, "");
+        String city = sharedPreferencesDB.getString(StatisConstans.CITY, "");
+        String area = sharedPreferencesDB.getString(StatisConstans.AREA, "");
+        provinceSite = province;
+        citySite = city;
+        areaSite = area;
+        provinceChoise = province;
+        cityChoise = city;
+        areaChoise = area;
         textViews.get(2).setText(provinceChoise + "省-" + cityChoise + "市-" + areaChoise);
         textViews.get(3).setText(provinceSite + "省-" + citySite + "市-" + areaSite);
     }
@@ -167,7 +170,7 @@ public class InformationComitActivity extends BaseBusActivity {
     }
 
     @Override
-    public void onClick(View v) {
+    public void onMultiClick(View v) {
         switch (v.getId()) {
             case R.id.btn_left:
                 finish();
