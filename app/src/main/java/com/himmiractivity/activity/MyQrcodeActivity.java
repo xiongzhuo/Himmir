@@ -20,7 +20,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.himmiractivity.App;
+import com.himmiractivity.Constant.Configuration;
 import com.himmiractivity.Utils.ToastUtils;
 import com.himmiractivity.Utils.Utils;
 import com.himmiractivity.base.BaseBusActivity;
@@ -37,13 +40,15 @@ import butterknife.BindViews;
 
 
 public class MyQrcodeActivity extends BaseBusActivity {
+    @BindView(R.id.image_herd)
+    SimpleDraweeView simpleDraweeView;
     @BindView(R.id.ll_my_qrcode)
     LinearLayout llMyQrcode;
-    private String userShareName, userShareCode;
+    private String userShareName, userShareCode, userShareImage;
     @BindViews({R.id.tv_sharing_name})
     List<TextView> textViews;
     @BindViews({R.id.btn_revise_name})
-    List<Button> buttons;
+    List<ImageView> imageViews;
     //修改昵称
     ResetNameDialog dialog;
 
@@ -74,8 +79,14 @@ public class MyQrcodeActivity extends BaseBusActivity {
         App.getInstance().addActivity(this);
         userShareName = sharedPreferencesDB.getString(StatisConstans.USER_SHARE_NAME, "");
         userShareCode = sharedPreferencesDB.getString(StatisConstans.USER_SHARE_CODE, "");
+        userShareImage = sharedPreferencesDB.getString(StatisConstans.USER_SHARE_IMAGE, "");
         textViews.get(0).setText("共享名：" + userShareName);
-        buttons.get(0).setOnClickListener(this);
+        imageViews.get(0).setOnClickListener(this);
+        simpleDraweeView.setController(Fresco.newDraweeControllerBuilder()
+                .setUri(Configuration.HOST + userShareImage)
+                .setTapToRetryEnabled(true)
+                .setOldController(simpleDraweeView.getController())
+                .build());
         setWindowBrightness(WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_FULL);
         setMidTxt("我的二维码");
         initTitleBar();
@@ -139,15 +150,10 @@ public class MyQrcodeActivity extends BaseBusActivity {
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams((int) (width * 0.7), (int) (width * 0.7));
         imageView.setLayoutParams(params);  //设置图片宽高
         imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-        Bitmap bitmap = Utils.addLogo(Utils.create2DCoderBitmap(userShareCode, (int) (width * 0.7), (int) (width * 0.7)), BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
+//        Bitmap bitmap = Utils.addLogo(Utils.create2DCoderBitmap(userShareCode, width, width), BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
+        Bitmap bitmap = Utils.create2DCoderBitmap(userShareCode, width, width);
         imageView.setImageBitmap(bitmap); //图片资源
-        TextView textView = new TextView(this);
-        LinearLayout.LayoutParams t_params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        t_params.setMargins(0, 15, 0, 0);
-        textView.setLayoutParams(t_params);  //设置图片宽高
-        textView.setText("扫一扫我的二维码名片，添加分享。"); //图片资源
         llMyQrcode.addView(imageView); //动态添加图片
-        llMyQrcode.addView(textView); //动态添加图片
     }
 
     @Override

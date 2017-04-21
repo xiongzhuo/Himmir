@@ -1,46 +1,51 @@
 package com.himmiractivity.activity;
 
 import android.Manifest;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.hiflying.smartlink.ISmartLinker;
-import com.hiflying.smartlink.OnSmartLinkListener;
-import com.hiflying.smartlink.SmartLinkedModule;
-import com.hiflying.smartlink.v3.SnifferSmartLinker;
-import com.hiflying.smartlink.v7.MulticastSmartLinker;
 import com.himmiractivity.App;
 import com.himmiractivity.Utils.ToastUtil;
-import com.himmiractivity.Utils.ToastUtils;
-import com.himmiractivity.Utils.WifiUtils;
 import com.himmiractivity.base.BaseBusActivity;
+import com.himmiractivity.entity.AddedBean;
 import com.himmiractivity.interfaces.StatisConstans;
-import com.himmiractivity.view.DialogView;
+import com.himmiractivity.request.AddShardRequest;
 
 import java.util.List;
 
 import activity.hamir.com.himmir.R;
-import butterknife.BindView;
 import butterknife.BindViews;
 
 
 public class SharedDeviceActivity extends BaseBusActivity {
     private final int SCANNIN_GREQUEST_CODE = 1;
+    private final int ADD_SHARED = 2;
     @BindViews({R.id.ll_my_qrcode, R.id.ll_projection_screen, R.id.ll_add_shared, R.id.ll_manager_shared, R.id.ll_added_shared})
     List<LinearLayout> linearLayouts;
+    Intent intent;
+
+    private Handler handler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message msg) {
+            switch (msg.what) {
+                case StatisConstans.MSG_RECEIVED_REGULAR:
+                    AddedBean addedBean = (AddedBean) msg.obj;
+                    ToastUtil.show(SharedDeviceActivity.this, addedBean.getMsg());
+                    break;
+            }
+            return false;
+        }
+    });
 
     @Override
     protected int getContentLayoutId() {
@@ -84,17 +89,37 @@ public class SharedDeviceActivity extends BaseBusActivity {
                             new String[]{Manifest.permission.CAMERA},
                             StatisConstans.MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
                 } else {
-                    Intent intent = new Intent();
+                    intent = new Intent();
                     intent.setClass(SharedDeviceActivity.this, MipcaActivityCaptureActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivityForResult(intent, SCANNIN_GREQUEST_CODE);
                 }
                 break;
             case R.id.ll_add_shared:
+                if (ContextCompat.checkSelfPermission(this,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this,
+                        Manifest.permission.CAMERA)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(this,
+                            new String[]{Manifest.permission.CAMERA},
+                            StatisConstans.ADD_SHARD);
+                } else {
+                    intent = new Intent();
+                    intent.setClass(SharedDeviceActivity.this, MipcaActivityCaptureActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivityForResult(intent, ADD_SHARED);
+                }
                 break;
             case R.id.ll_added_shared:
+                intent = new Intent();
+                intent.setClass(SharedDeviceActivity.this, AddedSharedActivity.class);
+                startActivity(intent);
                 break;
             case R.id.ll_manager_shared:
+                intent = new Intent();
+                intent.setClass(SharedDeviceActivity.this, ManagerSharedActivity.class);
+                startActivity(intent);
                 break;
             default:
                 break;
@@ -114,6 +139,17 @@ public class SharedDeviceActivity extends BaseBusActivity {
                 Toast.makeText(SharedDeviceActivity.this, "请你允许才能扫描二维码", Toast.LENGTH_SHORT).show();
             }
             return;
+        } else if (requestCode == StatisConstans.ADD_SHARD) {
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Intent intent = new Intent();
+                intent.setClass(SharedDeviceActivity.this, MipcaActivityCaptureActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivityForResult(intent, ADD_SHARED);
+            } else {
+                Toast.makeText(SharedDeviceActivity.this, "请你允许才能扫描二维码", Toast.LENGTH_SHORT).show();
+            }
+            return;
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
@@ -126,6 +162,22 @@ public class SharedDeviceActivity extends BaseBusActivity {
                 if (resultCode == RESULT_OK) {
                     //二维吗扫描结果
                 }
+                break;
+            case ADD_SHARED:
+                if (resultCode == RESULT_OK) {
+                    //二维吗扫描结果
+                    try {
+                        Bundle bundle = data.getExtras();
+                        String shareCode = bundle.getString(StatisConstans.RESULT);
+                        Log.i("shareCode", shareCode);
+                        AddShardRequest addShardRequest = new AddShardRequest(sharedPreferencesDB, this, shareCode, handler);
+                        addShardRequest.requestCode();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                break;
+            default:
                 break;
         }
     }

@@ -5,6 +5,7 @@ package com.himmiractivity.interfaces;
  */
 
 public interface StatisConstans {
+    String USERDATA = "userData";
     String PM_ALL_DATA = "pm_all_data";
     String TIME = "time";
     String NO = "on";
@@ -15,7 +16,7 @@ public interface StatisConstans {
     String PHONE = "phone";
     String KEY = "key";
     String USERNAME = "username";
-    String USERPWD = "userPwd";
+    String USERPWD = "userpwd";
     String PORT = "port";
     String PROVINCE = "province";
     String CITY = "city";
@@ -28,9 +29,11 @@ public interface StatisConstans {
     String BITMAP = "bitmap";
     String USER_SHARE_CODE = "user_share_code";//二维码
     String USER_SHARE_NAME = "user_share_name";//二维码共享名
+    String USER_SHARE_IMAGE = "user_share_image";//二维码共享名
     String BROADCAST_HONGREN_SUCC = "suceess";
     String BROADCAST_HONGREN_KILL = "fail";
     String BROADCAST_HONGREN_DATA = "data";
+    int ADD_SHARD = 111;
     //相册权限
     int MY_PERMISSIONS_REQUEST_CAMERA = 11;
     //相册权限

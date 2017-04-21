@@ -16,13 +16,11 @@
         android:layout_height="match_parent"
         android:layout_weight="1">
 
-        <com.himmiractivity.xlistview.XListView
-            android:id="@+id/lv_added"
+        <com.himmiractivity.view.AlxRefreshLoadMoreRecyclerView
+            android:id="@+id/recyclerview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#ffffff"
-            android:divider="#00000000"
-            android:dividerHeight="0dp" />
+            android:background="#ffffff" />
     </LinearLayout>
 
 </LinearLayout>

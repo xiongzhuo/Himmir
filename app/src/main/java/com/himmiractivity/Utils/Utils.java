@@ -213,24 +213,49 @@ public class Utils {
         }
     }
 
-    public static final Bitmap addLogo(Bitmap qrBitmap, Bitmap logoBitmap) {
-        int qrBitmapWidth = qrBitmap.getWidth();
-        int qrBitmapHeight = qrBitmap.getHeight();
-        int logoBitmapWidth = logoBitmap.getWidth();
-        int logoBitmapHeight = logoBitmap.getHeight();
-        Bitmap blankBitmap = Bitmap.createBitmap(qrBitmapWidth, qrBitmapHeight, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(blankBitmap);
-        canvas.drawBitmap(qrBitmap, 0, 0, null);
-        canvas.save(Canvas.ALL_SAVE_FLAG);
-        float scaleSize = 1.0f;
-        while ((logoBitmapWidth / scaleSize) > (qrBitmapWidth / 5) || (logoBitmapHeight / scaleSize) > (qrBitmapHeight / 5)) {
-            scaleSize *= 2;
+    /**
+     * 在二维码中间添加Logo图案
+     */
+    public static Bitmap addLogo(Bitmap src, Bitmap logo) {
+        if (src == null) {
+            return null;
         }
-        float sx = 1.0f / scaleSize;
-        canvas.scale(sx, sx, qrBitmapWidth / 2, qrBitmapHeight / 2);
-        canvas.drawBitmap(logoBitmap, (qrBitmapWidth - logoBitmapWidth) / 2, (qrBitmapHeight - logoBitmapHeight) / 2, null);
-        canvas.restore();
-        return blankBitmap;
+
+        if (logo == null) {
+            return src;
+        }
+
+        //获取图片的宽高
+        int srcWidth = src.getWidth();
+        int srcHeight = src.getHeight();
+        int logoWidth = logo.getWidth();
+        int logoHeight = logo.getHeight();
+
+        if (srcWidth == 0 || srcHeight == 0) {
+            return null;
+        }
+
+        if (logoWidth == 0 || logoHeight == 0) {
+            return src;
+        }
+
+        //logo大小为二维码整体大小的1/5
+        float scaleFactor = srcWidth * 1.0f / 5 / logoWidth;
+        Bitmap bitmap = Bitmap.createBitmap(srcWidth, srcHeight, Bitmap.Config.ARGB_8888);
+        try {
+            Canvas canvas = new Canvas(bitmap);
+            canvas.drawBitmap(src, 0, 0, null);
+            canvas.scale(scaleFactor, scaleFactor, srcWidth / 2, srcHeight / 2);
+            canvas.drawBitmap(logo, (srcWidth - logoWidth) / 2, (srcHeight - logoHeight) / 2, null);
+
+            canvas.save(Canvas.ALL_SAVE_FLAG);
+            canvas.restore();
+        } catch (Exception e) {
+            bitmap = null;
+            e.getStackTrace();
+        }
+
+        return bitmap;
     }
 
 

@@ -1,5 +1,6 @@
 package com.himmiractivity.activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -24,7 +25,7 @@ import activity.hamir.com.himmir.R;
 /**
  * 程序启动页
  */
-public class SplashActivity extends FragmentActivity implements OnClickListener {
+public class SplashActivity extends Activity implements OnClickListener {
     private FrameLayout ll_version;
     private SharedPreferencesDB sharedDB;
     private ImageView iv_splash;
@@ -52,7 +53,7 @@ public class SplashActivity extends FragmentActivity implements OnClickListener 
                     Intent intent = new Intent();
                     intent.setClass(SplashActivity.this, MainActivity.class);
                     Bundle bundle = new Bundle();
-                    bundle.putSerializable("userData", userData);
+                    bundle.putSerializable(StatisConstans.USERDATA, userData);
                     intent.putExtras(bundle);
                     startActivity(intent);
                     finish();
@@ -102,7 +103,7 @@ public class SplashActivity extends FragmentActivity implements OnClickListener 
     }
 
     public void LodingRequest() {
-        if (TextUtils.isEmpty(sharedDB.getString("userpwd", "")) || TextUtils.isEmpty(sharedDB.getString("username", ""))) {
+        if (TextUtils.isEmpty(sharedDB.getString(StatisConstans.USERPWD, "")) || TextUtils.isEmpty(sharedDB.getString(StatisConstans.USERNAME, ""))) {
             startActivity(new Intent(this, LodingActivity.class));
             finish();
         } else {

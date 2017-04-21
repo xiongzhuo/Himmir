@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.himmiractivity.Utils.CheckMobileAndEmail;
 import com.himmiractivity.Utils.ToastUtil;
 import com.himmiractivity.base.BaseBusActivity;
+import com.himmiractivity.base.BaseBusNoSocllowActivity;
 import com.himmiractivity.entity.UserData;
 import com.himmiractivity.interfaces.StatisConstans;
 import com.himmiractivity.request.LodingRequest;
@@ -23,7 +24,7 @@ import activity.hamir.com.himmir.R;
 import butterknife.BindView;
 import butterknife.BindViews;
 
-public class LodingActivity extends BaseBusActivity {
+public class LodingActivity extends BaseBusNoSocllowActivity {
     @BindViews({R.id.et_password, R.id.et_user})
     List<ClearEditText> clearEditTexts;
     @BindViews({R.id.tv_register, R.id.tv_forgot})

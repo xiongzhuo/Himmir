@@ -18,4 +18,15 @@
         <attr name="selector_src" format="reference" />//选中的src图片属性
         <attr name="checked" format="boolean" />
     </declare-styleable>
+    <declare-styleable name="refresh_PullRefreshLayout">
+        <attr name="refreshType" format="enum">
+            <enum name="material" value="0" />
+            <enum name="circles" value="1" />
+            <enum name="water_drop" value="2" />
+            <enum name="ring" value="3" />
+            <enum name="smartisan" value="4" />
+        </attr>
+        <attr name="refreshColors" format="reference" />
+        <attr name="refreshColor" format="reference" />
+    </declare-styleable>
 </resources>

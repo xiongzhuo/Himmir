@@ -5,8 +5,8 @@ package com.himmiractivity.Constant;
  */
 
 public class Configuration {
-    public static final String HOST = "http://smart.hnliuxing.com:8086";
-//    public static final String HOST = "http://192.168.0.88:8086";
+    //    public static final String HOST = "http://smart.hnliuxing.com:8086";
+    public static final String HOST = "http://192.168.0.88:8086";
 //    public static final String HOST = "http://192.168.0.80:8080";
 //    public static final String HOST = "http://hongren.bingjun.cn/";
     /**
@@ -34,19 +34,29 @@ public class Configuration {
      */
     public static final String URL_MODIFY_SHARE_NAME = HOST
             + "/finalapi/user/user/modifyShareName";
+    /**
+     * 加用户共享
+     */
+    public static final String URL_USER_SHARE = HOST
+            + "/finalapi/user/user/userShare";
 
     /**
-     * 取共享用户List
+     * 已加分享
      */
     public static final String URL_GETCHARE_USERLIST = HOST
-            + "/finalapi/user/user/getchareUserlist";
+            + "/finalapi/user/user/getShareUserlist";
     /**
-     * 删除指定共享用户BYUserKey
+     * 删除指定共享到的用户BYUserKey
      */
-    public static final String URL_DEL_CHARE_USER = HOST
-            + "/finalapi/user/user/DelChareUser";
+    public static final String URL_DEL_SHARE_USE = HOST
+            + "/finalapi/user/user/delSharedUse";
     /**
-     * 取共享到的用户List
+     * 除指定共享到的用户BYUserKey
+     */
+    public static final String URL_DEL_SHARE_USER = HOST
+            + "/finalapi/user/user/DelShareUser";
+    /**
+     * 管理分享
      */
     public static final String URL_GETSHARED_USERLIST = HOST
             + "/finalapi/user/user/getSharedUserlist";

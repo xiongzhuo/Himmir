@@ -253,6 +253,18 @@
             android:name="com.himmiractivity.activity.SharedDeviceActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait" />
+        <activity
+            android:name="com.himmiractivity.activity.ManagerSharedActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.himmiractivity.activity.FacilityInformationActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.himmiractivity.activity.AddedSharedActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait" />
 
         <service android:name="com.himmiractivity.service.LocationService" />
         <service android:name="com.himmiractivity.service.CoreService" />

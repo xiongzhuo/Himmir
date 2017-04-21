@@ -44,7 +44,7 @@
                 android:layout_centerVertical="true"
                 android:padding="10dp"
                 android:paddingRight="15dp"
-                android:src="@drawable/add" />
+                android:src="@drawable/share" />
         </RelativeLayout>
 
         <com.facebook.drawee.view.SimpleDraweeView

@@ -141,8 +141,8 @@ public class SetActivity extends BaseBusActivity {
         getWrite();
         if (getIntent().getExtras() != null) {
             bundle = getIntent().getExtras();
-            if (bundle.getSerializable("userData") != null) {
-                userData = (UserData) bundle.getSerializable("userData");
+            if (bundle.getSerializable(StatisConstans.USERDATA) != null) {
+                userData = (UserData) bundle.getSerializable(StatisConstans.USERDATA);
                 tvTitle.setText(userData != null && TextUtils.isEmpty(userData.getUserName().trim()) ? "熊卓" : userData.getUserName());
                 /**
                  * 圆形头像加载

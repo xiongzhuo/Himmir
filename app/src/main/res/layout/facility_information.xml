@@ -3,337 +3,252 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
+    android:background="@color/bar_gray"
     android:orientation="vertical">
+
+    <include
+        android:id="@+id/title_bar"
+        layout="@layout/title_top_view"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp" />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1">
 
-        <include
-            android:id="@+id/title_bar"
-            layout="@layout/title_top_view"
-            android:layout_width="fill_parent"
-            android:layout_height="50dp" />
-
-        <LinearLayout
+        <com.himmiractivity.view.SuperSwipeRefreshLayout
+            android:id="@+id/swipe_refresh"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:weightSum="9">
+            android:layout_height="match_parent">
 
-            <LinearLayout
+            <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1.2"
-                android:gravity="bottom"
-                android:orientation="horizontal">
+                android:layout_height="match_parent"
+                android:background="@android:color/white">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
-                    android:orientation="horizontal"
-                    android:paddingLeft="@dimen/dp30"
-                    android:paddingRight="@dimen/dp30"
-                    android:weightSum="3">
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center_horizontal"
-                        android:orientation="horizontal">
-
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:src="@drawable/location" />
-
-                        <TextView
-                            android:id="@+id/tv_city"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="right"
-                            android:paddingLeft="10dp"
-                            android:text=""
-                            android:textColor="@color/black"
-                            android:textSize="@dimen/sp14" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center_horizontal"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text=" | 室外PM"
-                            android:textColor="@color/black"
-                            android:textSize="@dimen/sp14" />
-
-                        <TextView
-                            android:id="@+id/tv_out_side"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="2.5"
-                            android:textColor="@color/black"
-                            android:textSize="@dimen/sp14" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center_horizontal"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/tv_ug"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="--"
-                            android:textColor="@color/black"
-                            android:textSize="@dimen/sp14" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text=" ug / m³"
-                            android:textColor="@color/black"
-                            android:textSize="@dimen/sp14" />
-                    </LinearLayout>
-                </LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="2.8"
-                android:gravity="center">
-
-                <com.himmiractivity.view.PercentView
-                    android:id="@+id/percent_view"
-                    android:layout_width="wrap_content"
-                    android:layout_height="150dp"
-                    android:background="@color/white"></com.himmiractivity.view.PercentView>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="2.5"
-                android:gravity="bottom"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:paddingLeft="20dp"
-                    android:paddingRight="20dp"
-                    android:weightSum="7">
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="4"
-                        android:gravity="center_horizontal"
-                        android:orientation="horizontal">
-
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@drawable/co" />
-
-                        <TextView
-                            android:id="@+id/tv_co2"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_weight="1"
-                            android:gravity="center_horizontal"
-                            android:maxLines="1"
-                            android:text="--"
-                            android:textColor="@color/green"
-                            android:textSize="24sp" />
-
-                        <TextView
-                            android:id="@+id/textView"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:text="ppm"
-                            android:textColor="@color/green"
-                            android:textSize="@dimen/sp12" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
-                        android:layout_weight="3"
-                        android:gravity="center_horizontal"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/tv_temp_indoor"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:layout_weight="1"
-                            android:drawableLeft="@drawable/temp_indoor"
-                            android:gravity="center"
-                            android:maxLines="1"
-                            android:text="--"
-                            android:textColor="@color/green"
-                            android:textSize="24sp" />
-
-                        <TextView
-                            android:id="@+id/textView2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:gravity="center_vertical"
-                            android:text=" ℃"
-                            android:textColor="@color/green"
-                            android:textSize="@dimen/sp12" />
-                    </LinearLayout>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="30dp"
-                    android:orientation="horizontal"
-                    android:paddingLeft="20dp"
-                    android:paddingRight="20dp"
-                    android:weightSum="7">
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="4"
-                        android:gravity="center_horizontal"
-                        android:orientation="horizontal">
-
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@drawable/iv_speed" />
-
-                        <TextView
-                            android:id="@+id/tv_speed"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:layout_weight="2"
-                            android:gravity="center_horizontal"
-                            android:maxLines="1"
-                            android:text="--"
-                            android:textColor="@color/green"
-                            android:textSize="24sp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:text="m³/h"
-                            android:textColor="@color/green"
-                            android:textSize="@dimen/sp12" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
-                        android:layout_weight="3"
-                        android:gravity="center_horizontal"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/tv_temp_out_side"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:layout_weight="1"
-                            android:drawableLeft="@drawable/temp_out_side"
-                            android:gravity="center"
-                            android:maxLines="1"
-                            android:text="--"
-                            android:textColor="@color/green"
-                            android:textSize="24sp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:gravity="center_vertical"
-                            android:text=" ℃"
-                            android:textColor="@color/green"
-                            android:textSize="@dimen/sp12" />
-                    </LinearLayout>
-                </LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="2.5"
-                android:gravity="center_horizontal"
-                android:orientation="horizontal"
-                android:weightSum="10">
-
-                <LinearLayout
-                    android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="7"
-                    android:gravity="center"
-                    android:orientation="horizontal"
-                    android:paddingBottom="10dp">
-
-                    <ImageView
-                        android:id="@+id/btn_speed_semll"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/btn_speed_sel" />
+                    android:orientation="vertical"
+                    android:weightSum="8">
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center_horizontal"
-                        android:orientation="horizontal">
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="@dimen/dp50"
+                        android:layout_marginTop="@dimen/dp50"
+                        android:layout_weight="3"
+                        android:gravity="center">
 
-                        <TextView
-                            android:id="@+id/tv_hz_valus"
+                        <com.himmiractivity.view.PercentView
+                            android:id="@+id/percent_view"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="--"
-                            android:textColor="@color/green"
-                            android:textSize="40sp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="5dp"
-                            android:text="HZ"
-                            android:textColor="@color/green" />
+                            android:layout_height="150dp"
+                            android:background="@color/white"></com.himmiractivity.view.PercentView>
                     </LinearLayout>
 
-                    <ImageView
-                        android:id="@+id/btn_speed_add"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/btn_speed_add_sel" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2.4"
+                        android:gravity="bottom"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:paddingLeft="20dp"
+                            android:paddingRight="20dp"
+                            android:weightSum="7">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="4"
+                                android:gravity="center_horizontal"
+                                android:orientation="horizontal">
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:src="@drawable/co" />
+
+                                <TextView
+                                    android:id="@+id/tv_co2"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:layout_weight="1"
+                                    android:gravity="center_horizontal"
+                                    android:maxLines="1"
+                                    android:text="--"
+                                    android:textColor="@color/green"
+                                    android:textSize="24sp" />
+
+                                <TextView
+                                    android:id="@+id/textView"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center_vertical"
+                                    android:text="ppm"
+                                    android:textColor="@color/green"
+                                    android:textSize="@dimen/sp12" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="20dp"
+                                android:layout_weight="3"
+                                android:gravity="center_horizontal"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/tv_temp_indoor"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center_vertical"
+                                    android:layout_weight="1"
+                                    android:drawableLeft="@drawable/temp_indoor"
+                                    android:gravity="center"
+                                    android:maxLines="1"
+                                    android:text="--"
+                                    android:textColor="@color/green"
+                                    android:textSize="24sp" />
+
+                                <TextView
+                                    android:id="@+id/textView2"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center_vertical"
+                                    android:gravity="center_vertical"
+                                    android:text=" ℃"
+                                    android:textColor="@color/green"
+                                    android:textSize="@dimen/sp12" />
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="30dp"
+                            android:orientation="horizontal"
+                            android:paddingLeft="20dp"
+                            android:paddingRight="20dp"
+                            android:weightSum="7">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="4"
+                                android:gravity="center_horizontal"
+                                android:orientation="horizontal">
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:src="@drawable/iv_speed" />
+
+                                <TextView
+                                    android:id="@+id/tv_speed"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center_vertical"
+                                    android:layout_weight="2"
+                                    android:gravity="center_horizontal"
+                                    android:maxLines="1"
+                                    android:text="--"
+                                    android:textColor="@color/green"
+                                    android:textSize="24sp" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center_vertical"
+                                    android:text="m³/h"
+                                    android:textColor="@color/green"
+                                    android:textSize="@dimen/sp12" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="20dp"
+                                android:layout_weight="3"
+                                android:gravity="center_horizontal"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/tv_temp_out_side"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center_vertical"
+                                    android:layout_weight="1"
+                                    android:drawableLeft="@drawable/temp_out_side"
+                                    android:gravity="center"
+                                    android:maxLines="1"
+                                    android:text="--"
+                                    android:textColor="@color/green"
+                                    android:textSize="24sp" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center_vertical"
+                                    android:gravity="center_vertical"
+                                    android:text=" ℃"
+                                    android:textColor="@color/green"
+                                    android:textSize="@dimen/sp12" />
+                            </LinearLayout>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2.6"
+                        android:gravity="center_horizontal"
+                        android:orientation="horizontal"
+                        android:weightSum="10">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginTop="@dimen/dp50"
+                            android:layout_weight="7"
+                            android:gravity="center"
+                            android:orientation="horizontal"
+                            android:paddingBottom="10dp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center_horizontal"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/tv_hz_valus"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="--"
+                                    android:textColor="@color/green"
+                                    android:textSize="40sp" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="5dp"
+                                    android:text="HZ"
+                                    android:textColor="@color/green" />
+                            </LinearLayout>
+                        </LinearLayout>
+                    </LinearLayout>
                 </LinearLayout>
-            </LinearLayout>
-        </LinearLayout>
+            </ScrollView>
+        </com.himmiractivity.view.SuperSwipeRefreshLayout>
 
         <com.himmiractivity.circular_progress_bar.CircularProgressBar
             android:id="@+id/progress"

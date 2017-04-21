@@ -39,6 +39,7 @@ import com.himmiractivity.Utils.ToastUtils;
 import com.himmiractivity.Utils.Utils;
 import com.himmiractivity.Utils.WifiUtils;
 import com.himmiractivity.base.BaseBusActivity;
+import com.himmiractivity.base.BaseBusNoSocllowActivity;
 import com.himmiractivity.circular_progress_bar.CircularProgressBar;
 import com.himmiractivity.entity.DataServerBean;
 import com.himmiractivity.entity.PmAllData;
@@ -67,7 +68,7 @@ import activity.hamir.com.himmir.R;
 import butterknife.BindView;
 import butterknife.BindViews;
 
-public class MainActivity extends BaseBusActivity {
+public class MainActivity extends BaseBusNoSocllowActivity {
     @BindView(R.id.progress)
     CircularProgressBar progressBar;
     @BindView(R.id.ll_content)
@@ -187,8 +188,8 @@ public class MainActivity extends BaseBusActivity {
         App.getInstance().addActivity(this);
         if (getIntent().getExtras() != null) {
             bundle = getIntent().getExtras();
-            if (bundle.getSerializable("userData") != null) {
-                userData = (UserData) bundle.getSerializable("userData");
+            if (bundle.getSerializable(StatisConstans.USERDATA) != null) {
+                userData = (UserData) bundle.getSerializable(StatisConstans.USERDATA);
                 sharedPreferencesDB.setString(StatisConstans.USER_SHARE_NAME, userData.getUserShareName());
                 sharedPreferencesDB.setString(StatisConstans.USER_SHARE_CODE, userData.getUserShareCode());
                 ll_content.setVisibility(View.VISIBLE);
@@ -341,7 +342,7 @@ public class MainActivity extends BaseBusActivity {
                     intent.setClass(MainActivity.this, SetActivity.class);
                     Bundle bundle = new Bundle();
                     if (userData != null) {
-                        bundle.putSerializable("userData", userData);
+                        bundle.putSerializable(StatisConstans.USERDATA, userData);
                     }
                     intent.putExtras(bundle);
                     startActivityForResult(intent, StatisConstans.MSG_IMAGE_REQUEST);
