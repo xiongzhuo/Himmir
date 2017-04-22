@@ -3,7 +3,8 @@
     android:id="@+id/sll_main"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white">
+    android:background="@color/white"
+    android:focusable="false">
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -16,6 +17,7 @@
             android:layout_width="80dp"
             android:layout_height="match_parent"
             android:background="@color/mred"
+            android:focusable="false"
             android:gravity="center"
             android:text="删除"
             android:textColor="@color/white" />

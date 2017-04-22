@@ -19,13 +19,13 @@ import java.util.List;
 
 import activity.hamir.com.himmir.R;
 
-public class ListAdapter extends BaseSwipeAdapter {
+public class ListViewAdapter extends BaseSwipeAdapter {
 
     protected static final String TAG = "ListViewAdapter";
     private Activity context;
     List<ManagerShardBean.ManagerShardSum> lists;
 
-    public ListAdapter(Activity context, List<ManagerShardBean.ManagerShardSum> lists) {
+    public ListViewAdapter(Activity context, List<ManagerShardBean.ManagerShardSum> lists) {
         this.context = context;
         this.lists = lists;
     }
@@ -52,7 +52,7 @@ public class ListAdapter extends BaseSwipeAdapter {
 
     @Override
     public View generateView(int position, ViewGroup parent) {
-        return context.getLayoutInflater().inflate(R.layout.slip_list_item, parent, false);
+        return context.getLayoutInflater().inflate(R.layout.item_listview, parent, false);
     }
 
     public List<ManagerShardBean.ManagerShardSum> getLists() {

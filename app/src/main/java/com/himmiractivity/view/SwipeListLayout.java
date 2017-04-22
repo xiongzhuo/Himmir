@@ -25,6 +25,8 @@ public class SwipeListLayout extends FrameLayout {
     private OnSwipeStatusListener listener;
     private Status status = Status.Close;
     private boolean smooth = true;
+    float xDown = 0, xUp;
+    boolean isSmooth = false;
 
     public static final String TAG = "SlipListLayout";
 
@@ -232,11 +234,24 @@ public class SwipeListLayout extends FrameLayout {
 
     // 让ViewDragHelper来处理触摸事件
     public boolean onTouchEvent(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            xDown = event.getX();
+            isSmooth = false;
+        }
+        if (event.getAction() == MotionEvent.ACTION_UP) {
+            isSmooth = true;
+            //获取松开时的x坐标
+//            xUp = event.getX();
+            //按下和松开绝对值差当大于20时滑动，否则不显示
+//            if (Math.abs(xUp - xDown) < 20) {
+//                return false;// 距离较小，当作click事件来处理
+//            }
+//            if (Math.abs(xUp - xDown) > 60) {  // 真正的onTouch事件
+//            }
+        }
         mDragHelper.processTouchEvent(event);
-        return true;
+        return isSmooth;// 返回true，不执行click事件
     }
-
-    ;
 
     @Override
     protected void onFinishInflate() {

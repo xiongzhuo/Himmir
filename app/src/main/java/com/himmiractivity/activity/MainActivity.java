@@ -38,7 +38,6 @@ import com.himmiractivity.Utils.ToastUtil;
 import com.himmiractivity.Utils.ToastUtils;
 import com.himmiractivity.Utils.Utils;
 import com.himmiractivity.Utils.WifiUtils;
-import com.himmiractivity.base.BaseBusActivity;
 import com.himmiractivity.base.BaseBusNoSocllowActivity;
 import com.himmiractivity.circular_progress_bar.CircularProgressBar;
 import com.himmiractivity.entity.DataServerBean;

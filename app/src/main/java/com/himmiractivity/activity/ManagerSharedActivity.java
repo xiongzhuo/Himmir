@@ -13,11 +13,13 @@ import com.himmiractivity.Adapter.ListAdapter;
 import com.himmiractivity.Adapter.RvcAdapter;
 import com.himmiractivity.App;
 import com.himmiractivity.base.BaseBusNoSocllowActivity;
+import com.himmiractivity.circular_progress_bar.CircularProgressBar;
 import com.himmiractivity.entity.ManagerShardBean;
 import com.himmiractivity.interfaces.StatisConstans;
 import com.himmiractivity.request.ManagerShardRequest;
 import com.himmiractivity.view.AlxRefreshLoadMoreRecyclerView;
 import com.himmiractivity.view.SwipeListLayout;
+import com.himmiractivity.xlistview.IXListViewRefreshListener;
 import com.himmiractivity.xlistview.XListView;
 
 import java.util.ArrayList;
@@ -29,11 +31,12 @@ import activity.hamir.com.himmir.R;
 import butterknife.BindView;
 
 
-public class ManagerSharedActivity extends BaseBusNoSocllowActivity implements AdapterView.OnItemClickListener, AbsListView.OnScrollListener {
+public class ManagerSharedActivity extends BaseBusNoSocllowActivity implements AdapterView.OnItemClickListener, IXListViewRefreshListener {
     @BindView(R.id.lv_manager)
     XListView listView;
+    @BindView(R.id.progress)
+    CircularProgressBar progressBar;
     List<ManagerShardBean.ManagerShardSum> list = new ArrayList<>();
-    private Set<SwipeListLayout> sets = new HashSet<>();
     ManagerShardBean managerShardBean;
     ListAdapter adapter;
 
@@ -43,11 +46,18 @@ public class ManagerSharedActivity extends BaseBusNoSocllowActivity implements A
             switch (msg.what) {
                 case StatisConstans.MSG_RECEIVED_REGULAR:
                     if (msg.obj != null) {
+                        progressBar.setVisibility(View.GONE);
+                        listView.setVisibility(View.VISIBLE);
                         managerShardBean = (ManagerShardBean) msg.obj;
                         list = managerShardBean.getShareUserList();
-                        adapter = new ListAdapter(ManagerSharedActivity.this, sets, list);
+                        adapter = new ListAdapter(ManagerSharedActivity.this, list);
                         listView.setAdapter(adapter);
+                        onlod();
                     }
+                    break;
+                case StatisConstans.MSG_RECEIVED_BOUND:
+                    list.clear();
+                    adapter.setLists(list);
                     break;
             }
             return false;
@@ -66,7 +76,10 @@ public class ManagerSharedActivity extends BaseBusNoSocllowActivity implements A
         initTitleBar();
         initRechclerView();
         listView.setOnItemClickListener(this);
-        listView.setOnScrollListener(this);
+        listView.setPullRefreshEnable(this);
+        // 魅族机型隐藏HODE
+        listView.setOverScrollMode(View.OVER_SCROLL_NEVER);
+        listView.NotRefreshAtBegin();
     }
 
     @Override
@@ -115,23 +128,13 @@ public class ManagerSharedActivity extends BaseBusNoSocllowActivity implements A
     }
 
     @Override
-    public void onScrollStateChanged(AbsListView view, int scrollState) {
-        switch (scrollState) {
-            //当listview开始滑动时，若有item的状态为Open，则Close，然后移除
-            case SCROLL_STATE_TOUCH_SCROLL:
-                if (sets.size() > 0) {
-                    for (SwipeListLayout s : sets) {
-                        s.setStatus(SwipeListLayout.Status.Close, true);
-                        sets.remove(s);
-                    }
-                }
-                break;
-
-        }
+    public void onRefresh() {
+        initRechclerView();
     }
 
-    @Override
-    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-
+    private void onlod() {
+        listView.stopLoadMore();// 停止加载更多，重置footer view
+        listView.stopRefresh();// 停止刷新，重置header view
+        // listView.setRefreshTime("刚刚");//设置刷新的时间
     }
 }

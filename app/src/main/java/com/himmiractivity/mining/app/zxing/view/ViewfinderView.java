@@ -76,7 +76,6 @@ public final class ViewfinderView extends View {
         super(context, attrs);
 
         density = context.getResources().getDisplayMetrics().density;
-        //������ת����dp
         ScreenRate = (int) (20 * density);
 
         paint = new Paint();

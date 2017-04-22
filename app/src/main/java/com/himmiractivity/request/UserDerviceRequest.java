@@ -12,6 +12,7 @@ import com.himmiractivity.Utils.SharedPreferencesDB;
 import com.himmiractivity.Utils.ToastUtil;
 import com.himmiractivity.entity.JsonResult;
 import com.himmiractivity.entity.ManagerShardBean;
+import com.himmiractivity.entity.UserDerviceBean;
 import com.himmiractivity.interfaces.StatisConstans;
 import com.himmiractivity.view.DialogView;
 
@@ -23,15 +24,17 @@ import org.xutils.x;
  * 已经加分享
  */
 
-public class USERRequest {
+public class UserDerviceRequest {
     private Context context;
     private Handler handler;
     private DialogView dialogView;
+    private String shareUserKey;
     SharedPreferencesDB sharedPreferencesDB;
 
-    public USERRequest(SharedPreferencesDB sharedPreferencesDB, Context context, Handler handler) {
+    public UserDerviceRequest(SharedPreferencesDB sharedPreferencesDB, Context context, String shareUserKey, Handler handler) {
         this.context = context;
         this.handler = handler;
+        this.shareUserKey = shareUserKey;
         this.sharedPreferencesDB = sharedPreferencesDB;
     }
 
@@ -41,8 +44,9 @@ public class USERRequest {
             dialogView.show();
             dialogView.setMessage("加载中");
         }
-        RequestParams params = new RequestParams(Configuration.URL_GETSHARED_USERLIST);
+        RequestParams params = new RequestParams(Configuration.URL_GET_DEVLIST_BY_SHARE_USER_KEY);
         params.addBodyParameter("mobile", sharedPreferencesDB.getString(StatisConstans.PHONE, ""));
+        params.addBodyParameter("shareUserKey", shareUserKey);
         params.addBodyParameter("userToken", sharedPreferencesDB.getString(StatisConstans.TOKEN, ""));
         x.http().post(params, new Callback.CacheCallback<String>() {
             @Override
@@ -50,14 +54,14 @@ public class USERRequest {
                 if (null != dialogView) {
                     dialogView.cancel();
                 }
-                JsonResult<ManagerShardBean> result = new JsonResult<ManagerShardBean>();
+                JsonResult<UserDerviceBean> result = new JsonResult<UserDerviceBean>();
                 try {
                     Log.i("ModifyNameRequest", json);
                     if (TextUtils.isEmpty(json)) {
                         return;
                     }
                     result = JsonUtils.parseJson(json,
-                            new TypeToken<ManagerShardBean>() {
+                            new TypeToken<UserDerviceBean>() {
                             }.getType());
                     //手机号码已经被其它账号绑定
                     if (!result.isFlag()) {

@@ -5,6 +5,7 @@ package com.himmiractivity.interfaces;
  */
 
 public interface StatisConstans {
+    String SHARE_USER_KEY = "share_user_key";
     String USERDATA = "userData";
     String PM_ALL_DATA = "pm_all_data";
     String TIME = "time";

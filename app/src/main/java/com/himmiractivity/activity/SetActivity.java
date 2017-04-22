@@ -29,15 +29,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.himmiractivity.App;
 import com.himmiractivity.Constant.Configuration;
 import com.himmiractivity.Utils.ChangePhotosUtils;
 import com.himmiractivity.Utils.FiledUtil;
 import com.himmiractivity.Utils.IntentUtilsTwo;
-import com.himmiractivity.Utils.SharedPreferencesDB;
-import com.himmiractivity.Utils.ToastUtil;
 import com.himmiractivity.Utils.ToastUtils;
 import com.himmiractivity.Utils.UiUtil;
 import com.himmiractivity.base.BaseBusActivity;
@@ -48,8 +45,6 @@ import com.himmiractivity.interfaces.StatisConstans;
 import com.himmiractivity.request.ModifyNameRequest;
 import com.himmiractivity.request.TaskDetailImageUploadTask;
 import com.himmiractivity.view.ResetNameDialog;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -91,7 +86,6 @@ public class SetActivity extends BaseBusActivity {
     private boolean isResult = false;
     //电话号码
     String phone = "";
-//    private SlideBackLayout mSlideBackLayout;
 
     private Handler handler = new Handler(new Handler.Callback() {
         @Override

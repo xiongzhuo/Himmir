@@ -3,6 +3,7 @@ package com.himmiractivity.Utils;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
+import android.support.v4.content.ContextCompat;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.MeasureSpec;
@@ -42,7 +43,7 @@ public class UiUtil {
                 .getSystemService(Context.WINDOW_SERVICE);
         int height = wm.getDefaultDisplay().getHeight();
         LinearLayout layout = new LinearLayout(context);
-        layout.setBackgroundColor(context.getResources().getColor(R.color.lv_gray_bg));
+        layout.setBackgroundColor(ContextCompat.getColor(context, R.color.lv_gray_bg));
         layout.setOrientation(LinearLayout.VERTICAL);
         ListView listView = new ListView(context);
         LinearLayout.LayoutParams paramsk = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);

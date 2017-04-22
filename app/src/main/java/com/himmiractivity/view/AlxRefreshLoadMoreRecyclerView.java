@@ -588,11 +588,11 @@ public class AlxRefreshLoadMoreRecyclerView extends RecyclerView {
                 case STATE_NORMAL:
                     if (mState == STATE_READY) {
                         mArrowImageView.startAnimation(mRotateDownAnim);
-                        mHintTextView.setText("The drop-down refresh");
+                        mHintTextView.setText("下拉刷新");
                     } else if (mState == STATE_REFRESHING) {//如果是从刷新状态过来
 //                        mArrowImageView.clearAnimation();
                         mArrowImageView.setVisibility(INVISIBLE);
-                        mHintTextView.setText("load completed");
+                        mHintTextView.setText("加载完成。");
                     }
                     break;
                 case STATE_READY:
@@ -600,14 +600,14 @@ public class AlxRefreshLoadMoreRecyclerView extends RecyclerView {
                         mArrowImageView.clearAnimation();
                         mArrowImageView.startAnimation(mRotateUpAnim);
                     }
-                    mHintTextView.setText("load data");
+                    mHintTextView.setText("松开刷新数据");
                     break;
                 case STATE_REFRESHING:
-                    mHintTextView.setText("loading");
+                    mHintTextView.setText("正在加载.........");
                     break;
                 case STATE_FINISH:
                     mArrowImageView.setVisibility(View.VISIBLE);
-                    mHintTextView.setText("The drop-down refresh");
+                    mHintTextView.setText("下拉刷新");
                     break;
                 default:
             }
@@ -649,7 +649,7 @@ public class AlxRefreshLoadMoreRecyclerView extends RecyclerView {
         private void initView(Context context) {
             mContext = context;
             this.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));//recyclerView里不加这句话的话宽度就会比较窄
-            LinearLayout moreView = (LinearLayout) LayoutInflater.from(mContext).inflate(R.layout.xlistview_header_two, null);
+            LinearLayout moreView = (LinearLayout) LayoutInflater.from(mContext).inflate(R.layout.xlistview_header, null);
             addView(moreView);
             moreView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
             mContentView = moreView.findViewById(R.id.xlistview_header_content);
