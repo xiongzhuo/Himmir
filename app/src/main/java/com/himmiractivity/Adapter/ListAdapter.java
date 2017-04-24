@@ -12,6 +12,7 @@ import com.himmiractivity.base.BaseSwipeAdapter;
 import com.himmiractivity.entity.ManagerShardBean;
 import com.himmiractivity.enums.DragEdge;
 import com.himmiractivity.enums.ShowMode;
+import com.himmiractivity.interfaces.OnllClick;
 import com.himmiractivity.interfaces.SwipeListener;
 import com.himmiractivity.zlistview.ZSwipeItem;
 
@@ -20,6 +21,7 @@ import java.util.List;
 import activity.hamir.com.himmir.R;
 
 public class ListAdapter extends BaseSwipeAdapter {
+    private OnllClick onLLClick;
 
     protected static final String TAG = "ListViewAdapter";
     private Activity context;
@@ -63,6 +65,11 @@ public class ListAdapter extends BaseSwipeAdapter {
         this.lists = lists;
         notifyDataSetChanged();
     }
+
+    public void setOnLLClick(OnllClick onLLClick) {
+        this.onLLClick = onLLClick;
+    }
+
 
     @Override
     public void fillValues(final int position, View convertView) {
@@ -108,9 +115,8 @@ public class ListAdapter extends BaseSwipeAdapter {
         ll.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                lists.remove(position);
-                notifyDataSetChanged();
                 swipeItem.close();
+                onLLClick.onLLClick(position);
             }
         });
     }

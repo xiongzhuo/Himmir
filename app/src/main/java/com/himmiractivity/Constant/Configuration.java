@@ -5,8 +5,8 @@ package com.himmiractivity.Constant;
  */
 
 public class Configuration {
-    //    public static final String HOST = "http://smart.hnliuxing.com:8086";
-    public static final String HOST = "http://192.168.0.88:8086";
+    public static final String HOST = "http://smart.hnliuxing.com:8086";
+//    public static final String HOST = "http://192.168.0.88:8086";
 //    public static final String HOST = "http://192.168.0.80:8080";
 //    public static final String HOST = "http://hongren.bingjun.cn/";
     /**
@@ -49,12 +49,12 @@ public class Configuration {
      * 删除指定共享到的用户BYUserKey
      */
     public static final String URL_DEL_SHARE_USE = HOST
-            + "/finalapi/user/user/delSharedUse";
+            + "/finalapi/user/user/delSharedUser";
     /**
      * 除指定共享到的用户BYUserKey
      */
     public static final String URL_DEL_SHARE_USER = HOST
-            + "/finalapi/user/user/DelShareUser";
+            + "/finalapi/user/user/delShareUser";
     /**
      * 管理分享
      */

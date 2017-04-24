@@ -9,13 +9,11 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.himmiractivity.App;
@@ -28,15 +26,13 @@ import com.himmiractivity.entity.PmBean;
 import com.himmiractivity.interfaces.StatisConstans;
 import com.himmiractivity.mining.app.zxing.ScoketOFFeON;
 import com.himmiractivity.request.OutdoorPMRequest;
-import com.himmiractivity.view.PercentView;
-import com.himmiractivity.view.SuperSwipeRefreshLayout;
 import com.himmiractivity.service.Protocal;
 import com.himmiractivity.util.ThreadPoolUtils;
+import com.himmiractivity.view.PercentView;
+import com.himmiractivity.view.SuperSwipeRefreshLayout;
 
+import java.net.Socket;
 import java.util.List;
-
-import javax.crypto.Mac;
-import javax.net.ssl.SSLSocket;
 
 import activity.hamir.com.himmir.R;
 import butterknife.BindView;
@@ -57,7 +53,7 @@ public class FacilityInformationActivity extends BaseBusActivity implements Supe
     private CircularProgressBar progressBar;
     private TextView textView;
     private ImageView imageView;
-    SSLSocket socket;
+    Socket socket;
     Protocal protocal;
     String mac;
 

@@ -27,13 +27,11 @@ public class DelSharedUseRequest {
     private Context context;
     private Handler handler;
     private DialogView dialogView;
-    private String userKeyvalue;
     private String shareUserKey;
     SharedPreferencesDB sharedPreferencesDB;
 
-    public DelSharedUseRequest(SharedPreferencesDB sharedPreferencesDB, String userKeyvalue, String shareUserKey, Context context, Handler handler) {
+    public DelSharedUseRequest(SharedPreferencesDB sharedPreferencesDB, String shareUserKey, Context context, Handler handler) {
         this.context = context;
-        this.userKeyvalue = userKeyvalue;
         this.shareUserKey = shareUserKey;
         this.handler = handler;
         this.sharedPreferencesDB = sharedPreferencesDB;
@@ -48,8 +46,8 @@ public class DelSharedUseRequest {
         RequestParams params = new RequestParams(Configuration.URL_DEL_SHARE_USE);
         params.addBodyParameter("mobile", sharedPreferencesDB.getString(StatisConstans.PHONE, ""));
         params.addBodyParameter("userToken", sharedPreferencesDB.getString(StatisConstans.TOKEN, ""));
-        params.addBodyParameter("userKeyvalue", userKeyvalue);
-        params.addBodyParameter("shareUserKey", shareUserKey);
+        params.addBodyParameter("userKey", sharedPreferencesDB.getString(StatisConstans.KEY, ""));
+        params.addBodyParameter("sharedUserKey", shareUserKey);
         x.http().post(params, new Callback.CacheCallback<String>() {
             @Override
             public void onSuccess(String json) {
@@ -69,7 +67,7 @@ public class DelSharedUseRequest {
                     }
                     //手机号码正常
                     else {
-                        handler.sendMessage(handler.obtainMessage(StatisConstans.MSG_RECEIVED_REGULAR, result.getData()));
+                        handler.sendMessage(handler.obtainMessage(StatisConstans.MSG_DELETE, result.getData()));
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

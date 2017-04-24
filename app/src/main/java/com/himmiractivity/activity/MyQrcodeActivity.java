@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -80,6 +81,7 @@ public class MyQrcodeActivity extends BaseBusActivity {
         userShareName = sharedPreferencesDB.getString(StatisConstans.USER_SHARE_NAME, "");
         userShareCode = sharedPreferencesDB.getString(StatisConstans.USER_SHARE_CODE, "");
         userShareImage = sharedPreferencesDB.getString(StatisConstans.USER_SHARE_IMAGE, "");
+        Log.i("ModifyNameRequest", userShareImage);
         textViews.get(0).setText("共享名：" + userShareName);
         imageViews.get(0).setOnClickListener(this);
         simpleDraweeView.setController(Fresco.newDraweeControllerBuilder()

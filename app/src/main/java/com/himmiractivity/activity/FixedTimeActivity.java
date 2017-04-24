@@ -262,13 +262,6 @@ public class FixedTimeActivity extends BaseBusActivity {
                 socket = SocketSingle.getInstance(host, location);
                 Log.d("ConnectionManager", "AbsClient*****已经建立连接");
                 protocal = Protocal.getInstance();
-//            ThreadPoolUtils threadPoolUtils = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 1);
-//            threadPoolUtils.execute(new Thread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    ScoketOFFeON.receMessage(socket, protocal, handler);
-//                }
-//            }));
                 ScoketOFFeON.sendMessage(socket, protocal, mac);
             } catch (Exception e) {
                 request(host, location);

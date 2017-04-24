@@ -13,8 +13,10 @@ import com.himmiractivity.App;
 import com.himmiractivity.base.BaseBusNoSocllowActivity;
 import com.himmiractivity.circular_progress_bar.CircularProgressBar;
 import com.himmiractivity.entity.ManagerShardBean;
+import com.himmiractivity.interfaces.OnllClick;
 import com.himmiractivity.interfaces.StatisConstans;
 import com.himmiractivity.request.AddedShardRequest;
+import com.himmiractivity.request.DelChareUserRequest;
 import com.himmiractivity.view.SwipeListLayout;
 import com.himmiractivity.xlistview.IXListViewRefreshListener;
 import com.himmiractivity.xlistview.XListView;
@@ -28,7 +30,7 @@ import activity.hamir.com.himmir.R;
 import butterknife.BindView;
 
 
-public class AddedSharedActivity extends BaseBusNoSocllowActivity implements AdapterView.OnItemClickListener, IXListViewRefreshListener {
+public class AddedSharedActivity extends BaseBusNoSocllowActivity implements AdapterView.OnItemClickListener, IXListViewRefreshListener, OnllClick {
     @BindView(R.id.progress)
     CircularProgressBar progressBar;
     @BindView(R.id.lv_added)
@@ -37,11 +39,16 @@ public class AddedSharedActivity extends BaseBusNoSocllowActivity implements Ada
     private Set<SwipeListLayout> sets = new HashSet<>();
     ManagerShardBean managerShardBean;
     ListViewAdapter adapter;
+    int delPos = 0;
 
     private Handler mHandler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
             switch (msg.what) {
+                case StatisConstans.MSG_DELETE:
+                    list.remove(delPos);
+                    adapter.setLists(list);
+                    break;
                 case StatisConstans.MSG_RECEIVED_REGULAR:
                     if (msg.obj != null) {
                         progressBar.setVisibility(View.GONE);
@@ -50,6 +57,7 @@ public class AddedSharedActivity extends BaseBusNoSocllowActivity implements Ada
                         list = managerShardBean.getShareUserList();
                         adapter = new ListViewAdapter(AddedSharedActivity.this, list);
                         listView.setAdapter(adapter);
+                        adapter.setOnLLClick(AddedSharedActivity.this);
                         onlod();
                     }
                     break;
@@ -137,5 +145,16 @@ public class AddedSharedActivity extends BaseBusNoSocllowActivity implements Ada
         listView.stopLoadMore();// 停止加载更多，重置footer view
         listView.stopRefresh();// 停止刷新，重置header view
         // listView.setRefreshTime("刚刚");//设置刷新的时间
+    }
+
+    @Override
+    public void onLLClick(int position) {
+        delPos = position;
+        try {
+            DelChareUserRequest delChareUserRequest = new DelChareUserRequest(sharedPreferencesDB, list.get(position).getUser_key(), AddedSharedActivity.this, mHandler);
+            delChareUserRequest.requestCode();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

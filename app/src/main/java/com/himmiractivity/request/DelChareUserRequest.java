@@ -27,13 +27,11 @@ public class DelChareUserRequest {
     private Context context;
     private Handler handler;
     private DialogView dialogView;
-    private String userKeyvalue;
     private String shareUserKey;
     SharedPreferencesDB sharedPreferencesDB;
 
-    public DelChareUserRequest(SharedPreferencesDB sharedPreferencesDB, String userKeyvalue, String shareUserKey, Context context, Handler handler) {
+    public DelChareUserRequest(SharedPreferencesDB sharedPreferencesDB, String shareUserKey, Context context, Handler handler) {
         this.context = context;
-        this.userKeyvalue = userKeyvalue;
         this.shareUserKey = shareUserKey;
         this.handler = handler;
         this.sharedPreferencesDB = sharedPreferencesDB;
@@ -48,7 +46,7 @@ public class DelChareUserRequest {
         RequestParams params = new RequestParams(Configuration.URL_DEL_SHARE_USER);
         params.addBodyParameter("mobile", sharedPreferencesDB.getString(StatisConstans.PHONE, ""));
         params.addBodyParameter("userToken", sharedPreferencesDB.getString(StatisConstans.TOKEN, ""));
-        params.addBodyParameter("userKeyvalue", userKeyvalue);
+        params.addBodyParameter("userKey", sharedPreferencesDB.getString(StatisConstans.KEY, ""));
         params.addBodyParameter("shareUserKey", shareUserKey);
         x.http().post(params, new Callback.CacheCallback<String>() {
             @Override
@@ -69,7 +67,7 @@ public class DelChareUserRequest {
                     }
                     //手机号码正常
                     else {
-                        handler.sendMessage(handler.obtainMessage(StatisConstans.MSG_RECEIVED_REGULAR, result.getData()));
+                        handler.sendMessage(handler.obtainMessage(StatisConstans.MSG_DELETE, result.getData()));
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

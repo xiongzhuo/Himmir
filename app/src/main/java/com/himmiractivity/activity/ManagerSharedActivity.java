@@ -6,32 +6,29 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.view.View;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 
 import com.himmiractivity.Adapter.ListAdapter;
-import com.himmiractivity.Adapter.RvcAdapter;
 import com.himmiractivity.App;
 import com.himmiractivity.base.BaseBusNoSocllowActivity;
 import com.himmiractivity.circular_progress_bar.CircularProgressBar;
 import com.himmiractivity.entity.ManagerShardBean;
+import com.himmiractivity.interfaces.OnllClick;
 import com.himmiractivity.interfaces.StatisConstans;
+import com.himmiractivity.request.DelChareUserRequest;
+import com.himmiractivity.request.DelSharedUseRequest;
 import com.himmiractivity.request.ManagerShardRequest;
-import com.himmiractivity.view.AlxRefreshLoadMoreRecyclerView;
-import com.himmiractivity.view.SwipeListLayout;
 import com.himmiractivity.xlistview.IXListViewRefreshListener;
 import com.himmiractivity.xlistview.XListView;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import activity.hamir.com.himmir.R;
 import butterknife.BindView;
 
 
-public class ManagerSharedActivity extends BaseBusNoSocllowActivity implements AdapterView.OnItemClickListener, IXListViewRefreshListener {
+public class ManagerSharedActivity extends BaseBusNoSocllowActivity implements AdapterView.OnItemClickListener, IXListViewRefreshListener, OnllClick {
     @BindView(R.id.lv_manager)
     XListView listView;
     @BindView(R.id.progress)
@@ -39,11 +36,16 @@ public class ManagerSharedActivity extends BaseBusNoSocllowActivity implements A
     List<ManagerShardBean.ManagerShardSum> list = new ArrayList<>();
     ManagerShardBean managerShardBean;
     ListAdapter adapter;
+    int delPos = 0;
 
     private Handler mHandler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
             switch (msg.what) {
+                case StatisConstans.MSG_DELETE:
+                    list.remove(delPos);
+                    adapter.setLists(list);
+                    break;
                 case StatisConstans.MSG_RECEIVED_REGULAR:
                     if (msg.obj != null) {
                         progressBar.setVisibility(View.GONE);
@@ -51,6 +53,7 @@ public class ManagerSharedActivity extends BaseBusNoSocllowActivity implements A
                         managerShardBean = (ManagerShardBean) msg.obj;
                         list = managerShardBean.getShareUserList();
                         adapter = new ListAdapter(ManagerSharedActivity.this, list);
+                        adapter.setOnLLClick(ManagerSharedActivity.this);
                         listView.setAdapter(adapter);
                         onlod();
                     }
@@ -136,5 +139,16 @@ public class ManagerSharedActivity extends BaseBusNoSocllowActivity implements A
         listView.stopLoadMore();// 停止加载更多，重置footer view
         listView.stopRefresh();// 停止刷新，重置header view
         // listView.setRefreshTime("刚刚");//设置刷新的时间
+    }
+
+    @Override
+    public void onLLClick(int position) {
+        delPos = position;
+        try {
+            DelSharedUseRequest delSharedUseRequest = new DelSharedUseRequest(sharedPreferencesDB, list.get(position).getUser_key(), ManagerSharedActivity.this, mHandler);
+            delSharedUseRequest.requestCode();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

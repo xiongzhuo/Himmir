@@ -12,7 +12,9 @@ import com.himmiractivity.base.BaseSwipeAdapter;
 import com.himmiractivity.entity.ManagerShardBean;
 import com.himmiractivity.enums.DragEdge;
 import com.himmiractivity.enums.ShowMode;
+import com.himmiractivity.interfaces.OnllClick;
 import com.himmiractivity.interfaces.SwipeListener;
+import com.himmiractivity.request.DelChareUserRequest;
 import com.himmiractivity.zlistview.ZSwipeItem;
 
 import java.util.List;
@@ -20,6 +22,7 @@ import java.util.List;
 import activity.hamir.com.himmir.R;
 
 public class ListViewAdapter extends BaseSwipeAdapter {
+    private OnllClick onLLClick;
 
     protected static final String TAG = "ListViewAdapter";
     private Activity context;
@@ -53,6 +56,10 @@ public class ListViewAdapter extends BaseSwipeAdapter {
     @Override
     public View generateView(int position, ViewGroup parent) {
         return context.getLayoutInflater().inflate(R.layout.item_listview, parent, false);
+    }
+
+    public void setOnLLClick(OnllClick onLLClick) {
+        this.onLLClick = onLLClick;
     }
 
     public List<ManagerShardBean.ManagerShardSum> getLists() {
@@ -105,13 +112,15 @@ public class ListViewAdapter extends BaseSwipeAdapter {
                 Log.d(TAG, "位置更新");
             }
         });
-        ll.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                lists.remove(position);
-                notifyDataSetChanged();
-                swipeItem.close();
-            }
-        });
+        // 如果设置了回调，则设置点击事件
+        if (onLLClick != null) {
+            ll.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    swipeItem.close();
+                    onLLClick.onLLClick(position);
+                }
+            });
+        }
     }
 }

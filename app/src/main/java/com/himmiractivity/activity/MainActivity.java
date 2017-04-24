@@ -55,13 +55,12 @@ import com.himmiractivity.view.ListPopupWindow;
 import com.himmiractivity.view.PercentView;
 import com.himmiractivity.view.SelectorImageView;
 
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import javax.net.ssl.SSLSocket;
 
 import activity.hamir.com.himmir.R;
 import butterknife.BindView;
@@ -90,7 +89,7 @@ public class MainActivity extends BaseBusNoSocllowActivity {
     private List<String> list;
     private List<UserData.UserRoom> space;
     public static MainActivity instans;
-    SSLSocket socket;
+    Socket socket;
     Protocal protocal;
     DataServerBean dataServerBean;
     String mac;
@@ -148,6 +147,7 @@ public class MainActivity extends BaseBusNoSocllowActivity {
                     progressBar.setVisibility(View.GONE);
                     sharedPreferencesDB.setString(StatisConstans.USER_SHARE_NAME, userData.getUserShareName());
                     sharedPreferencesDB.setString(StatisConstans.USER_SHARE_CODE, userData.getUserShareCode());
+                    sharedPreferencesDB.setString(StatisConstans.USER_SHARE_IMAGE, userData.getUserImage());
                     initialization();
                     break;
                 case StatisConstans.CONFIG_REGULAR:
@@ -191,6 +191,7 @@ public class MainActivity extends BaseBusNoSocllowActivity {
                 userData = (UserData) bundle.getSerializable(StatisConstans.USERDATA);
                 sharedPreferencesDB.setString(StatisConstans.USER_SHARE_NAME, userData.getUserShareName());
                 sharedPreferencesDB.setString(StatisConstans.USER_SHARE_CODE, userData.getUserShareCode());
+                sharedPreferencesDB.setString(StatisConstans.USER_SHARE_IMAGE, userData.getUserImage());
                 ll_content.setVisibility(View.VISIBLE);
                 progressBar.setVisibility(View.GONE);
                 initialization();
