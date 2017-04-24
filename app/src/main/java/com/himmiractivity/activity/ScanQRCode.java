@@ -122,7 +122,7 @@ public class ScanQRCode extends BaseBusActivity {
                     StatisConstans.MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
         } else {
             Intent intent = new Intent();
-            intent.setClass(ScanQRCode.this, MipcaActivityCaptureActivity.class);
+            intent.setClass(ScanQRCode.this, CaptureActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivityForResult(intent, SCANNIN_GREQUEST_CODE);
         }
@@ -134,7 +134,7 @@ public class ScanQRCode extends BaseBusActivity {
             if (grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Intent intent = new Intent();
-                intent.setClass(ScanQRCode.this, MipcaActivityCaptureActivity.class);
+                intent.setClass(ScanQRCode.this, CaptureActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivityForResult(intent, SCANNIN_GREQUEST_CODE);
             } else {

@@ -13,6 +13,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
@@ -406,7 +407,7 @@ public class CircularProgressDrawable extends Drawable
                 mMinSweepAngle = 20;
                 mMaxSweepAngle = 300;
             } else {
-                mColors = new int[]{context.getResources().getColor(R.color.cpb_default_color)};
+                mColors = new int[]{ContextCompat.getColor(context, R.color.cpb_default_color)};
                 mMinSweepAngle = context.getResources().getInteger(R.integer.cpb_default_min_sweep_angle);
                 mMaxSweepAngle = context.getResources().getInteger(R.integer.cpb_default_max_sweep_angle);
             }

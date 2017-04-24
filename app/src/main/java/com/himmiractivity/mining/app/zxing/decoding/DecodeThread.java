@@ -16,18 +16,17 @@
 
 package com.himmiractivity.mining.app.zxing.decoding;
 
-import java.util.Hashtable;
-import java.util.Vector;
-import java.util.concurrent.CountDownLatch;
-
 import android.os.Handler;
 import android.os.Looper;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.DecodeHintType;
 import com.google.zxing.ResultPointCallback;
-import com.himmiractivity.activity.MipcaActivityCaptureActivity;
-import com.himmiractivity.activity.MipcaActivityCaptureActivity;
+import com.himmiractivity.activity.CaptureActivity;
+
+import java.util.Hashtable;
+import java.util.Vector;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * This thread does all the heavy lifting of decoding the images.
@@ -36,12 +35,12 @@ import com.himmiractivity.activity.MipcaActivityCaptureActivity;
 final class DecodeThread extends Thread {
 
     public static final String BARCODE_BITMAP = "barcode_bitmap";
-    private final MipcaActivityCaptureActivity activity;
+    private final CaptureActivity activity;
     private final Hashtable<DecodeHintType, Object> hints;
     private Handler handler;
     private final CountDownLatch handlerInitLatch;
 
-    DecodeThread(MipcaActivityCaptureActivity activity,
+    DecodeThread(CaptureActivity activity,
                  Vector<BarcodeFormat> decodeFormats,
                  String characterSet,
                  ResultPointCallback resultPointCallback) {

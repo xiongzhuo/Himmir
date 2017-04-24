@@ -11,7 +11,7 @@
             android:id="@+id/preview_view"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:layout_gravity="center" />
+            android:layout_centerInParent="true" />
 
         <com.himmiractivity.mining.app.zxing.view.ViewfinderView
             android:id="@+id/viewfinder_view"

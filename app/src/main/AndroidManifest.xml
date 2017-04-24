@@ -220,7 +220,7 @@
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.himmiractivity.activity.MipcaActivityCaptureActivity"
+            android:name="com.himmiractivity.activity.CaptureActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait" />
         <activity

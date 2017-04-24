@@ -90,7 +90,7 @@ public class SharedDeviceActivity extends BaseBusActivity {
                             StatisConstans.MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
                 } else {
                     intent = new Intent();
-                    intent.setClass(SharedDeviceActivity.this, MipcaActivityCaptureActivity.class);
+                    intent.setClass(SharedDeviceActivity.this, CaptureActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivityForResult(intent, SCANNIN_GREQUEST_CODE);
                 }
@@ -106,7 +106,7 @@ public class SharedDeviceActivity extends BaseBusActivity {
                             StatisConstans.ADD_SHARD);
                 } else {
                     intent = new Intent();
-                    intent.setClass(SharedDeviceActivity.this, MipcaActivityCaptureActivity.class);
+                    intent.setClass(SharedDeviceActivity.this, CaptureActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivityForResult(intent, ADD_SHARED);
                 }
@@ -132,7 +132,7 @@ public class SharedDeviceActivity extends BaseBusActivity {
             if (grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Intent intent = new Intent();
-                intent.setClass(SharedDeviceActivity.this, MipcaActivityCaptureActivity.class);
+                intent.setClass(SharedDeviceActivity.this, CaptureActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivityForResult(intent, SCANNIN_GREQUEST_CODE);
             } else {
@@ -143,7 +143,7 @@ public class SharedDeviceActivity extends BaseBusActivity {
             if (grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Intent intent = new Intent();
-                intent.setClass(SharedDeviceActivity.this, MipcaActivityCaptureActivity.class);
+                intent.setClass(SharedDeviceActivity.this, CaptureActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivityForResult(intent, ADD_SHARED);
             } else {
