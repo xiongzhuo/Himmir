@@ -56,6 +56,7 @@ public class OutdoorPMRequest {
                             }.getType());
                     //手机号码已经被其它账号绑定
                     if (!result.isFlag()) {
+                        handler.sendEmptyMessage(StatisConstans.MSG_FAIL_PM);
                         ToastUtil.show(context, result.getMsg());
                     }
                     //手机号码正常

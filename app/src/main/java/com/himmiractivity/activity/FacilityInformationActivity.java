@@ -73,6 +73,14 @@ public class FacilityInformationActivity extends BaseBusActivity implements Supe
                             ScoketOFFeON.sendMessage(socket, protocal, mac);
                         }
                     }));
+                case StatisConstans.MSG_FAIL_PM:
+                    ThreadPoolUtils thread = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 1);
+                    thread.execute(new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            ScoketOFFeON.sendMessage(socket, protocal, mac);
+                        }
+                    }));
                     break;
             }
             return false;

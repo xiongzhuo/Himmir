@@ -202,8 +202,60 @@ public class MainActivity extends BaseBusNoSocllowActivity {
             LodingRequest();
         }
         textViews.get(3).setOnClickListener(this);
-        imageViews.get(2).setOnClickListener(this);
-        imageViews.get(3).setOnClickListener(this);
+        imageViews.get(2).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String str = textViews.get(0).getText().toString().trim();
+                if (!TextUtils.isEmpty(str) && !str.contains("-")) {
+                    int hz = Integer.valueOf(textViews.get(0).getText().toString().trim());
+                    if (hz < 14) {
+                        ToastUtils.show(MainActivity.this, "风量最小值", Toast.LENGTH_SHORT);
+                        textViews.get(0).setText("10");
+                    } else {
+                        hz = hz - 5;
+                        textViews.get(0).setText(hz + "");
+                        isRevise = true;
+                        hzNumeber = hz;
+                        ThreadPoolUtils threadPoolUtils = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 1);
+                        threadPoolUtils.execute(new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                ScoketOFFeON.sendBlowingRate(socket, protocal, mac, hzNumeber);
+                            }
+                        }));
+                    }
+                } else {
+                    ToastUtils.show(MainActivity.this, "设备离线", Toast.LENGTH_SHORT);
+                }
+            }
+        });
+        imageViews.get(3).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String string = textViews.get(0).getText().toString().trim();
+                if (!TextUtils.isEmpty(string) && !string.contains("-")) {
+                    int hz = Integer.valueOf(textViews.get(0).getText().toString().trim());
+                    if (hz > 46) {
+                        ToastUtils.show(MainActivity.this, "风量最大值", Toast.LENGTH_SHORT);
+                        textViews.get(0).setText("50");
+                    } else {
+                        hz = hz + 5;
+                        textViews.get(0).setText(hz + "");
+                        isRevise = true;
+                        hzNumeber = hz;
+                        ThreadPoolUtils threadPoolUtils = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 1);
+                        threadPoolUtils.execute(new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                ScoketOFFeON.sendBlowingRate(socket, protocal, mac, hzNumeber);
+                            }
+                        }));
+                    }
+                } else {
+                    ToastUtils.show(MainActivity.this, "设备离线", Toast.LENGTH_SHORT);
+                }
+            }
+        });
         textViews.get(1).setOnClickListener(this);
         imageViews.get(1).setOnClickListener(this);
         imageViews.get(0).setOnClickListener(this);
@@ -286,54 +338,6 @@ public class MainActivity extends BaseBusNoSocllowActivity {
                     } else {
                         ToastUtils.show(MainActivity.this, "设备WI-FI未开启", Toast.LENGTH_SHORT);
                     }
-                }
-                break;
-            case R.id.btn_speed_add:
-                String string = textViews.get(0).getText().toString().trim();
-                if (!TextUtils.isEmpty(string) && !string.contains("-")) {
-                    int hz = Integer.valueOf(textViews.get(0).getText().toString().trim());
-                    if (hz > 46) {
-                        ToastUtils.show(MainActivity.this, "风量最大值", Toast.LENGTH_SHORT);
-                        textViews.get(0).setText("50");
-                    } else {
-                        hz = hz + 5;
-                        textViews.get(0).setText(hz + "");
-                        isRevise = true;
-                        hzNumeber = hz;
-                        ThreadPoolUtils threadPoolUtils = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 1);
-                        threadPoolUtils.execute(new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                ScoketOFFeON.sendBlowingRate(socket, protocal, mac, hzNumeber);
-                            }
-                        }));
-                    }
-                } else {
-                    ToastUtils.show(MainActivity.this, "设备离线", Toast.LENGTH_SHORT);
-                }
-                break;
-            case R.id.btn_speed_semll:
-                String str = textViews.get(0).getText().toString().trim();
-                if (!TextUtils.isEmpty(str) && !str.contains("-")) {
-                    int hz = Integer.valueOf(textViews.get(0).getText().toString().trim());
-                    if (hz < 14) {
-                        ToastUtils.show(MainActivity.this, "风量最小值", Toast.LENGTH_SHORT);
-                        textViews.get(0).setText("10");
-                    } else {
-                        hz = hz - 5;
-                        textViews.get(0).setText(hz + "");
-                        isRevise = true;
-                        hzNumeber = hz;
-                        ThreadPoolUtils threadPoolUtils = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 1);
-                        threadPoolUtils.execute(new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                ScoketOFFeON.sendBlowingRate(socket, protocal, mac, hzNumeber);
-                            }
-                        }));
-                    }
-                } else {
-                    ToastUtils.show(MainActivity.this, "设备离线", Toast.LENGTH_SHORT);
                 }
                 break;
             case R.id.iv_set:

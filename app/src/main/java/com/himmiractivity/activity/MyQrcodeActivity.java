@@ -152,8 +152,8 @@ public class MyQrcodeActivity extends BaseBusActivity {
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams((int) (width * 0.7), (int) (width * 0.7));
         imageView.setLayoutParams(params);  //设置图片宽高
         imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-//        Bitmap bitmap = Utils.addLogo(Utils.create2DCoderBitmap(userShareCode, width, width), BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
-        Bitmap bitmap = Utils.create2DCoderBitmap(userShareCode, width, width);
+        Bitmap bitmap = Utils.addLogo(Utils.create2DCoderBitmap(userShareCode, width, width), BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
+//        Bitmap bitmap = Utils.create2DCoderBitmap(userShareCode, width, width);
         imageView.setImageBitmap(bitmap); //图片资源
         llMyQrcode.addView(imageView); //动态添加图片
     }

@@ -56,6 +56,8 @@ public interface StatisConstans {
     String KEY_SAVE_LABLE = "dafalut_user_room";
     // 成功
     int MSG_OUTDOOR_PM = 122;
+    // 成功
+    int MSG_FAIL_PM = 129;
     /**
      * 注册成功
      */
