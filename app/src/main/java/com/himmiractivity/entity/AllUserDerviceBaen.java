@@ -9,6 +9,7 @@ import java.util.List;
 
 public class AllUserDerviceBaen implements Serializable {
 
+
     private List<Space> space;
 
     public void setSpace(List<Space> space) {
