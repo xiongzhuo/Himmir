@@ -10,6 +10,7 @@ import android.widget.AdapterView;
 
 import com.himmiractivity.Adapter.ListAdapter;
 import com.himmiractivity.App;
+import com.himmiractivity.base.BaseBusActivity;
 import com.himmiractivity.base.BaseBusNoSocllowActivity;
 import com.himmiractivity.circular_progress_bar.CircularProgressBar;
 import com.himmiractivity.entity.ManagerShardBean;
@@ -28,7 +29,7 @@ import activity.hamir.com.himmir.R;
 import butterknife.BindView;
 
 
-public class ManagerSharedActivity extends BaseBusNoSocllowActivity implements AdapterView.OnItemClickListener, IXListViewRefreshListener, OnllClick {
+public class ManagerSharedActivity extends BaseBusActivity implements AdapterView.OnItemClickListener, IXListViewRefreshListener, OnllClick {
     @BindView(R.id.lv_manager)
     XListView listView;
     @BindView(R.id.progress)

@@ -1,34 +1,26 @@
 package com.himmiractivity.activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
 
 import com.himmiractivity.Utils.SharedPreferencesDB;
+import com.himmiractivity.base.BaseBusActivity;
 import com.himmiractivity.entity.UserData;
 import com.himmiractivity.interfaces.StatisConstans;
 import com.himmiractivity.request.LodingRequest;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import activity.hamir.com.himmir.R;
 
 /**
  * 程序启动页
  */
-public class SplashActivity extends Activity implements OnClickListener {
-    private FrameLayout ll_version;
+public class SplashActivity extends BaseBusActivity implements OnClickListener {
     private SharedPreferencesDB sharedDB;
-    private ImageView iv_splash;
     int time = 1000;    //设置等待时间，单位为毫秒
     private MyHandler handler;
     UserData userData;
@@ -74,18 +66,19 @@ public class SplashActivity extends Activity implements OnClickListener {
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_splash);
-        handler = new MyHandler();
-        sharedDB = SharedPreferencesDB.getInstance(this);
-        initView();
+    protected int getContentLayoutId() {
+        return R.layout.activity_splash;
+    }
+
+    @Override
+    public void onMultiClick(View v) {
 
     }
 
-    private void initView() {
-        iv_splash = (ImageView) findViewById(R.id.iv_splash);
-        ll_version = (FrameLayout) findViewById(R.id.ll_version);
+    @Override
+    protected void initView(Bundle savedInstanceState) {
+        handler = new MyHandler();
+        sharedDB = SharedPreferencesDB.getInstance(this);
         //当计时结束时，跳转至主界面
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -93,6 +86,11 @@ public class SplashActivity extends Activity implements OnClickListener {
                 LodingRequest();
             }
         }, time);
+    }
+
+    @Override
+    protected void initData() {
+
     }
 
     @Override
