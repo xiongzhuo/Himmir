@@ -55,6 +55,7 @@ import com.himmiractivity.view.ListPopupWindow;
 import com.himmiractivity.view.PercentView;
 import com.himmiractivity.view.SelectorImageView;
 
+import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
@@ -99,19 +100,41 @@ public class MainActivity extends BaseBusNoSocllowActivity {
     //    boolean isOff = true;
 //    boolean isFrist = true;
     private Timer mTimer = null;
+    String host;
+    int location = 0;
+    ThreadPoolUtils threadPoolUtils;
 
     private Handler handler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
             switch (msg.what) {
                 case StatisConstans.MSG_CYCLIC_TRANSMISSION:
-                    ThreadPoolUtils threadPoolUtilsTwo = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 1);
-                    threadPoolUtilsTwo.execute(new Thread(new Runnable() {
+                    threadPoolUtils.execute(new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            ScoketOFFeON.sendMessage(socket, protocal, mac);
+                            try {
+                                ScoketOFFeON.sendMessage(socket, protocal, mac);
+                            } catch (Exception e) {
+                                handler.sendEmptyMessage(StatisConstans.FAIL_TWO);
+                                e.printStackTrace();
+                            }
                         }
                     }));
+                    break;
+                case StatisConstans.FAIL_TWO:
+                    if (!TextUtils.isEmpty(host)) {
+                        Log.d("ConnectionManager", host);
+                        threadPoolUtils.execute(new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (Utils.isNetworkAvailable(MainActivity.this)) {
+                                    socket = SocketSingle.getInstance(host, location, true);
+                                    ScoketOFFeON.receMessage(socket, protocal, handler);
+                                }
+                            }
+                        }));
+                    }
+                    restoreData();
                     break;
                 case StatisConstans.MSG_OUTDOOR_PM:
                     PmBean pmBean = (PmBean) msg.obj;
@@ -152,9 +175,10 @@ public class MainActivity extends BaseBusNoSocllowActivity {
                     break;
                 case StatisConstans.CONFIG_REGULAR:
                     dataServerBean = (DataServerBean) msg.obj;
+                    host = dataServerBean.getDataServerConfig().getPrimary_server_address();
+                    location = dataServerBean.getDataServerConfig().getPrimary_server_port();
                     sharedPreferencesDB.setString(StatisConstans.IP, dataServerBean.getDataServerConfig().getPrimary_server_address());
                     sharedPreferencesDB.setString(StatisConstans.PORT, dataServerBean.getDataServerConfig().getPrimary_server_port() + "");
-                    ThreadPoolUtils threadPoolUtils = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 1);
                     threadPoolUtils.execute(new Thread(new Runnable() {
                         @Override
                         public void run() {
@@ -185,6 +209,7 @@ public class MainActivity extends BaseBusNoSocllowActivity {
     protected void initView(Bundle savedInstanceState) {
         instans = this;
         App.getInstance().addActivity(this);
+        threadPoolUtils = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 10);
         if (getIntent().getExtras() != null) {
             bundle = getIntent().getExtras();
             if (bundle.getSerializable(StatisConstans.USERDATA) != null) {
@@ -216,11 +241,14 @@ public class MainActivity extends BaseBusNoSocllowActivity {
                         textViews.get(0).setText(hz + "");
                         isRevise = true;
                         hzNumeber = hz;
-                        ThreadPoolUtils threadPoolUtils = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 1);
                         threadPoolUtils.execute(new Thread(new Runnable() {
                             @Override
                             public void run() {
-                                ScoketOFFeON.sendBlowingRate(socket, protocal, mac, hzNumeber);
+                                try {
+                                    ScoketOFFeON.sendBlowingRate(socket, protocal, mac, hzNumeber);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
                             }
                         }));
                     }
@@ -243,11 +271,14 @@ public class MainActivity extends BaseBusNoSocllowActivity {
                         textViews.get(0).setText(hz + "");
                         isRevise = true;
                         hzNumeber = hz;
-                        ThreadPoolUtils threadPoolUtils = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 1);
                         threadPoolUtils.execute(new Thread(new Runnable() {
                             @Override
                             public void run() {
-                                ScoketOFFeON.sendBlowingRate(socket, protocal, mac, hzNumeber);
+                                try {
+                                    ScoketOFFeON.sendBlowingRate(socket, protocal, mac, hzNumeber);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
                             }
                         }));
                     }
@@ -358,11 +389,14 @@ public class MainActivity extends BaseBusNoSocllowActivity {
                     if (protocal == null) {
                         protocal = new Protocal();
                     }
-                    ThreadPoolUtils threadPoolUtils = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 1);
                     threadPoolUtils.execute(new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            ScoketOFFeON.sendMessage(socket, protocal, mac, selectorImageViews.get(0).isChecked());
+                            try {
+                                ScoketOFFeON.sendMessage(socket, protocal, mac, selectorImageViews.get(0).isChecked());
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
                     }));
                 }
@@ -545,30 +579,20 @@ public class MainActivity extends BaseBusNoSocllowActivity {
     }
 
     public void request(final String host, final int location) {
-        while (GpsUtils.isServerClose(socket)) {
-            try {
-                // 1.连接服务器
-                socket = SocketSingle.getInstance(host, location);
-                Log.d("ConnectionManager", "AbsClient*****已经建立连接");
-                protocal = Protocal.getInstance();
-                ThreadPoolUtils threadPoolUtils = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 1);
-                threadPoolUtils.execute(new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        ScoketOFFeON.receMessage(socket, protocal, handler);
-                    }
-                }));
-            } catch (Exception e) {
-                ThreadPoolUtils threadPoolUtils = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 1);
-                threadPoolUtils.execute(new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        request(host, location);
-                    }
-                }));
-                Log.d("ConnectionManager", "AbsClient*****已经建立连接");
-                e.printStackTrace();
-            }
+        try {
+            // 1.连接服务器
+            socket = SocketSingle.getInstance(host, location, false);
+            Log.d("ConnectionManager", "AbsClient*****已经建立连接");
+            protocal = Protocal.getInstance();
+            ThreadPoolUtils threadPoolUtils = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 1);
+            threadPoolUtils.execute(new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    ScoketOFFeON.receMessage(socket, protocal, handler);
+                }
+            }));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -642,7 +666,11 @@ public class MainActivity extends BaseBusNoSocllowActivity {
             if (hzNumeber == pmAllData.getFanFreq()) {
                 isRevise = false;
             } else {
-                ScoketOFFeON.sendBlowingRate(socket, protocal, mac, hzNumeber);
+                try {
+                    ScoketOFFeON.sendBlowingRate(socket, protocal, mac, hzNumeber);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         } else {
             hzNumeber = pmAllData.getFanFreq();

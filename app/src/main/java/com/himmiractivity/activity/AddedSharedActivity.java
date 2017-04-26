@@ -63,8 +63,8 @@ public class AddedSharedActivity extends BaseBusActivity implements AdapterView.
                     }
                     break;
                 case StatisConstans.MSG_RECEIVED_BOUND:
-                    list.clear();
-                    adapter.setLists(list);
+                    progressBar.setVisibility(View.GONE);
+                    listView.setVisibility(View.GONE);
                     break;
             }
             return false;

@@ -207,7 +207,12 @@ public class FixedTimeActivity extends BaseBusActivity {
         threadPoolUtils.execute(new Thread(new Runnable() {
             @Override
             public void run() {
-                ScoketOFFeON.sendTimingCommand(socket, protocal, mac, timingMode, t1Switch, t2Switch, t3Switch, t1start, t1Stop, t2start, t2Stop, t3start, t3Stop);
+                try {
+                    ScoketOFFeON.sendTimingCommand(socket, protocal, mac, timingMode, t1Switch, t2Switch, t3Switch, t1start, t1Stop, t2start, t2Stop, t3start, t3Stop);
+                } catch (Exception e) {
+                    ToastUtil.show(FixedTimeActivity.this, "设备网络断开");
+                    e.printStackTrace();
+                }
             }
         }));
     }
@@ -259,7 +264,7 @@ public class FixedTimeActivity extends BaseBusActivity {
         while (GpsUtils.isServerClose(socket)) {
             try {
                 // 1.连接服务器
-                socket = SocketSingle.getInstance(host, location);
+                socket = SocketSingle.getInstance(host, location, false);
                 Log.d("ConnectionManager", "AbsClient*****已经建立连接");
                 protocal = Protocal.getInstance();
                 ScoketOFFeON.sendMessage(socket, protocal, mac);

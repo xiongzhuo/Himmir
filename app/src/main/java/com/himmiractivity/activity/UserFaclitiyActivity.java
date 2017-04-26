@@ -1,7 +1,5 @@
 package com.himmiractivity.activity;
 
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -16,11 +14,10 @@ import android.view.View;
 
 import com.himmiractivity.Adapter.UserDerviceRvcAdapter;
 import com.himmiractivity.Utils.DividerItemDecoration;
-import com.himmiractivity.Utils.GpsUtils;
 import com.himmiractivity.Utils.SocketSingle;
 import com.himmiractivity.Utils.ToastUtil;
+import com.himmiractivity.Utils.Utils;
 import com.himmiractivity.base.BaseBusActivity;
-import com.himmiractivity.entity.ImageBean;
 import com.himmiractivity.entity.PmAllData;
 import com.himmiractivity.entity.UserDerviceBean;
 import com.himmiractivity.interfaces.StatisConstans;
@@ -46,24 +43,32 @@ public class UserFaclitiyActivity extends BaseBusActivity implements AlxRefreshL
     String mac;
     int onLinePos;
     String shareUserKey;
+    ThreadPoolUtils threadPoolUtils;
+    String ip;
+    String port;
 
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
+                case StatisConstans.MSG_QUEST_SERVER:
+                    //在线，反之为离线
+                    PmAllData pmAllData = (PmAllData) msg.obj;
+                    Intent intentData = new Intent();
+                    intentData.setAction(StatisConstans.BROADCAST_HONGREN_DATA);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable(StatisConstans.PM_ALL_DATA, pmAllData);
+                    // 要发送的内容
+                    intentData.putExtras(bundle);
+                    UserFaclitiyActivity.this.sendBroadcast(intentData);
+                    break;
                 //成功
                 case StatisConstans.MSG_RECEIVED_REGULAR:
                     if (msg.obj != null) {
                         userDerviceBean = (UserDerviceBean) msg.obj;
                         if (userDerviceBean.getShareUserDevList() != null && userDerviceBean.getShareUserDevList().size() > 0) {
                             if (onLinePos < userDerviceBean.getShareUserDevList().size()) {
-                                ThreadPoolUtils threadPoolUtils = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 1);
-                                threadPoolUtils.execute(new Thread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        ScoketOFFeON.sendMessage(socket, protocal, userDerviceBean.getShareUserDevList().get(onLinePos).getDevice_mac());
-                                    }
-                                }));
+                                sendSocket();
                             }
 //                    mRecyclerView.setLayoutManager(new LinearLayoutManager(UserFaclitiyActicity.this));
                             rvcAdapter = new UserDerviceRvcAdapter(UserFaclitiyActivity.this, userDerviceBean.getShareUserDevList(), R.layout.list_item, true);
@@ -87,6 +92,33 @@ public class UserFaclitiyActivity extends BaseBusActivity implements AlxRefreshL
         }
     };
 
+    private void sendSocket() {
+        threadPoolUtils.execute(new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    ScoketOFFeON.sendMessage(socket, protocal, userDerviceBean.getShareUserDevList().get(onLinePos).getDevice_mac());
+                } catch (Exception e) {
+                    if (Utils.isNetworkAvailable(UserFaclitiyActivity.this)) {
+                        try {
+                            socket = SocketSingle.getInstance(ip, Integer.valueOf(port), true);
+                            threadPoolUtils.execute(new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ScoketOFFeON.receMessage(socket, protocal, mHandler);
+                                }
+                            }));
+                            ScoketOFFeON.sendMessage(socket, protocal, userDerviceBean.getShareUserDevList().get(onLinePos).getDevice_mac());
+                        } catch (Exception e1) {
+                            e1.printStackTrace();
+                        }
+                    }
+                    e.printStackTrace();
+                }
+            }
+        }));
+    }
+
     @Override
     protected int getContentLayoutId() {
         return R.layout.user_faclitiy;
@@ -97,12 +129,12 @@ public class UserFaclitiyActivity extends BaseBusActivity implements AlxRefreshL
         setMidTxt("用户设备");
         initTitleBar();
         registerBoradcastReceiver();
-        ThreadPoolUtils threadPoolUtils = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 1);
+        threadPoolUtils = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 10);
         threadPoolUtils.execute(new Thread(new Runnable() {
             @Override
             public void run() {
-                String ip = sharedPreferencesDB.getString("ip", "");
-                String port = sharedPreferencesDB.getString("port", "");
+                ip = sharedPreferencesDB.getString("ip", "");
+                port = sharedPreferencesDB.getString("port", "");
                 request(ip, Integer.valueOf(port));
             }
         }));
@@ -125,11 +157,14 @@ public class UserFaclitiyActivity extends BaseBusActivity implements AlxRefreshL
                 onLinePos++;
                 if (onLinePos >= userDerviceBean.getShareUserDevList().size())
                     return;
-                ThreadPoolUtils threadPoolUtils = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 1);
                 threadPoolUtils.execute(new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        ScoketOFFeON.sendMessage(socket, protocal, userDerviceBean.getShareUserDevList().get(onLinePos).getDevice_mac());
+                        try {
+                            ScoketOFFeON.sendMessage(socket, protocal, userDerviceBean.getShareUserDevList().get(onLinePos).getDevice_mac());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 }));
             }
@@ -222,16 +257,14 @@ public class UserFaclitiyActivity extends BaseBusActivity implements AlxRefreshL
 
 
     public void request(String host, int location) {
-        while (GpsUtils.isServerClose(socket)) {
-            try {
-                // 1.连接服务器
-                socket = SocketSingle.getInstance(host, location);
-                Log.d("ConnectionManager", "AbsClient*****已经建立连接");
-                protocal = Protocal.getInstance();
-            } catch (Exception e) {
-                request(host, location);
-                e.printStackTrace();
-            }
+        try {
+            // 1.连接服务器
+            socket = SocketSingle.getInstance(host, location, false);
+            Log.d("ConnectionManager", "AbsClient*****已经建立连接");
+            protocal = Protocal.getInstance();
+        } catch (Exception e) {
+            request(host, location);
+            e.printStackTrace();
         }
     }
 

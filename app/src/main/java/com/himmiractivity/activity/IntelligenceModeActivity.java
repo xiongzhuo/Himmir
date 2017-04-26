@@ -157,7 +157,12 @@ public class IntelligenceModeActivity extends BaseBusActivity {
         threadPoolUtils.execute(new Thread(new Runnable() {
             @Override
             public void run() {
-                ScoketOFFeON.sendNoopsycheMode(socket, protocal, mac, muteMode, coMode, pmMode, coNumber, pmNumber);
+                try {
+                    ScoketOFFeON.sendNoopsycheMode(socket, protocal, mac, muteMode, coMode, pmMode, coNumber, pmNumber);
+                } catch (Exception e) {
+                    ToastUtil.show(IntelligenceModeActivity.this, "设备网络断开");
+                    e.printStackTrace();
+                }
             }
         }));
 
@@ -272,17 +277,14 @@ public class IntelligenceModeActivity extends BaseBusActivity {
     };
 
     public void request(String host, int location) {
-        while (GpsUtils.isServerClose(socket)) {
-            try {
-                // 1.连接服务器
-                socket = SocketSingle.getInstance(host, location);
-                protocal = Protocal.getInstance();
-                ScoketOFFeON.sendMessage(socket, protocal, mac);
-            } catch (Exception e) {
-                request(host, location);
-                e.printStackTrace();
-            }
-
+        try {
+            // 1.连接服务器
+            socket = SocketSingle.getInstance(host, location, false);
+            protocal = Protocal.getInstance();
+            ScoketOFFeON.sendMessage(socket, protocal, mac);
+        } catch (Exception e) {
+            request(host, location);
+            e.printStackTrace();
         }
     }
 }

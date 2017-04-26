@@ -70,7 +70,12 @@ public class FacilityInformationActivity extends BaseBusActivity implements Supe
                     threadPoolUtils.execute(new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            ScoketOFFeON.sendMessage(socket, protocal, mac);
+                            try {
+                                ScoketOFFeON.sendMessage(socket, protocal, mac);
+                            } catch (Exception e) {
+                                restoreData();
+                                e.printStackTrace();
+                            }
                         }
                     }));
                 case StatisConstans.MSG_FAIL_PM:
@@ -78,7 +83,12 @@ public class FacilityInformationActivity extends BaseBusActivity implements Supe
                     thread.execute(new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            ScoketOFFeON.sendMessage(socket, protocal, mac);
+                            try {
+                                ScoketOFFeON.sendMessage(socket, protocal, mac);
+                            } catch (Exception e) {
+                                restoreData();
+                                e.printStackTrace();
+                            }
                         }
                     }));
                     break;
@@ -166,7 +176,7 @@ public class FacilityInformationActivity extends BaseBusActivity implements Supe
         while (GpsUtils.isServerClose(socket)) {
             try {
                 // 1.连接服务器
-                socket = SocketSingle.getInstance(host, location);
+                socket = SocketSingle.getInstance(host, location, false);
                 Log.d("ConnectionManager", "AbsClient*****已经建立连接");
                 protocal = Protocal.getInstance();
             } catch (Exception e) {
@@ -193,7 +203,12 @@ public class FacilityInformationActivity extends BaseBusActivity implements Supe
                 threadPoolUtils.execute(new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        ScoketOFFeON.sendMessage(socket, protocal, mac);
+                        try {
+                            ScoketOFFeON.sendMessage(socket, protocal, mac);
+                        } catch (Exception e) {
+                            restoreData();
+                            e.printStackTrace();
+                        }
                     }
                 }));
             }

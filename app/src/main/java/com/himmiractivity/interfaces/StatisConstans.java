@@ -35,6 +35,8 @@ public interface StatisConstans {
     String BROADCAST_HONGREN_KILL = "fail";
     String BROADCAST_HONGREN_DATA = "data";
     int ADD_SHARD = 111;
+    int FAIL = 112;
+    int FAIL_TWO = 114;
     //相册权限
     int MY_PERMISSIONS_REQUEST_CAMERA = 11;
     //相册权限

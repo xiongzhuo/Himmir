@@ -27,10 +27,10 @@ import android.widget.Toast;
 
 import com.himmiractivity.Adapter.RvcAdapter;
 import com.himmiractivity.Utils.DividerItemDecoration;
-import com.himmiractivity.Utils.GpsUtils;
 import com.himmiractivity.Utils.SocketSingle;
 import com.himmiractivity.Utils.ToastUtil;
 import com.himmiractivity.Utils.ToastUtils;
+import com.himmiractivity.Utils.Utils;
 import com.himmiractivity.base.BaseBusActivity;
 import com.himmiractivity.entity.AllUserDerviceBaen;
 import com.himmiractivity.entity.ImageBean;
@@ -68,11 +68,15 @@ public class QquipManager extends BaseBusActivity implements AlxRefreshLoadMoreR
     Socket socket;
     String mac;
     int onLinePos;
+    String ip;
+    String port;
+    ThreadPoolUtils threadPoolUtils;
 
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
+
                 case StatisConstans.MSG_DELETE:
                     ImageBean destr = (ImageBean) msg.obj;
                     if (deletePosition != -1) {
@@ -80,6 +84,16 @@ public class QquipManager extends BaseBusActivity implements AlxRefreshLoadMoreR
                         rvcAdapter.removeData(deletePosition);
                         alertDialog.dismiss();
                     }
+                    break;
+                case StatisConstans.MSG_QUEST_SERVER:
+                    PmAllData pmAllData = (PmAllData) msg.obj;
+                    Intent intentData = new Intent();
+                    intentData.setAction(StatisConstans.BROADCAST_HONGREN_DATA);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable(StatisConstans.PM_ALL_DATA, pmAllData);
+                    // 要发送的内容
+                    intentData.putExtras(bundle);
+                    QquipManager.this.sendBroadcast(intentData);
                     break;
                 case StatisConstans.MSG_MODIFY_NAME:
                     ImageBean mostr = (ImageBean) msg.obj;
@@ -96,13 +110,7 @@ public class QquipManager extends BaseBusActivity implements AlxRefreshLoadMoreR
                         if (allUserDerviceBaen.getSpace() != null && allUserDerviceBaen.getSpace().size() > 0) {
                             if (onLinePos < allUserDerviceBaen.getSpace().size()) {
                                 Log.d("device_mac", allUserDerviceBaen.getSpace().get(onLinePos).getDevice().getDevice_mac() + "onLinePos:" + onLinePos);
-                                ThreadPoolUtils threadPoolUtils = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 1);
-                                threadPoolUtils.execute(new Thread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        ScoketOFFeON.sendMessage(socket, protocal, allUserDerviceBaen.getSpace().get(onLinePos).getDevice().getDevice_mac());
-                                    }
-                                }));
+                                sendSocket();
                             }
 //                    mRecyclerView.setLayoutManager(new LinearLayoutManager(QquipManager.this));
                             rvcAdapter = new RvcAdapter(QquipManager.this, allUserDerviceBaen.getSpace(), R.layout.list_item, true);
@@ -136,12 +144,12 @@ public class QquipManager extends BaseBusActivity implements AlxRefreshLoadMoreR
         setMidTxt("设备管理");
         initTitleBar();
         registerBoradcastReceiver();
-        ThreadPoolUtils threadPoolUtils = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 1);
+        threadPoolUtils = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 10);
         threadPoolUtils.execute(new Thread(new Runnable() {
             @Override
             public void run() {
-                String ip = sharedPreferencesDB.getString("ip", "");
-                String port = sharedPreferencesDB.getString("port", "");
+                ip = sharedPreferencesDB.getString("ip", "");
+                port = sharedPreferencesDB.getString("port", "");
                 request(ip, Integer.valueOf(port));
             }
         }));
@@ -172,11 +180,14 @@ public class QquipManager extends BaseBusActivity implements AlxRefreshLoadMoreR
                 if (onLinePos >= allUserDerviceBaen.getSpace().size())
                     return;
                 Log.d("device_mac", allUserDerviceBaen.getSpace().get(onLinePos).getDevice().getDevice_mac() + "onLinePos:" + onLinePos);
-                ThreadPoolUtils threadPoolUtils = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 1);
                 threadPoolUtils.execute(new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        ScoketOFFeON.sendMessage(socket, protocal, allUserDerviceBaen.getSpace().get(onLinePos).getDevice().getDevice_mac());
+                        try {
+                            ScoketOFFeON.sendMessage(socket, protocal, allUserDerviceBaen.getSpace().get(onLinePos).getDevice().getDevice_mac());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 }));
             }
@@ -222,11 +233,14 @@ public class QquipManager extends BaseBusActivity implements AlxRefreshLoadMoreR
 //                startActivity(new Intent(this, EditTimeActivity.class));
                 Log.d("device_mac", mac);
                 if (allUserDerviceBaen.getSpace().get(deletePosition).isOnLine()) {
-                    ThreadPoolUtils threadPoolUtils = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 1);
                     threadPoolUtils.execute(new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            ScoketOFFeON.sendTimingMessage(socket, protocal, mac);
+                            try {
+                                ScoketOFFeON.sendTimingMessage(socket, protocal, mac);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
                     }));
 
@@ -438,16 +452,47 @@ public class QquipManager extends BaseBusActivity implements AlxRefreshLoadMoreR
 
 
     public void request(String host, int location) {
-        while (GpsUtils.isServerClose(socket)) {
-            try {
-                // 1.连接服务器
-                socket = SocketSingle.getInstance(host, location);
-                Log.d("ConnectionManager", "AbsClient*****已经建立连接");
-                protocal = Protocal.getInstance();
-            } catch (Exception e) {
-                request(host, location);
-                e.printStackTrace();
-            }
+        try {
+            // 1.连接服务器
+            socket = SocketSingle.getInstance(host, location, false);
+            Log.d("ConnectionManager", "AbsClient*****已经建立连接");
+            protocal = Protocal.getInstance();
+            ThreadPoolUtils threadPoolUtils = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 1);
+            threadPoolUtils.execute(new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    ScoketOFFeON.receMessage(socket, protocal, mHandler);
+                }
+            }));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+    }
+
+    public void sendSocket() {
+        threadPoolUtils.execute(new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    ScoketOFFeON.sendMessage(socket, protocal, allUserDerviceBaen.getSpace().get(onLinePos).getDevice().getDevice_mac());
+                } catch (Exception e) {
+                    if (Utils.isNetworkAvailable(QquipManager.this)) {
+                        try {
+                            socket = SocketSingle.getInstance(ip, Integer.valueOf(port), true);
+                            threadPoolUtils.execute(new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ScoketOFFeON.receMessage(socket, protocal, mHandler);
+                                }
+                            }));
+                            ScoketOFFeON.sendMessage(socket, protocal, allUserDerviceBaen.getSpace().get(onLinePos).getDevice().getDevice_mac());
+                        } catch (Exception e1) {
+                            e1.printStackTrace();
+                        }
+                    }
+                    e.printStackTrace();
+                }
+            }
+        }));
     }
 }
