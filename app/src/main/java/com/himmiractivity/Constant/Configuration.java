@@ -141,4 +141,10 @@ public class Configuration {
     public static final String URL_OUTDOOR_PM = HOST
             + "/finalapi/user/user/getPM25";
 
+    /**
+     * 版本更新
+     */
+    public static final String URL_APP_VER = HOST
+            + "/finalapi/user/user/getAppVer";
+
 }

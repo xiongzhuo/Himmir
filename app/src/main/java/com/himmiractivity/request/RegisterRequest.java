@@ -55,6 +55,9 @@ public class RegisterRequest {
         x.http().post(params, new Callback.CacheCallback<String>() {
             @Override
             public void onSuccess(String json) {
+                if (null != dialogView) {
+                    dialogView.cancel();
+                }
                 JsonResult<LodingBean> result = new JsonResult<LodingBean>();
                 try {
                     Log.i("RegisterRequest", json);
@@ -85,23 +88,14 @@ public class RegisterRequest {
 
             @Override
             public void onCancelled(CancelledException cex) {
-                if (null != dialogView) {
-                    dialogView.cancel();
-                }
             }
 
             @Override
             public void onFinished() {
-                if (null != dialogView) {
-                    dialogView.cancel();
-                }
             }
 
             @Override
             public boolean onCache(String result) {
-                if (null != dialogView) {
-                    dialogView.cancel();
-                }
                 return false;
             }
         });

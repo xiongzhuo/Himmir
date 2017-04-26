@@ -67,6 +67,9 @@ public class FixedTimeActivity extends BaseBusActivity {
         @Override
         public boolean handleMessage(Message msg) {
             switch (msg.what) {
+                case StatisConstans.FAIL:
+                    ToastUtil.show(FixedTimeActivity.this, "设备网络断开");
+                    break;
                 case StatisConstans.MSG_ENABLED_SUCCESSFUL:
                     linearLayout.setVisibility(View.VISIBLE);
                     progressBar.setVisibility(View.GONE);
@@ -210,7 +213,7 @@ public class FixedTimeActivity extends BaseBusActivity {
                 try {
                     ScoketOFFeON.sendTimingCommand(socket, protocal, mac, timingMode, t1Switch, t2Switch, t3Switch, t1start, t1Stop, t2start, t2Stop, t3start, t3Stop);
                 } catch (Exception e) {
-                    ToastUtil.show(FixedTimeActivity.this, "设备网络断开");
+                    handler.sendEmptyMessage(StatisConstans.FAIL);
                     e.printStackTrace();
                 }
             }

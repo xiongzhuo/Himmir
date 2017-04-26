@@ -69,6 +69,9 @@ public class IntelligenceModeActivity extends BaseBusActivity {
         @Override
         public boolean handleMessage(Message msg) {
             switch (msg.what) {
+                case StatisConstans.FAIL:
+                    ToastUtil.show(IntelligenceModeActivity.this, "设备网络断开");
+                    break;
                 case StatisConstans.MSG_ENABLED_SUCCESSFUL:
                     linearLayout.setVisibility(View.VISIBLE);
                     progressBar.setVisibility(View.GONE);
@@ -160,7 +163,7 @@ public class IntelligenceModeActivity extends BaseBusActivity {
                 try {
                     ScoketOFFeON.sendNoopsycheMode(socket, protocal, mac, muteMode, coMode, pmMode, coNumber, pmNumber);
                 } catch (Exception e) {
-                    ToastUtil.show(IntelligenceModeActivity.this, "设备网络断开");
+                    handler.sendEmptyMessage(StatisConstans.FAIL);
                     e.printStackTrace();
                 }
             }

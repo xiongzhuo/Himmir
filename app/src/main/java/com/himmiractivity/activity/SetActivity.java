@@ -70,7 +70,7 @@ public class SetActivity extends BaseBusActivity {
     private Bitmap photo;
     @BindViews({R.id.btn_back, R.id.iv_shared_device})
     List<ImageView> imageViews;
-    @BindViews({R.id.ll_equip, R.id.ll_message, R.id.ll_feedback, R.id.ll_phone, R.id.ll_help, R.id.ll_chanage_pass, R.id.ll_exit})
+    @BindViews({R.id.ll_equip, R.id.ll_message, R.id.ll_feedback, R.id.ll_phone, R.id.ll_help, R.id.ll_chanage_pass, R.id.ll_exit, R.id.ll_version})
     List<LinearLayout> linearLayouts;
     AlertDialog alertDialog;
     @BindView(R.id.tv_title)
@@ -156,6 +156,7 @@ public class SetActivity extends BaseBusActivity {
         linearLayouts.get(4).setOnClickListener(this);
         linearLayouts.get(5).setOnClickListener(this);
         linearLayouts.get(6).setOnClickListener(this);
+        linearLayouts.get(7).setOnClickListener(this);
         imageViews.get(0).setOnClickListener(this);
         imageViews.get(1).setOnClickListener(this);
         tvTitle.setOnClickListener(this);
@@ -229,6 +230,10 @@ public class SetActivity extends BaseBusActivity {
             case R.id.iv_shared_device:
                 Intent intentShared = new Intent(SetActivity.this, SharedDeviceActivity.class);
                 startActivity(intentShared);
+                break;
+            case R.id.ll_version:
+                Intent intentVer = new Intent(SetActivity.this, VersionUpdataActivity.class);
+                startActivity(intentVer);
                 break;
             //我的消息
             case R.id.ll_message:
@@ -340,7 +345,6 @@ public class SetActivity extends BaseBusActivity {
             } else {
                 Toast.makeText(SetActivity.this, "请您允许才能打电话", Toast.LENGTH_SHORT).show();
             }
-            return;
         } else if (requestCode == StatisConstans.MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE) {
             if (grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {

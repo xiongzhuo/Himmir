@@ -51,6 +51,9 @@ public class DelSharedUseRequest {
         x.http().post(params, new Callback.CacheCallback<String>() {
             @Override
             public void onSuccess(String json) {
+                if (null != dialogView) {
+                    dialogView.cancel();
+                }
                 JsonResult<ModifyNameData> result = new JsonResult<ModifyNameData>();
                 try {
                     Log.i("ModifyNameRequest", json);
@@ -84,23 +87,14 @@ public class DelSharedUseRequest {
 
             @Override
             public void onCancelled(CancelledException cex) {
-                if (null != dialogView) {
-                    dialogView.cancel();
-                }
             }
 
             @Override
             public void onFinished() {
-                if (null != dialogView) {
-                    dialogView.cancel();
-                }
             }
 
             @Override
             public boolean onCache(String result) {
-                if (null != dialogView) {
-                    dialogView.cancel();
-                }
                 return false;
             }
         });

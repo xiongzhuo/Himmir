@@ -50,6 +50,9 @@ public class DefaultUserRoomRequest {
         x.http().post(params, new Callback.CacheCallback<String>() {
             @Override
             public void onSuccess(String json) {
+                if (null != dialogView) {
+                    dialogView.cancel();
+                }
                 JsonResult<ArticleInfo> result = new JsonResult<ArticleInfo>();
                 try {
                     Log.i("CodeRequest", json);
@@ -82,23 +85,14 @@ public class DefaultUserRoomRequest {
 
             @Override
             public void onCancelled(CancelledException cex) {
-                if (null != dialogView) {
-                    dialogView.cancel();
-                }
             }
 
             @Override
             public void onFinished() {
-                if (null != dialogView) {
-                    dialogView.cancel();
-                }
             }
 
             @Override
             public boolean onCache(String result) {
-                if (null != dialogView) {
-                    dialogView.cancel();
-                }
                 return false;
             }
         });
