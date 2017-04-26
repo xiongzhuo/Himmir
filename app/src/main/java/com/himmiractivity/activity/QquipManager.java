@@ -76,7 +76,9 @@ public class QquipManager extends BaseBusActivity implements AlxRefreshLoadMoreR
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
-
+                case StatisConstans.FAIL:
+                    ToastUtils.show(QquipManager.this, "校时失败，请检查网络连接", Toast.LENGTH_LONG);
+                    break;
                 case StatisConstans.MSG_DELETE:
                     ImageBean destr = (ImageBean) msg.obj;
                     if (deletePosition != -1) {
@@ -84,6 +86,14 @@ public class QquipManager extends BaseBusActivity implements AlxRefreshLoadMoreR
                         rvcAdapter.removeData(deletePosition);
                         alertDialog.dismiss();
                     }
+                    break;
+                case StatisConstans.MSG_ENABLED_SUCCESSFUL:
+                    // 发送 一个无序广播
+                    QquipManager.this.sendBroadcast(new Intent(StatisConstans.BROADCAST_HONGREN_SUCC));
+                    break;
+                case StatisConstans.MSG_ENABLED_FAILING:
+                    // 发送 一个无序广播
+                    QquipManager.this.sendBroadcast(new Intent(StatisConstans.BROADCAST_HONGREN_KILL));
                     break;
                 case StatisConstans.MSG_QUEST_SERVER:
                     PmAllData pmAllData = (PmAllData) msg.obj;
@@ -239,6 +249,7 @@ public class QquipManager extends BaseBusActivity implements AlxRefreshLoadMoreR
                             try {
                                 ScoketOFFeON.sendTimingMessage(socket, protocal, mac);
                             } catch (Exception e) {
+                                mHandler.sendEmptyMessage(StatisConstans.FAIL);
                                 e.printStackTrace();
                             }
                         }

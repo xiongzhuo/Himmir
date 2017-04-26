@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +20,7 @@ import android.widget.TextView;
 import com.himmiractivity.App;
 import com.himmiractivity.Utils.GpsUtils;
 import com.himmiractivity.Utils.SocketSingle;
+import com.himmiractivity.Utils.Utils;
 import com.himmiractivity.base.BaseBusActivity;
 import com.himmiractivity.circular_progress_bar.CircularProgressBar;
 import com.himmiractivity.entity.PmAllData;
@@ -56,28 +58,55 @@ public class FacilityInformationActivity extends BaseBusActivity implements Supe
     Socket socket;
     Protocal protocal;
     String mac;
+    ThreadPoolUtils threadPoolUtils;
+    String port;
+    String ip;
 
     private Handler handler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
             switch (msg.what) {
+                case StatisConstans.MSG_QUEST_SERVER:
+                    PmAllData pmAllData = (PmAllData) msg.obj;
+                    Intent intentData = new Intent();
+                    intentData.setAction(StatisConstans.BROADCAST_HONGREN_DATA);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable(StatisConstans.PM_ALL_DATA, pmAllData);
+                    // 要发送的内容
+                    intentData.putExtras(bundle);
+                    FacilityInformationActivity.this.sendBroadcast(intentData);
+                    break;
                 case StatisConstans.MSG_OUTDOOR_PM:
                     PmBean pmBean = (PmBean) msg.obj;
                     circularProgressBar.setVisibility(View.GONE);
                     llContent.setVisibility(View.VISIBLE);
                     textViews.get(4).setText(pmBean.getPm25());
-                    ThreadPoolUtils threadPoolUtils = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 1);
                     threadPoolUtils.execute(new Thread(new Runnable() {
                         @Override
                         public void run() {
                             try {
                                 ScoketOFFeON.sendMessage(socket, protocal, mac);
                             } catch (Exception e) {
-                                restoreData();
+                                handler.sendEmptyMessage(StatisConstans.FAIL_TWO);
                                 e.printStackTrace();
                             }
                         }
                     }));
+                case StatisConstans.FAIL_TWO:
+                    if (!TextUtils.isEmpty(ip)) {
+                        Log.d("ConnectionManager", port);
+                        threadPoolUtils.execute(new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (Utils.isNetworkAvailable(FacilityInformationActivity.this)) {
+                                    socket = SocketSingle.getInstance(ip, Integer.parseInt(port), true);
+                                    ScoketOFFeON.receMessage(socket, protocal, handler);
+                                }
+                            }
+                        }));
+                    }
+                    restoreData();
+                    break;
                 case StatisConstans.MSG_FAIL_PM:
                     ThreadPoolUtils thread = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 1);
                     thread.execute(new Thread(new Runnable() {
@@ -86,7 +115,7 @@ public class FacilityInformationActivity extends BaseBusActivity implements Supe
                             try {
                                 ScoketOFFeON.sendMessage(socket, protocal, mac);
                             } catch (Exception e) {
-                                restoreData();
+                                handler.sendEmptyMessage(StatisConstans.FAIL_TWO);
                                 e.printStackTrace();
                             }
                         }
@@ -110,12 +139,12 @@ public class FacilityInformationActivity extends BaseBusActivity implements Supe
         initTitleBar();
         registerBoradcastReceiver();
         mac = getIntent().getStringExtra(StatisConstans.MAC);
-        ThreadPoolUtils threadPoolUtils = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 1);
+        threadPoolUtils = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 10);
         threadPoolUtils.execute(new Thread(new Runnable() {
             @Override
             public void run() {
-                String ip = sharedPreferencesDB.getString("ip", "");
-                String port = sharedPreferencesDB.getString("port", "");
+                ip = sharedPreferencesDB.getString("ip", "");
+                port = sharedPreferencesDB.getString("port", "");
                 request(ip, Integer.valueOf(port));
             }
         }));
@@ -170,19 +199,24 @@ public class FacilityInformationActivity extends BaseBusActivity implements Supe
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        FacilityInformationActivity.this.unregisterReceiver(mBroadcastReceiver);
     }
 
     public void request(String host, int location) {
-        while (GpsUtils.isServerClose(socket)) {
-            try {
-                // 1.连接服务器
-                socket = SocketSingle.getInstance(host, location, false);
-                Log.d("ConnectionManager", "AbsClient*****已经建立连接");
-                protocal = Protocal.getInstance();
-            } catch (Exception e) {
-                request(host, location);
-                e.printStackTrace();
-            }
+        try {
+            // 1.连接服务器
+            socket = SocketSingle.getInstance(host, location, false);
+            Log.d("ConnectionManager", "AbsClient*****已经建立连接");
+            protocal = Protocal.getInstance();
+            ThreadPoolUtils threadPoolUtils = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 1);
+            threadPoolUtils.execute(new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    ScoketOFFeON.receMessage(socket, protocal, handler);
+                }
+            }));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -199,14 +233,13 @@ public class FacilityInformationActivity extends BaseBusActivity implements Supe
                 swipeRefreshLayout.setRefreshing(false);
                 progressBar.setVisibility(View.GONE);
                 System.out.println("debug:stopRefresh");
-                ThreadPoolUtils threadPoolUtils = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 1);
                 threadPoolUtils.execute(new Thread(new Runnable() {
                     @Override
                     public void run() {
                         try {
                             ScoketOFFeON.sendMessage(socket, protocal, mac);
                         } catch (Exception e) {
-                            restoreData();
+                            handler.sendEmptyMessage(StatisConstans.FAIL_TWO);
                             e.printStackTrace();
                         }
                     }

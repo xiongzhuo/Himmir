@@ -261,17 +261,14 @@ public class FixedTimeActivity extends BaseBusActivity {
     }
 
     public void request(String host, int location) {
-        while (GpsUtils.isServerClose(socket)) {
-            try {
-                // 1.连接服务器
-                socket = SocketSingle.getInstance(host, location, false);
-                Log.d("ConnectionManager", "AbsClient*****已经建立连接");
-                protocal = Protocal.getInstance();
-                ScoketOFFeON.sendMessage(socket, protocal, mac);
-            } catch (Exception e) {
-                request(host, location);
-                e.printStackTrace();
-            }
+        try {
+            // 1.连接服务器
+            socket = SocketSingle.getInstance(host, location, false);
+            Log.d("ConnectionManager", "AbsClient*****已经建立连接");
+            protocal = Protocal.getInstance();
+            ScoketOFFeON.sendMessage(socket, protocal, mac);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

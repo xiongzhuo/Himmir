@@ -53,6 +53,7 @@ public class ScanQRCode extends BaseBusActivity {
                     bundle.putString(StatisConstans.IP, smartLinkedModule.getIp());
                     intent.putExtras(bundle);
                     startActivity(intent);
+                    finish();
                     break;
                 default:
                     break;
