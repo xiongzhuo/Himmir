@@ -55,7 +55,6 @@ import com.himmiractivity.view.ListPopupWindow;
 import com.himmiractivity.view.PercentView;
 import com.himmiractivity.view.SelectorImageView;
 
-import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
@@ -209,6 +208,7 @@ public class MainActivity extends BaseBusNoSocllowActivity {
     protected void initView(Bundle savedInstanceState) {
         instans = this;
         App.getInstance().addActivity(this);
+        list = new ArrayList<>();
         threadPoolUtils = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 10);
         if (getIntent().getExtras() != null) {
             bundle = getIntent().getExtras();
@@ -315,9 +315,9 @@ public class MainActivity extends BaseBusNoSocllowActivity {
     }
 
     private void initialization() {
+        list.clear();
         if (userData.getUserDevs() != null && userData.getUserDevs().size() > 0) {
             space = userData.getUserDevs();
-            list = new ArrayList<>();
             for (int i = 0; i < space.size(); i++) {
                 if (!TextUtils.isEmpty(space.get(i).getDevice_nickname())) {
                     list.add(space.get(i).getDevice_nickname());
@@ -329,6 +329,10 @@ public class MainActivity extends BaseBusNoSocllowActivity {
                 mac = userData.getUserDevs().get(0).getDevice_mac();
                 textViews.get(1).setText(list.get(0).trim());
             }
+        } else {
+            mac = "";
+            textViews.get(1).setText("暂无设备");
+            restoreData();
         }
         initRechclerView();
     }

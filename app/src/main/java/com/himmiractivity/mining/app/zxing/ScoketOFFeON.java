@@ -6,6 +6,7 @@ import android.util.Log;
 import com.himmiractivity.entity.DataServerBean;
 import com.himmiractivity.service.Protocal;
 
+import java.io.IOException;
 import java.net.Socket;
 
 /**
@@ -90,19 +91,15 @@ public class ScoketOFFeON {
     }
 
     //激活
-    public static void sendMessage(Socket s, Protocal p, DataServerBean dataServerBean, String seriesNumber, String mac) {
-        try {
-            // 2.创建Protocal对像
-            if (p == null) {
-                p = new Protocal();
-            }
-            // 3.用Protocal生成并发送请求数据
-            Log.d("ConnectionManager", "AbsClient*****发送请求");
-            p.sendRequest(s.getOutputStream(), dataServerBean, seriesNumber, mac);
-            Log.d("ConnectionManager", "AbsClient*****请求发送成功");
-        } catch (Exception e) {
-            e.printStackTrace();
+    public static void sendMessage(Socket s, Protocal p, DataServerBean dataServerBean, String seriesNumber, String mac) throws Exception {
+        // 2.创建Protocal对像
+        if (p == null) {
+            p = new Protocal();
         }
+        // 3.用Protocal生成并发送请求数据
+        Log.d("ConnectionManager", "AbsClient*****发送请求");
+        p.sendRequest(s.getOutputStream(), dataServerBean, seriesNumber, mac);
+        Log.d("ConnectionManager", "AbsClient*****请求发送成功");
     }
 
     //接受数据

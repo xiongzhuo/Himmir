@@ -78,6 +78,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/dp5"
                             android:layout_weight="1"
+                            android:lines="1"
                             android:text="共享名："
                             android:textSize="@dimen/sp14" />
 

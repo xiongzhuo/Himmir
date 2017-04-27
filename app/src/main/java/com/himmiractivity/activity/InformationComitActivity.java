@@ -11,8 +11,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.himmiractivity.Utils.GpsUtils;
 import com.himmiractivity.Utils.ToastUtil;
+import com.himmiractivity.Utils.Utils;
 import com.himmiractivity.base.BaseBusActivity;
 import com.himmiractivity.entity.ArticleInfo;
 import com.himmiractivity.entity.DataServerBean;
@@ -32,6 +32,8 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.net.Socket;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import activity.hamir.com.himmir.R;
 import butterknife.BindView;
@@ -61,21 +63,59 @@ public class InformationComitActivity extends BaseBusActivity {
     Socket socket;
     Protocal protocal;
     public boolean isdeploy = false;
+    private Timer mTimer = null;
+    ThreadPoolUtils threadPoolUtils;
 
     private Handler handler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
             switch (msg.what) {
+                case StatisConstans.MSG_CYCLIC_TRANSMISSION:
+                    threadPoolUtils.execute(new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                Log.d("ConnectionManager", "socketTWO");
+                                ScoketOFFeON.sendMessage(socket, protocal, dataServerBean, server_number, mac);
+                            } catch (Exception e) {
+                                Log.d("ConnectionManager", "socketTWOException");
+                                handler.sendEmptyMessage(StatisConstans.FAIL_TWO);
+                                e.printStackTrace();
+                            }
+                        }
+                    }));
+                    break;
+                case StatisConstans.FAIL_TWO:
+                    if (!TextUtils.isEmpty(ip)) {
+                        threadPoolUtils.execute(new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (Utils.isNetworkAvailable(InformationComitActivity.this)) {
+                                    try {
+                                        if (socket != null) {
+                                            socket.close();
+                                            socket = null;
+                                        }
+                                        Log.d("ConnectionManager", "socket");
+                                        socket = new Socket(ip, port);
+                                        ScoketOFFeON.receMessage(socket, protocal, handler);
+                                    } catch (Exception e) {
+                                        Log.d("ConnectionManager", "socketException");
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        }));
+                    }
+                    break;
                 case StatisConstans.CONFIG_REGULAR:
                     dataServerBean = (DataServerBean) msg.obj;
-                    ThreadPoolUtils threadPoolUtils = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 1);
                     threadPoolUtils.execute(new Thread(new Runnable() {
                         @Override
                         public void run() {
                             request(ip, port);
                         }
                     }));
-
                     break;
                 case StatisConstans.MSG_RECEIVED_REGULAR:
                     ImageBean imageBean = (ImageBean) msg.obj;
@@ -86,6 +126,7 @@ public class InformationComitActivity extends BaseBusActivity {
                     break;
                 case StatisConstans.MSG_ENABLED_SUCCESSFUL:
                     isdeploy = true;
+                    stopTimer();
                     ToastUtil.show(InformationComitActivity.this, "激活配置档成功");
                     break;
                 case StatisConstans.MSG_ENABLED_FAILING:
@@ -107,6 +148,7 @@ public class InformationComitActivity extends BaseBusActivity {
         setMidTxt("信息确认");
         initTitleBar();
         setRightView("绑定", true);
+        threadPoolUtils = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 10);
         textViews.get(2).setOnClickListener(this);
         textViews.get(3).setOnClickListener(this);
         btnChooseRoom.setOnClickListener(this);
@@ -128,6 +170,7 @@ public class InformationComitActivity extends BaseBusActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        startTimer();
     }
 
     @Override
@@ -281,16 +324,28 @@ public class InformationComitActivity extends BaseBusActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+
+    }
+
+    @Override
     protected void onDestroy() {
-        try {
-            if (socket != null) {
+        if (socket != null) {
+            try {
                 socket.close();
                 socket = null;
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
+        stopTimer();
         super.onDestroy();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
     }
 
     public void request(String host, int location) {
@@ -306,9 +361,31 @@ public class InformationComitActivity extends BaseBusActivity {
                     ScoketOFFeON.receMessage(socket, protocal, handler);
                 }
             }));
-            ScoketOFFeON.sendMessage(socket, protocal, dataServerBean, server_number, mac);
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private void startTimer() {
+        if (mTimer == null) {
+            mTimer = new Timer();
+        }
+        if (mTimer != null) {
+            mTimer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    handler.sendEmptyMessage(StatisConstans.MSG_CYCLIC_TRANSMISSION);
+                }
+            }, 0, 3000);
+        }
+    }
+
+
+    private void stopTimer() {
+        if (mTimer != null) {
+            mTimer.cancel();
+            mTimer.purge();
+            mTimer = null;
         }
     }
 }

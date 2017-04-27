@@ -30,8 +30,10 @@
             android:layout_height="match_parent"
             android:background="#ffffff"
             android:cacheColorHint="@android:color/transparent"
-            android:divider="#00000000"
-            android:dividerHeight="0dp"
+            android:divider="@drawable/list_item_divider"
+            android:dividerHeight="0.4dp"
+            android:footerDividersEnabled="false"
+            android:scrollbars="none"
             android:visibility="gone" />
     </RelativeLayout>
 
