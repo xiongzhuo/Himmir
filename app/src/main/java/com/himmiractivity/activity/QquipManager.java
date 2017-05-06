@@ -154,15 +154,17 @@ public class QquipManager extends BaseBusActivity implements AlxRefreshLoadMoreR
         setMidTxt("设备管理");
         initTitleBar();
         registerBoradcastReceiver();
+        ip = sharedPreferencesDB.getString("ip", "");
+        port = sharedPreferencesDB.getString("port", "");
         threadPoolUtils = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 10);
-        threadPoolUtils.execute(new Thread(new Runnable() {
-            @Override
-            public void run() {
-                ip = sharedPreferencesDB.getString("ip", "");
-                port = sharedPreferencesDB.getString("port", "");
-                request(ip, Integer.valueOf(port));
-            }
-        }));
+        if (!TextUtils.isEmpty(ip)) {
+            threadPoolUtils.execute(new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    request(ip, Integer.valueOf(port));
+                }
+            }));
+        }
         int resourceId = getResources().getIdentifier("navigation_bar_height", "dimen", "android");
         navigationHeight = getResources().getDimensionPixelSize(resourceId);
         btnAddAqu.setOnClickListener(this);
@@ -177,29 +179,31 @@ public class QquipManager extends BaseBusActivity implements AlxRefreshLoadMoreR
             } else if (action.equalsIgnoreCase(StatisConstans.BROADCAST_HONGREN_KILL)) {
                 ToastUtil.show(QquipManager.this, "操作失败");
             } else if (action.equalsIgnoreCase(StatisConstans.BROADCAST_HONGREN_DATA)) {
-                //在线，反之为离线
-                if (onLinePos >= allUserDerviceBaen.getSpace().size())
-                    return;
-                PmAllData pmAllData = (PmAllData) intent.getExtras().getSerializable(StatisConstans.PM_ALL_DATA);
-                Log.d("device_mac", "pmAllData.getFanFreq()" + pmAllData.getFanFreq());
-                if (pmAllData.getFanFreq() > 9) {
-                    allUserDerviceBaen.getSpace().get(onLinePos).setOnLine(true);
-                    rvcAdapter.setmDatas(allUserDerviceBaen.getSpace());
-                }
-                onLinePos++;
-                if (onLinePos >= allUserDerviceBaen.getSpace().size())
-                    return;
-                Log.d("device_mac", allUserDerviceBaen.getSpace().get(onLinePos).getDevice().getDevice_mac() + "onLinePos:" + onLinePos);
-                threadPoolUtils.execute(new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            ScoketOFFeON.sendMessage(socket, protocal, allUserDerviceBaen.getSpace().get(onLinePos).getDevice().getDevice_mac());
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+                if (allUserDerviceBaen.getSpace() != null) {
+                    //在线，反之为离线
+                    if (onLinePos >= allUserDerviceBaen.getSpace().size())
+                        return;
+                    PmAllData pmAllData = (PmAllData) intent.getExtras().getSerializable(StatisConstans.PM_ALL_DATA);
+                    Log.d("device_mac", "pmAllData.getFanFreq()" + pmAllData.getFanFreq());
+                    if (pmAllData.getFanFreq() > 9) {
+                        allUserDerviceBaen.getSpace().get(onLinePos).setOnLine(true);
+                        rvcAdapter.setmDatas(allUserDerviceBaen.getSpace());
                     }
-                }));
+                    onLinePos++;
+                    if (onLinePos >= allUserDerviceBaen.getSpace().size())
+                        return;
+                    Log.d("device_mac", allUserDerviceBaen.getSpace().get(onLinePos).getDevice().getDevice_mac() + "onLinePos:" + onLinePos);
+                    threadPoolUtils.execute(new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                ScoketOFFeON.sendMessage(socket, protocal, allUserDerviceBaen.getSpace().get(onLinePos).getDevice().getDevice_mac());
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }));
+                }
             }
         }
     };

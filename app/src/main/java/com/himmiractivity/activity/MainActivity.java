@@ -2,6 +2,7 @@ package com.himmiractivity.activity;
 
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -55,8 +56,10 @@ import com.himmiractivity.view.ListPopupWindow;
 import com.himmiractivity.view.PercentView;
 import com.himmiractivity.view.SelectorImageView;
 
+import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.IllegalFormatCodePointException;
 import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
@@ -96,8 +99,8 @@ public class MainActivity extends BaseBusNoSocllowActivity {
     PmAllData pmAllData;
     int hzNumeber;
     boolean isRevise = false;
-    //    boolean isOff = true;
-//    boolean isFrist = true;
+    boolean isOff = false;
+    //    boolean isFrist = true;
     private Timer mTimer = null;
     String host;
     int location = 0;
@@ -390,6 +393,7 @@ public class MainActivity extends BaseBusNoSocllowActivity {
             case R.id.iv_off_on_controller:
                 if (Utils.isFastClick()) {
                     selectorImageViews.get(0).toggle(!selectorImageViews.get(0).isChecked());
+                    isOff = true;
                     if (protocal == null) {
                         protocal = new Protocal();
                     }
@@ -410,6 +414,7 @@ public class MainActivity extends BaseBusNoSocllowActivity {
         }
     }
 
+    @SuppressLint("MissingPermission")
     public Location getLocation() throws Exception {
         mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         mlocation = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
@@ -466,11 +471,11 @@ public class MainActivity extends BaseBusNoSocllowActivity {
         super.onNewIntent(intent);
         setIntent(intent);
         getIntent().putExtras(intent);
-        String name = getIntent().getStringExtra(StatisConstans.SUCCESS);
-        if (name.equals("true")) {
-            LodingRequest();
+        if (!TextUtils.isEmpty(getIntent().getStringExtra(StatisConstans.SUCCESS))) {
+            if (getIntent().getStringExtra(StatisConstans.SUCCESS).equals("true")) {
+                LodingRequest();
+            }
         }
-        Log.d("success", "name" + name);
     }
 
     @Override
@@ -627,15 +632,15 @@ public class MainActivity extends BaseBusNoSocllowActivity {
     protected void onDestroy() {
         sharedPreferencesDB.setString(StatisConstans.IP, "");
         sharedPreferencesDB.setString(StatisConstans.PORT, "");
-//        try {
-//            if (socket != null) {
-//                socket.close();
-//                socket = null;
-//            }
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+        try {
+            if (socket != null) {
+                socket.close();
+                socket = null;
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         super.onDestroy();
     }
 
@@ -652,14 +657,46 @@ public class MainActivity extends BaseBusNoSocllowActivity {
     public void upData() {
         selectorImageViews.get(0).setVisibility(View.VISIBLE);
         selectorImageViews.get(1).setVisibility(View.GONE);
-//        if (isOff) {
-        if (!TextUtils.isEmpty(pmAllData.getoNstate()) && pmAllData.getoNstate().equals("开机")) {
-            selectorImageViews.get(0).toggle(true);
+        if (isOff) {
+            if (selectorImageViews.get(0).isChecked()) {
+                if (pmAllData.getoNstate().equals("开机")) {
+                    isOff = false;
+                } else {
+                    threadPoolUtils.execute(new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                ScoketOFFeON.sendMessage(socket, protocal, mac, selectorImageViews.get(0).isChecked());
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }));
+                }
+            } else {
+                if (pmAllData.getoNstate().equals("关机")) {
+                    isOff = false;
+                } else {
+                    threadPoolUtils.execute(new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                ScoketOFFeON.sendMessage(socket, protocal, mac, selectorImageViews.get(0).isChecked());
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }));
+                }
+            }
         } else {
-            selectorImageViews.get(0).toggle(false);
+            if (!TextUtils.isEmpty(pmAllData.getoNstate()) && pmAllData.getoNstate().equals("开机")) {
+                selectorImageViews.get(0).toggle(true);
+            } else {
+                selectorImageViews.get(0).toggle(false);
+            }
+            isOff = false;
         }
-//            isOff = false;
-//        }
         aimPercent = ((double) pmAllData.getIndoorPmThickness() / 225d) * 100d;
         double sensorIndoorTemp = (double) pmAllData.getSensorIndoorTemp() / 10;
         double sensorOutdoorTemp = (double) pmAllData.getSensorOutdoorTemp() / 10;

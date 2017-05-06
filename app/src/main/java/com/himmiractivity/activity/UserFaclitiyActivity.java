@@ -129,15 +129,17 @@ public class UserFaclitiyActivity extends BaseBusActivity implements AlxRefreshL
         setMidTxt("用户设备");
         initTitleBar();
         registerBoradcastReceiver();
+        ip = sharedPreferencesDB.getString("ip", "");
+        port = sharedPreferencesDB.getString("port", "");
         threadPoolUtils = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 10);
-        threadPoolUtils.execute(new Thread(new Runnable() {
-            @Override
-            public void run() {
-                ip = sharedPreferencesDB.getString("ip", "");
-                port = sharedPreferencesDB.getString("port", "");
-                request(ip, Integer.valueOf(port));
-            }
-        }));
+        if (!TextUtils.isEmpty(port)) {
+            threadPoolUtils.execute(new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    request(ip, Integer.valueOf(port));
+                }
+            }));
+        }
     }
 
     private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
@@ -145,28 +147,30 @@ public class UserFaclitiyActivity extends BaseBusActivity implements AlxRefreshL
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if (action.equalsIgnoreCase(StatisConstans.BROADCAST_HONGREN_DATA)) {
-                //在线，反之为离线
-                if (onLinePos >= userDerviceBean.getShareUserDevList().size())
-                    return;
-                PmAllData pmAllData = (PmAllData) intent.getExtras().getSerializable(StatisConstans.PM_ALL_DATA);
-                Log.d("device_mac", "pmAllData.getFanFreq()" + pmAllData.getFanFreq());
-                if (pmAllData.getFanFreq() > 9) {
-                    userDerviceBean.getShareUserDevList().get(onLinePos).setOnLine(true);
-                    rvcAdapter.setmDatas(userDerviceBean.getShareUserDevList());
-                }
-                onLinePos++;
-                if (onLinePos >= userDerviceBean.getShareUserDevList().size())
-                    return;
-                threadPoolUtils.execute(new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            ScoketOFFeON.sendMessage(socket, protocal, userDerviceBean.getShareUserDevList().get(onLinePos).getDevice_mac());
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+                if (userDerviceBean.getShareUserDevList() != null) {
+                    //在线，反之为离线
+                    if (onLinePos >= userDerviceBean.getShareUserDevList().size())
+                        return;
+                    PmAllData pmAllData = (PmAllData) intent.getExtras().getSerializable(StatisConstans.PM_ALL_DATA);
+                    Log.d("device_mac", "pmAllData.getFanFreq()" + pmAllData.getFanFreq());
+                    if (pmAllData.getFanFreq() > 9) {
+                        userDerviceBean.getShareUserDevList().get(onLinePos).setOnLine(true);
+                        rvcAdapter.setmDatas(userDerviceBean.getShareUserDevList());
                     }
-                }));
+                    onLinePos++;
+                    if (onLinePos >= userDerviceBean.getShareUserDevList().size())
+                        return;
+                    threadPoolUtils.execute(new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                ScoketOFFeON.sendMessage(socket, protocal, userDerviceBean.getShareUserDevList().get(onLinePos).getDevice_mac());
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }));
+                }
             }
         }
     };
