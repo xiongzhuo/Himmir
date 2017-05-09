@@ -444,7 +444,12 @@ public class MainActivity extends BaseBusNoSocllowActivity {
 
         @Override
         public void onProviderEnabled(String provider) {
-            GPSLocation();
+            try {
+                mlocation = getLocation();
+//                GPSLocation();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         @Override
@@ -510,8 +515,7 @@ public class MainActivity extends BaseBusNoSocllowActivity {
         }
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
         try {
-            List<Address> addresses = null;
-            addresses = geocoder.getFromLocation(mlocation.getLatitude(), mlocation.getLongitude(), 1);
+            List<Address> addresses = geocoder.getFromLocation(mlocation.getLatitude(), mlocation.getLongitude(), 1);
 //            StringBuilder stringBuilder = new StringBuilder();
             if (addresses.size() > 0) {
                 Address address = addresses.get(0);
