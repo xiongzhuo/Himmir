@@ -20,6 +20,7 @@ import com.himmiractivity.base.BaseBusActivity;
 import com.himmiractivity.entity.AddedBean;
 import com.himmiractivity.interfaces.StatisConstans;
 import com.himmiractivity.request.AddShardRequest;
+import com.himmiractivity.request.AddTVRequest;
 
 import java.util.List;
 
@@ -41,6 +42,10 @@ public class SharedDeviceActivity extends BaseBusActivity {
                 case StatisConstans.MSG_RECEIVED_REGULAR:
                     AddedBean addedBean = (AddedBean) msg.obj;
                     ToastUtil.show(SharedDeviceActivity.this, addedBean.getMsg());
+                    break;
+                case StatisConstans.MSG_QQUIP:
+                    String string = (String) msg.obj;
+                    ToastUtil.show(SharedDeviceActivity.this, string);
                     break;
             }
             return false;
@@ -161,6 +166,15 @@ public class SharedDeviceActivity extends BaseBusActivity {
             case SCANNIN_GREQUEST_CODE:
                 if (resultCode == RESULT_OK) {
                     //二维吗扫描结果
+                    try {
+                        Bundle bundle = data.getExtras();
+                        String shareCode = bundle.getString(StatisConstans.RESULT);
+                        Log.i("shareCode", shareCode);
+                        AddTVRequest addTVRequest = new AddTVRequest(sharedPreferencesDB, shareCode, this, handler);
+                        addTVRequest.requestCode();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
                 break;
             case ADD_SHARED:

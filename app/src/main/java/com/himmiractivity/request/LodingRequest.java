@@ -14,7 +14,7 @@ import com.himmiractivity.Utils.ToastUtil;
 import com.himmiractivity.entity.JsonResult;
 import com.himmiractivity.entity.UserData;
 import com.himmiractivity.interfaces.StatisConstans;
-import com.himmiractivity.view.DialogView;
+import com.himmiractivity.view.HomeDialog;
 
 import org.xutils.common.Callback;
 import org.xutils.http.RequestParams;
@@ -30,7 +30,7 @@ public class LodingRequest {
     private String mobile;
     private String userDeviceUuid;
     private Handler handler;
-    private DialogView dialogView;
+    private HomeDialog.DialogView dialogView;
     SharedPreferencesDB sharedPreferencesDB;
     boolean isDialog;
 
@@ -47,7 +47,7 @@ public class LodingRequest {
     public void requestCode() throws Exception {
         if (isDialog) {
             if (null == dialogView) {
-                dialogView = new DialogView(context);
+                dialogView = new HomeDialog.DialogView(context);
                 dialogView.show();
                 dialogView.setMessage("登陆中");
             }

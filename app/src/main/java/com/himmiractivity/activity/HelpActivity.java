@@ -12,7 +12,7 @@ import com.himmiractivity.App;
 import com.himmiractivity.Constant.Configuration;
 import com.himmiractivity.Utils.ToastUtil;
 import com.himmiractivity.base.BaseBusActivity;
-import com.himmiractivity.view.DialogView;
+import com.himmiractivity.view.HomeDialog;
 
 import activity.hamir.com.himmir.R;
 import butterknife.BindView;
@@ -37,12 +37,12 @@ public class HelpActivity extends BaseBusActivity {
         initTitleBar();
         // webView加载对话框
         webView.setWebViewClient(new WebViewClient() {
-            DialogView dialog;
+            HomeDialog.DialogView dialog;
 
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 super.onPageStarted(view, url, favicon);
-                dialog = new DialogView(HelpActivity.this);
+                dialog = new HomeDialog.DialogView(HelpActivity.this);
                 dialog.show();
                 dialog.setMessage("加载中");
             }

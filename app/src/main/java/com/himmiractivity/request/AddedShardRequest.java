@@ -12,9 +12,7 @@ import com.himmiractivity.Utils.SharedPreferencesDB;
 import com.himmiractivity.Utils.ToastUtil;
 import com.himmiractivity.entity.JsonResult;
 import com.himmiractivity.entity.ManagerShardBean;
-import com.himmiractivity.entity.ModifyNameData;
 import com.himmiractivity.interfaces.StatisConstans;
-import com.himmiractivity.view.DialogView;
 
 import org.xutils.common.Callback;
 import org.xutils.http.RequestParams;

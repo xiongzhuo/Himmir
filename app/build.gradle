@@ -40,10 +40,10 @@ dependencies {
     compile files('libs/gson-2.2.4.jar')
     compile files('libs/imageloader.jar')
     compile files('libs/hiflying-iots-android-smartlink-7.0.3.jar')
-    compile files('libs/zxing.jar')
     compile files('libs/okhttp-3.2.0.jar')
     compile files('libs/commons-io-1.4.jar')
     compile files('libs/slf4j-api-1.7.21.jar')
     compile files('libs/eventbus.jar')
     compile 'com.zhy:autolayout:1.4.3'
+    compile files('libs/z_xing.jar')
 }

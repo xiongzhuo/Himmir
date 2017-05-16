@@ -13,7 +13,7 @@ import com.himmiractivity.Utils.ToastUtil;
 import com.himmiractivity.entity.JsonResult;
 import com.himmiractivity.entity.ModifyNameData;
 import com.himmiractivity.interfaces.StatisConstans;
-import com.himmiractivity.view.DialogView;
+import com.himmiractivity.view.HomeDialog;
 
 import org.xutils.common.Callback;
 import org.xutils.http.RequestParams;
@@ -26,7 +26,7 @@ import org.xutils.x;
 public class DelChareUserRequest {
     private Context context;
     private Handler handler;
-    private DialogView dialogView;
+    private HomeDialog.DialogView dialogView;
     private String shareUserKey;
     SharedPreferencesDB sharedPreferencesDB;
 
@@ -39,7 +39,7 @@ public class DelChareUserRequest {
 
     public void requestCode() throws Exception {
         if (null == dialogView) {
-            dialogView = new DialogView(context);
+            dialogView = new HomeDialog.DialogView(context);
             dialogView.show();
             dialogView.setMessage("加载中");
         }

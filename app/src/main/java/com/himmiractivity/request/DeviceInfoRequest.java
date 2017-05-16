@@ -13,7 +13,7 @@ import com.himmiractivity.Utils.ToastUtil;
 import com.himmiractivity.entity.DeviceInfoBean;
 import com.himmiractivity.entity.JsonResult;
 import com.himmiractivity.interfaces.StatisConstans;
-import com.himmiractivity.view.DialogView;
+import com.himmiractivity.view.HomeDialog;
 
 import org.xutils.common.Callback;
 import org.xutils.http.RequestParams;
@@ -29,7 +29,7 @@ public class DeviceInfoRequest {
     String deviceMac;
     Handler handler;
     Context context;
-    DialogView dialogView;
+    HomeDialog.DialogView dialogView;
 
     public DeviceInfoRequest(SharedPreferencesDB sharedPreferencesDB, String device2Code, String deviceMac, Handler handler, Context context) {
         this.sharedPreferencesDB = sharedPreferencesDB;
@@ -41,7 +41,7 @@ public class DeviceInfoRequest {
 
     public void requestCode() throws Exception {
         if (null == dialogView) {
-            dialogView = new DialogView(context);
+            dialogView = new HomeDialog.DialogView(context);
             dialogView.show();
             dialogView.setMessage("加载中");
         }

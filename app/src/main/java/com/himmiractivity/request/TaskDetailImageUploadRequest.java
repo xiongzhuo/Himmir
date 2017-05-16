@@ -7,16 +7,12 @@ import android.util.Log;
 
 import com.google.common.reflect.TypeToken;
 import com.himmiractivity.Constant.Configuration;
-import com.himmiractivity.Utils.ImageUtil;
 import com.himmiractivity.Utils.JsonUtils;
-import com.himmiractivity.Utils.MD5;
 import com.himmiractivity.Utils.SharedPreferencesDB;
 import com.himmiractivity.Utils.ToastUtil;
-import com.himmiractivity.Utils.ToastUtils;
 import com.himmiractivity.entity.JsonResult;
-import com.himmiractivity.entity.LodingBean;
 import com.himmiractivity.interfaces.StatisConstans;
-import com.himmiractivity.view.DialogView;
+import com.himmiractivity.view.HomeDialog;
 
 import org.xutils.common.Callback;
 import org.xutils.http.RequestParams;
@@ -34,7 +30,7 @@ public class TaskDetailImageUploadRequest {
     private Context context;
     private Handler handler;
     private List<File> files;
-    DialogView dialogView;
+    HomeDialog.DialogView dialogView;
 
     public TaskDetailImageUploadRequest(SharedPreferencesDB sharedPreferencesDB, Context context, Handler handler, List<File> files) {
         this.sharedPreferencesDB = sharedPreferencesDB;
@@ -45,7 +41,7 @@ public class TaskDetailImageUploadRequest {
 
     public void requestCode() throws Exception {
         if (null == dialogView) {
-            dialogView = new DialogView(context);
+            dialogView = new HomeDialog.DialogView(context);
             dialogView.show();
             dialogView.setMessage("加载中");
         }

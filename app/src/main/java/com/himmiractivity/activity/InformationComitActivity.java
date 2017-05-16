@@ -175,17 +175,19 @@ public class InformationComitActivity extends BaseBusActivity {
 
     @Override
     protected void initData() {
-        String province = sharedPreferencesDB.getString(StatisConstans.PROVINCE, "");
-        String city = sharedPreferencesDB.getString(StatisConstans.CITY, "");
-        String area = sharedPreferencesDB.getString(StatisConstans.AREA, "");
-        provinceSite = province;
-        citySite = city;
-        areaSite = area;
-        provinceChoise = province;
-        cityChoise = city;
-        areaChoise = area;
-        textViews.get(2).setText(provinceChoise + "省-" + cityChoise + "市-" + areaChoise);
-        textViews.get(3).setText(provinceSite + "省-" + citySite + "市-" + areaSite);
+        if (!TextUtils.isEmpty(sharedPreferencesDB.getString(StatisConstans.PROVINCE, ""))) {
+            String province = sharedPreferencesDB.getString(StatisConstans.PROVINCE, "");
+            String city = sharedPreferencesDB.getString(StatisConstans.CITY, "");
+            String area = sharedPreferencesDB.getString(StatisConstans.AREA, "");
+            provinceSite = province;
+            citySite = city;
+            areaSite = area;
+            provinceChoise = province;
+            cityChoise = city;
+            areaChoise = area;
+            textViews.get(2).setText(provinceChoise + "省-" + cityChoise + "市-" + areaChoise);
+            textViews.get(3).setText(provinceSite + "省-" + citySite + "市-" + areaSite);
+        }
     }
 
     @Override

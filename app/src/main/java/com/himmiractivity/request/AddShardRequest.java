@@ -12,10 +12,8 @@ import com.himmiractivity.Utils.SharedPreferencesDB;
 import com.himmiractivity.Utils.ToastUtil;
 import com.himmiractivity.entity.AddedBean;
 import com.himmiractivity.entity.JsonResult;
-import com.himmiractivity.entity.ModifyNameData;
 import com.himmiractivity.interfaces.StatisConstans;
-import com.himmiractivity.view.DialogView;
-import com.himmiractivity.view.ModifySuccessView;
+import com.himmiractivity.view.HomeDialog;
 
 import org.xutils.common.Callback;
 import org.xutils.http.RequestParams;
@@ -29,7 +27,7 @@ public class AddShardRequest {
     private Context context;
     private String shareCode;
     private Handler handler;
-    private DialogView dialogView;
+    private HomeDialog.DialogView dialogView;
     SharedPreferencesDB sharedPreferencesDB;
 
     public AddShardRequest(SharedPreferencesDB sharedPreferencesDB, Context context, String shareCode, Handler handler) {
@@ -41,7 +39,7 @@ public class AddShardRequest {
 
     public void requestCode() throws Exception {
         if (null == dialogView) {
-            dialogView = new DialogView(context);
+            dialogView = new HomeDialog.DialogView(context);
             dialogView.show();
             dialogView.setMessage("加载中");
         }

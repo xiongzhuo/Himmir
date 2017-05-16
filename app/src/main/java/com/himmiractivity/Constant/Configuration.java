@@ -147,4 +147,11 @@ public class Configuration {
     public static final String URL_APP_VER = HOST
             + "/finalapi/user/user/getAppVer";
 
+
+    /**
+     * 版本更新
+     */
+    public static final String URL_TV_SNBING_USER = HOST
+            + "/finalapi/user/user/tvSNBingUser";
+
 }

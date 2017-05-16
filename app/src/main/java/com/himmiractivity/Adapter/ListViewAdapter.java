@@ -77,7 +77,7 @@ public class ListViewAdapter extends BaseSwipeAdapter {
         LinearLayout ll = (LinearLayout) convertView.findViewById(R.id.ll);
 
         TextView tv = (TextView) convertView.findViewById(R.id.tv_name);
-        tv.setText(lists.get(position).getUser_name());
+        tv.setText(lists.get(position).getShare_name());
         swipeItem.setShowMode(ShowMode.PullOut);
         swipeItem.setDragEdge(DragEdge.Right);
 

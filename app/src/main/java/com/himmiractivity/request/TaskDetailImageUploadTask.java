@@ -9,8 +9,6 @@ import android.util.Log;
 
 import com.google.gson.reflect.TypeToken;
 import com.himmiractivity.Constant.Configuration;
-import com.himmiractivity.Utils.FiledUtil;
-import com.himmiractivity.Utils.FormFile;
 import com.himmiractivity.Utils.ImageUploadForm;
 import com.himmiractivity.Utils.ImageUtil;
 import com.himmiractivity.Utils.JsonUtils;
@@ -19,14 +17,12 @@ import com.himmiractivity.Utils.ToastUtil;
 import com.himmiractivity.entity.ImageBean;
 import com.himmiractivity.entity.JsonResult;
 import com.himmiractivity.interfaces.StatisConstans;
-import com.himmiractivity.view.DialogView;
+import com.himmiractivity.view.HomeDialog;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -40,7 +36,7 @@ public class TaskDetailImageUploadTask extends
     private Activity context;
     private SharedPreferencesDB sharedDB;
     private Handler handler;
-    private DialogView dialog;
+    private HomeDialog.DialogView dialog;
     //    private FormFile formFile;
     private File file;
 
@@ -66,7 +62,7 @@ public class TaskDetailImageUploadTask extends
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        dialog = new DialogView(context);
+        dialog = new HomeDialog.DialogView(context);
         dialog.show();
         dialog.setMessage("加载中");
     }

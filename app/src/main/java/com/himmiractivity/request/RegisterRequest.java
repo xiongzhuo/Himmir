@@ -13,7 +13,7 @@ import com.himmiractivity.Utils.ToastUtil;
 import com.himmiractivity.entity.JsonResult;
 import com.himmiractivity.entity.LodingBean;
 import com.himmiractivity.interfaces.StatisConstans;
-import com.himmiractivity.view.DialogView;
+import com.himmiractivity.view.HomeDialog;
 
 import org.xutils.common.Callback;
 import org.xutils.http.RequestParams;
@@ -30,7 +30,7 @@ public class RegisterRequest {
     private String userDeviceUuid;
     private String code;
     private Handler handler;
-    private DialogView dialogView;
+    private HomeDialog.DialogView dialogView;
 
     public RegisterRequest(Context context, String pwd, String mobile, String userDeviceUuid, String code, Handler handler) {
         this.pwd = pwd;
@@ -43,7 +43,7 @@ public class RegisterRequest {
 
     public void requestCode() throws Exception {
         if (null == dialogView) {
-            dialogView = new DialogView(context);
+            dialogView = new HomeDialog.DialogView(context);
             dialogView.show();
             dialogView.setMessage("加载中");
         }

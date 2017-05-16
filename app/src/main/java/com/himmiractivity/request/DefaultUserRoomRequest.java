@@ -12,9 +12,8 @@ import com.himmiractivity.Utils.SharedPreferencesDB;
 import com.himmiractivity.Utils.ToastUtil;
 import com.himmiractivity.entity.ArticleInfo;
 import com.himmiractivity.entity.JsonResult;
-import com.himmiractivity.entity.PhoneCode;
 import com.himmiractivity.interfaces.StatisConstans;
-import com.himmiractivity.view.DialogView;
+import com.himmiractivity.view.HomeDialog;
 
 import org.xutils.common.Callback;
 import org.xutils.http.RequestParams;
@@ -28,7 +27,7 @@ public class DefaultUserRoomRequest {
     SharedPreferencesDB sharedPreferencesDB;
     Context context;
     Handler handler;
-    private DialogView dialogView;
+    private HomeDialog.DialogView dialogView;
 
     public DefaultUserRoomRequest(SharedPreferencesDB sharedPreferencesDB, Context context, Handler handler) {
         this.sharedPreferencesDB = sharedPreferencesDB;
@@ -38,7 +37,7 @@ public class DefaultUserRoomRequest {
 
     public void requestCode() throws Exception {
         if (null == dialogView) {
-            dialogView = new DialogView(context);
+            dialogView = new HomeDialog.DialogView(context);
             dialogView.show();
             dialogView.setMessage("加载中");
         }

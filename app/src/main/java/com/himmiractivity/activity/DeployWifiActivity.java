@@ -1,6 +1,5 @@
 package com.himmiractivity.activity;
 
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -22,8 +21,7 @@ import com.himmiractivity.Utils.ToastUtil;
 import com.himmiractivity.Utils.ToastUtils;
 import com.himmiractivity.Utils.WifiUtils;
 import com.himmiractivity.base.BaseBusActivity;
-import com.himmiractivity.interfaces.StatisConstans;
-import com.himmiractivity.view.DialogView;
+import com.himmiractivity.view.HomeDialog;
 
 import activity.hamir.com.himmir.R;
 import butterknife.BindView;
@@ -39,7 +37,7 @@ public class DeployWifiActivity extends BaseBusActivity implements OnSmartLinkLi
     EditText etWifiPass;
     String wifiName;
     protected ISmartLinker mSnifferSmartLinker;
-    protected DialogView mWaitingDialog;
+    protected HomeDialog.DialogView mWaitingDialog;
     protected Handler mViewHandler = new Handler();
     private boolean mIsConncting = false;
 
@@ -58,7 +56,7 @@ public class DeployWifiActivity extends BaseBusActivity implements OnSmartLinkLi
             mSnifferSmartLinker = SnifferSmartLinker.getInstance();
         }
         if (null == mWaitingDialog) {
-            mWaitingDialog = new DialogView(DeployWifiActivity.this);
+            mWaitingDialog = new HomeDialog.DialogView(DeployWifiActivity.this);
         }
         mWaitingDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
 

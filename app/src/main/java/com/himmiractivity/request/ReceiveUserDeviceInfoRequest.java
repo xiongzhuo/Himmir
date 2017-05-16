@@ -10,11 +10,10 @@ import com.himmiractivity.Constant.Configuration;
 import com.himmiractivity.Utils.JsonUtils;
 import com.himmiractivity.Utils.SharedPreferencesDB;
 import com.himmiractivity.Utils.ToastUtil;
-import com.himmiractivity.entity.ArticleInfo;
 import com.himmiractivity.entity.ImageBean;
 import com.himmiractivity.entity.JsonResult;
 import com.himmiractivity.interfaces.StatisConstans;
-import com.himmiractivity.view.DialogView;
+import com.himmiractivity.view.HomeDialog;
 
 import org.xutils.common.Callback;
 import org.xutils.http.RequestParams;
@@ -41,7 +40,7 @@ public class ReceiveUserDeviceInfoRequest {
     String installCounnty;
     String installDetailAddress;
     String deviceSn;
-    private DialogView dialogView;
+    private HomeDialog.DialogView dialogView;
 
     public ReceiveUserDeviceInfoRequest(SharedPreferencesDB sharedPreferencesDB, Context context, Handler handler, String userRoom, String userTureName, String deviceMac, String deviceSn, String devNickName) {
         this.sharedPreferencesDB = sharedPreferencesDB;
@@ -70,7 +69,7 @@ public class ReceiveUserDeviceInfoRequest {
 
     public void requestCode() throws Exception {
         if (null == dialogView) {
-            dialogView = new DialogView(context);
+            dialogView = new HomeDialog.DialogView(context);
             dialogView.show();
             dialogView.setMessage("加载中");
         }

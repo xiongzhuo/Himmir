@@ -14,7 +14,7 @@ import com.himmiractivity.Utils.ToastUtil;
 import com.himmiractivity.entity.JsonResult;
 import com.himmiractivity.entity.ModifyNameData;
 import com.himmiractivity.interfaces.StatisConstans;
-import com.himmiractivity.view.DialogView;
+import com.himmiractivity.view.HomeDialog;
 
 import org.xutils.common.Callback;
 import org.xutils.http.RequestParams;
@@ -29,7 +29,7 @@ public class ModifyPwdRequest {
     private String newPwd;
     private String pwd;
     private Handler handler;
-    private DialogView dialogView;
+    private HomeDialog.DialogView dialogView;
     SharedPreferencesDB sharedPreferencesDB;
 
     public ModifyPwdRequest(SharedPreferencesDB sharedPreferencesDB, Context context, String newPwd, String pwd, Handler handler) {
@@ -42,7 +42,7 @@ public class ModifyPwdRequest {
 
     public void requestCode() throws Exception {
         if (null == dialogView) {
-            dialogView = new DialogView(context);
+            dialogView = new HomeDialog.DialogView(context);
             dialogView.show();
             dialogView.setMessage("加载中");
         }

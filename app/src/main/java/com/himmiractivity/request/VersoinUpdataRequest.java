@@ -10,11 +10,9 @@ import com.himmiractivity.Constant.Configuration;
 import com.himmiractivity.Utils.JsonUtils;
 import com.himmiractivity.Utils.SharedPreferencesDB;
 import com.himmiractivity.Utils.ToastUtil;
-import com.himmiractivity.entity.AllUserDerviceBaen;
 import com.himmiractivity.entity.JsonResult;
 import com.himmiractivity.entity.VersionBean;
 import com.himmiractivity.interfaces.StatisConstans;
-import com.himmiractivity.view.DialogView;
 
 import org.xutils.common.Callback;
 import org.xutils.http.RequestParams;
