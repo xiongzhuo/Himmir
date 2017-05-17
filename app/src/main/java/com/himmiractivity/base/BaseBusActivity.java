@@ -29,6 +29,7 @@ import com.himmiractivity.Utils.AppManager;
 import com.himmiractivity.Utils.SharedPreferencesDB;
 import com.himmiractivity.Utils.ToastUtils;
 import com.himmiractivity.activity.MainActivity;
+import com.himmiractivity.interfaces.OnBooleanListener;
 import com.himmiractivity.interfaces.StatisConstans;
 import com.himmiractivity.view.SwipeBackLayout;
 import com.zhy.autolayout.AutoLayoutActivity;
@@ -39,6 +40,7 @@ import activity.hamir.com.himmir.R;
 import butterknife.ButterKnife;
 
 public abstract class BaseBusActivity extends AutoLayoutActivity implements View.OnClickListener {
+    private OnBooleanListener onPermissionListener;
     // 两次点击按钮之间的点击间隔不能少于1000毫秒
     private static final int MIN_CLICK_DELAY_TIME = 1000;
     private static long lastClickTime;
@@ -61,18 +63,18 @@ public abstract class BaseBusActivity extends AutoLayoutActivity implements View
                 R.layout.base, null);
         layout.attachToActivity(this);
         setContentView(this.getContentLayoutId());
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.READ_PHONE_STATE)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.READ_PHONE_STATE},
-                    StatisConstans.MY_PERMISSIONS_REQUEST_READ_PHONE_STATE);
-        } else {
-            if (TextUtils.isEmpty(sharedPreferencesDB.getString(StatisConstans.USERDEVICEUUID, ""))) {
-                String imei = ((TelephonyManager) this.getSystemService(TELEPHONY_SERVICE)).getDeviceId();
-                sharedPreferencesDB.setString(StatisConstans.USERDEVICEUUID, imei);
-            }
-        }
+//        if (ContextCompat.checkSelfPermission(this,
+//                Manifest.permission.READ_PHONE_STATE)
+//                != PackageManager.PERMISSION_GRANTED) {
+//            ActivityCompat.requestPermissions(this,
+//                    new String[]{Manifest.permission.READ_PHONE_STATE},
+//                    StatisConstans.MY_PERMISSIONS_REQUEST_READ_PHONE_STATE);
+//        } else {
+//            if (TextUtils.isEmpty(sharedPreferencesDB.getString(StatisConstans.USERDEVICEUUID, ""))) {
+//                String imei = ((TelephonyManager) this.getSystemService(TELEPHONY_SERVICE)).getDeviceId();
+//                sharedPreferencesDB.setString(StatisConstans.USERDEVICEUUID, imei);
+//            }
+//        }
         ButterKnife.bind(this);
         AppManager.getAppManager().addActivity(this);
         mContext = this;
@@ -263,16 +265,30 @@ public abstract class BaseBusActivity extends AutoLayoutActivity implements View
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == StatisConstans.MY_PERMISSIONS_REQUEST_READ_PHONE_STATE) {
-            if (grantResults.length > 0
-                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                if (TextUtils.isEmpty(sharedPreferencesDB.getString(StatisConstans.USERDEVICEUUID, ""))) {
-                    String imei = ((TelephonyManager) this.getSystemService(TELEPHONY_SERVICE)).getDeviceId();
-                    sharedPreferencesDB.setString(StatisConstans.USERDEVICEUUID, imei);
+//        if (requestCode == StatisConstans.MY_PERMISSIONS_REQUEST_READ_PHONE_STATE) {
+//            if (grantResults.length > 0
+//                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                if (TextUtils.isEmpty(sharedPreferencesDB.getString(StatisConstans.USERDEVICEUUID, ""))) {
+//                    String imei = ((TelephonyManager) this.getSystemService(TELEPHONY_SERVICE)).getDeviceId();
+//                    sharedPreferencesDB.setString(StatisConstans.USERDEVICEUUID, imei);
+//                }
+//            } else {
+//                // Permission Denied
+//                Toast.makeText(this, "请允许才能获得设备ID", Toast.LENGTH_SHORT).show();
+//            }
+//            return;
+//        }
+        if (requestCode == 1) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                //权限通过
+                if (onPermissionListener != null) {
+                    onPermissionListener.onResulepermiss(true);
                 }
             } else {
-                // Permission Denied
-                Toast.makeText(this, "请允许才能获得设备ID", Toast.LENGTH_SHORT).show();
+                //权限拒绝
+                if (onPermissionListener != null) {
+                    onPermissionListener.onResulepermiss(false);
+                }
             }
             return;
         }
@@ -303,4 +319,33 @@ public abstract class BaseBusActivity extends AutoLayoutActivity implements View
             onMultiClick(v);
         }
     }
+
+    /**
+     * 权限请求
+     *
+     * @param permission        Manifest.permission.CAMERA
+     * @param onBooleanListener 权限请求结果回调，true-通过  false-拒绝
+     */
+    public void permissionRequests(String permission, OnBooleanListener onBooleanListener) {
+        onPermissionListener = onBooleanListener;
+        if (ContextCompat.checkSelfPermission(this,
+                permission)
+                != PackageManager.PERMISSION_GRANTED) {
+            // Should we show an explanation?
+//            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+//                    Manifest.permission.READ_CONTACTS)) {
+//                //权限已有
+//                onPermissionListener.onResulepermiss(true);
+//            } else {
+            //没有权限，申请一下
+            ActivityCompat.requestPermissions(this,
+                    new String[]{permission},
+                    1);
+//            }
+        } else {
+            onPermissionListener.onResulepermiss(true);
+        }
+    }
+
+
 }

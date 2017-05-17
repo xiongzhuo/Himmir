@@ -19,6 +19,7 @@ import com.hiflying.smartlink.SmartLinkedModule;
 import com.himmiractivity.Utils.ToastUtil;
 import com.himmiractivity.base.BaseBusActivity;
 import com.himmiractivity.entity.DeviceInfoBean;
+import com.himmiractivity.interfaces.OnBooleanListener;
 import com.himmiractivity.interfaces.StatisConstans;
 import com.himmiractivity.request.DeviceInfoRequest;
 import com.himmiractivity.view.ClearEditText;
@@ -113,36 +114,49 @@ public class ScanQRCode extends BaseBusActivity {
     }
 
     public void setIvQrCode() {
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this,
-                Manifest.permission.CAMERA)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.CAMERA},
-                    StatisConstans.MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
-        } else {
-            Intent intent = new Intent();
-            intent.setClass(ScanQRCode.this, CaptureActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivityForResult(intent, SCANNIN_GREQUEST_CODE);
-        }
+        permissionRequests(Manifest.permission.CAMERA, new OnBooleanListener() {
+            @Override
+            public void onResulepermiss(boolean bln) {
+                if (bln) {
+                    Intent intent = new Intent();
+                    intent.setClass(ScanQRCode.this, CaptureActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivityForResult(intent, SCANNIN_GREQUEST_CODE);
+                } else {
+                    ToastUtil.show(ScanQRCode.this, "请允许调用相机权限！");
+                }
+            }
+        });
+//        if (ContextCompat.checkSelfPermission(this,
+//                Manifest.permission.WRITE_EXTERNAL_STORAGE)
+//                != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this,
+//                Manifest.permission.CAMERA)
+//                != PackageManager.PERMISSION_GRANTED) {
+//            ActivityCompat.requestPermissions(this,
+//                    new String[]{Manifest.permission.CAMERA},
+//                    StatisConstans.MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
+//        } else {
+//            Intent intent = new Intent();
+//            intent.setClass(ScanQRCode.this, CaptureActivity.class);
+//            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//            startActivityForResult(intent, SCANNIN_GREQUEST_CODE);
+//        }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == StatisConstans.MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE) {
-            if (grantResults.length > 0
-                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Intent intent = new Intent();
-                intent.setClass(ScanQRCode.this, CaptureActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivityForResult(intent, SCANNIN_GREQUEST_CODE);
-            } else {
-                Toast.makeText(ScanQRCode.this, "请你允许才能扫描二维码", Toast.LENGTH_SHORT).show();
-            }
-            return;
-        }
+//        if (requestCode == StatisConstans.MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE) {
+//            if (grantResults.length > 0
+//                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                Intent intent = new Intent();
+//                intent.setClass(ScanQRCode.this, CaptureActivity.class);
+//                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                startActivityForResult(intent, SCANNIN_GREQUEST_CODE);
+//            } else {
+//                Toast.makeText(ScanQRCode.this, "请你允许才能扫描二维码", Toast.LENGTH_SHORT).show();
+//            }
+//            return;
+//        }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 

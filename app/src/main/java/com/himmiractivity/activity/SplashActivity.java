@@ -10,6 +10,7 @@ import android.view.View.OnClickListener;
 
 import com.himmiractivity.Utils.SharedPreferencesDB;
 import com.himmiractivity.base.BaseBusActivity;
+import com.himmiractivity.base.BaseBusNoSocllowActivity;
 import com.himmiractivity.entity.UserData;
 import com.himmiractivity.interfaces.StatisConstans;
 import com.himmiractivity.request.LodingRequest;
@@ -19,7 +20,7 @@ import activity.hamir.com.himmir.R;
 /**
  * 程序启动页
  */
-public class SplashActivity extends BaseBusActivity implements OnClickListener {
+public class SplashActivity extends BaseBusNoSocllowActivity implements OnClickListener {
     private SharedPreferencesDB sharedDB;
     int time = 1000;    //设置等待时间，单位为毫秒
     private MyHandler handler;

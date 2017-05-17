@@ -2,13 +2,9 @@ package com.himmiractivity;
 
 import android.app.Activity;
 import android.app.Application;
-import android.os.Handler;
-import android.os.Message;
-import android.telephony.TelephonyManager;
-import android.util.Log;
+import android.os.StrictMode;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
-import com.himmiractivity.Utils.MyCrashHandler;
 
 import org.xutils.x;
 
@@ -33,6 +29,9 @@ public class App extends Application {
         super.onCreate();
         Fresco.initialize(this);
         x.Ext.init(this);
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
+        builder.detectFileUriExposure();
 //        MyCrashHandler handler = MyCrashHandler.getInstance(this.handler);
 //        handler.init(getApplicationContext());
 //        Thread.setDefaultUncaughtExceptionHandler(handler);

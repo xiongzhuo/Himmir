@@ -180,6 +180,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name="com.himmiractivity.activity.MainActivity"
             android:configChanges="orientation|keyboardHidden"
@@ -189,6 +190,17 @@
             android:name="com.himmiractivity.activity.SetActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait" />
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="activity.hamir.com.himmir"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
+
         <activity
             android:name="com.himmiractivity.activity.DeployWifiActivity"
             android:configChanges="orientation|keyboardHidden"

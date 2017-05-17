@@ -16,6 +16,7 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -35,12 +36,14 @@ import com.himmiractivity.Constant.Configuration;
 import com.himmiractivity.Utils.ChangePhotosUtils;
 import com.himmiractivity.Utils.FiledUtil;
 import com.himmiractivity.Utils.IntentUtilsTwo;
+import com.himmiractivity.Utils.ToastUtil;
 import com.himmiractivity.Utils.ToastUtils;
 import com.himmiractivity.Utils.UiUtil;
 import com.himmiractivity.base.BaseBusActivity;
 import com.himmiractivity.entity.ImageBean;
 import com.himmiractivity.entity.ModifyNameData;
 import com.himmiractivity.entity.UserData;
+import com.himmiractivity.interfaces.OnBooleanListener;
 import com.himmiractivity.interfaces.StatisConstans;
 import com.himmiractivity.request.ModifyNameRequest;
 import com.himmiractivity.request.TaskDetailImageUploadTask;
@@ -170,44 +173,84 @@ public class SetActivity extends BaseBusActivity {
     }
 
     public void testCall(View view) {
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.CALL_PHONE)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.CALL_PHONE},
-                    StatisConstans.MY_PERMISSIONS_REQUEST_CALL_PHONE);
-        } else {
-            callPhone();
-        }
+        permissionRequests(Manifest.permission.CALL_PHONE, new OnBooleanListener() {
+            @Override
+            public void onResulepermiss(boolean bln) {
+                if (bln) {
+                    callPhone();
+                } else {
+                    ToastUtil.show(SetActivity.this, "请允许电话权限！");
+                }
+            }
+        });
+//        if (ContextCompat.checkSelfPermission(this,
+//                Manifest.permission.CALL_PHONE)
+//                != PackageManager.PERMISSION_GRANTED) {
+//            ActivityCompat.requestPermissions(this,
+//                    new String[]{Manifest.permission.CALL_PHONE},
+//                    StatisConstans.MY_PERMISSIONS_REQUEST_CALL_PHONE);
+//        } else {
+//            callPhone();
+//        }
     }
 
     public void getPhoto() {
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this,
-                Manifest.permission.CAMERA)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.CAMERA},
-                    StatisConstans.MY_PERMISSIONS_REQUEST_CAMERA);
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                    StatisConstans.MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
-        } else {
-            ChangePhotosUtils
-                    .changePhotos(SetActivity.this);
-        }
+        permissionRequests(Manifest.permission.WRITE_EXTERNAL_STORAGE, new OnBooleanListener() {
+            @Override
+            public void onResulepermiss(boolean bln) {
+                if (bln) {
+                    permissionRequests(Manifest.permission.CAMERA, new OnBooleanListener() {
+                        @Override
+                        public void onResulepermiss(boolean bln) {
+                            if (bln) {
+                                ChangePhotosUtils
+                                        .changePhotos(SetActivity.this);
+                            } else {
+                                ToastUtil.show(SetActivity.this, "请允许相机权限！");
+                            }
+                        }
+                    });
+                } else {
+                    ToastUtil.show(SetActivity.this, "请允许读写权限！");
+                }
+            }
+        });
+//        if (ContextCompat.checkSelfPermission(this,
+//                Manifest.permission.WRITE_EXTERNAL_STORAGE)
+//                != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this,
+//                Manifest.permission.CAMERA)
+//                != PackageManager.PERMISSION_GRANTED) {
+//            ActivityCompat.requestPermissions(this,
+//                    new String[]{Manifest.permission.CAMERA},
+//                    StatisConstans.MY_PERMISSIONS_REQUEST_CAMERA);
+//            ActivityCompat.requestPermissions(this,
+//                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+//                    StatisConstans.MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
+//        } else {
+//            ChangePhotosUtils
+//                    .changePhotos(SetActivity.this);
+//        }
     }
 
     public void getWrite() {
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                    StatisConstans.MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
-        } else {
-        }
+        permissionRequests(Manifest.permission.WRITE_EXTERNAL_STORAGE, new OnBooleanListener() {
+            @Override
+            public void onResulepermiss(boolean bln) {
+                if (bln) {
+
+                } else {
+                    ToastUtil.show(SetActivity.this, "请允许读写权限！");
+                }
+            }
+        });
+//        if (ContextCompat.checkSelfPermission(this,
+//                Manifest.permission.WRITE_EXTERNAL_STORAGE)
+//                != PackageManager.PERMISSION_GRANTED) {
+//            ActivityCompat.requestPermissions(this,
+//                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+//                    StatisConstans.MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
+//        } else {
+//        }
     }
 
     public void callPhone() {
@@ -338,30 +381,23 @@ public class SetActivity extends BaseBusActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == StatisConstans.MY_PERMISSIONS_REQUEST_CALL_PHONE) {
-            if (grantResults.length > 0
-                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                callPhone();
-            } else {
-                Toast.makeText(SetActivity.this, "请您允许才能打电话", Toast.LENGTH_SHORT).show();
-            }
-        } else if (requestCode == StatisConstans.MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE) {
-            if (grantResults.length > 0
-                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//        if (requestCode == StatisConstans.MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE) {
+//            if (grantResults.length > 0
+//                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 //                ChangePhotosUtils
 //                        .changePhotos(SetActivity.this);
-            } else {
-                Toast.makeText(SetActivity.this, "请您允许才能选取图片", Toast.LENGTH_SHORT).show();
-            }
-        } else if (requestCode == StatisConstans.MY_PERMISSIONS_REQUEST_CAMERA) {
-            if (grantResults.length > 0
-                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                ChangePhotosUtils
-                        .changePhotos(SetActivity.this);
-            } else {
-                Toast.makeText(SetActivity.this, "请您允许才能拍照", Toast.LENGTH_SHORT).show();
-            }
-        }
+//            } else {
+//                Toast.makeText(SetActivity.this, "请您允许才能选取图片", Toast.LENGTH_SHORT).show();
+//            }
+//        } else if (requestCode == StatisConstans.MY_PERMISSIONS_REQUEST_CAMERA) {
+//            if (grantResults.length > 0
+//                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                ChangePhotosUtils
+//                        .changePhotos(SetActivity.this);
+//            } else {
+//                Toast.makeText(SetActivity.this, "请您允许才能拍照", Toast.LENGTH_SHORT).show();
+//            }
+//        }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
@@ -437,10 +473,15 @@ public class SetActivity extends BaseBusActivity {
         }
         /* 拍照 */
         if (requestCode == P_CAMERA) {
+//            File cameraPhoto = new File(Environment.getExternalStorageDirectory(), "temp.jpg");
             // 设置文件保存路径这里放在跟目录下
             File picture = new File(Environment.getExternalStorageDirectory()
                     + "/temp.jpg");
-
+//            Uri photoUri = FileProvider.getUriForFile(
+//                    SetActivity.this,
+//                    "activity.hamir.com.himmir",
+//                    picture);
+//            startPhotoZoom(Uri.parse(data.getStringExtra("")));
             startPhotoZoom(Uri.fromFile(picture));
         }
 

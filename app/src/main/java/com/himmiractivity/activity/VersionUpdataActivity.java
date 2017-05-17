@@ -20,9 +20,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.himmiractivity.Utils.ToastUtil;
 import com.himmiractivity.Utils.UpdateManage;
 import com.himmiractivity.base.BaseBusActivity;
 import com.himmiractivity.entity.VersionBean;
+import com.himmiractivity.interfaces.OnBooleanListener;
 import com.himmiractivity.interfaces.StatisConstans;
 import com.himmiractivity.request.VersoinUpdataRequest;
 import com.himmiractivity.util.AppUtils;
@@ -105,15 +107,25 @@ public class VersionUpdataActivity extends BaseBusActivity {
                 finish();
                 break;
             case R.id.btn_version_updata:
-                if (ContextCompat.checkSelfPermission(this,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                        != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(this,
-                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                            StatisConstans.MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
-                } else {
-                    handler.sendEmptyMessage(SHOW_DIALOG);
-                }
+                permissionRequests(Manifest.permission.WRITE_EXTERNAL_STORAGE, new OnBooleanListener() {
+                    @Override
+                    public void onResulepermiss(boolean bln) {
+                        if (bln) {
+                            handler.sendEmptyMessage(SHOW_DIALOG);
+                        } else {
+                            ToastUtil.show(VersionUpdataActivity.this, "请允许读写权限！");
+                        }
+                    }
+                });
+//                if (ContextCompat.checkSelfPermission(this,
+//                        Manifest.permission.WRITE_EXTERNAL_STORAGE)
+//                        != PackageManager.PERMISSION_GRANTED) {
+//                    ActivityCompat.requestPermissions(this,
+//                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+//                            StatisConstans.MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
+//                } else {
+//                    handler.sendEmptyMessage(SHOW_DIALOG);
+//                }
                 break;
             default:
                 break;
@@ -141,14 +153,14 @@ public class VersionUpdataActivity extends BaseBusActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == StatisConstans.MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE) {
-            if (grantResults.length > 0
-                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                handler.sendEmptyMessage(SHOW_DIALOG);
-            } else {
-                Toast.makeText(VersionUpdataActivity.this, "请您允许才能下载更新", Toast.LENGTH_SHORT).show();
-            }
-        }
+//        if (requestCode == StatisConstans.MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE) {
+//            if (grantResults.length > 0
+//                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                handler.sendEmptyMessage(SHOW_DIALOG);
+//            } else {
+//                Toast.makeText(VersionUpdataActivity.this, "请您允许才能下载更新", Toast.LENGTH_SHORT).show();
+//            }
+//        }
     }
 
     private void showUpdateDialog() {

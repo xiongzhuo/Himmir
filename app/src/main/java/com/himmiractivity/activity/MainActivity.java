@@ -45,6 +45,7 @@ import com.himmiractivity.entity.DataServerBean;
 import com.himmiractivity.entity.PmAllData;
 import com.himmiractivity.entity.PmBean;
 import com.himmiractivity.entity.UserData;
+import com.himmiractivity.interfaces.OnBooleanListener;
 import com.himmiractivity.interfaces.StatisConstans;
 import com.himmiractivity.mining.app.zxing.ScoketOFFeON;
 import com.himmiractivity.request.DataServerConfigRequest;
@@ -296,24 +297,38 @@ public class MainActivity extends BaseBusNoSocllowActivity {
         Log.i("aimPercent", aimPercent + "=-------");
         percentView.setAngel(aimPercent);
         percentView.setRankText("PM2.5室内", "--");
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_COARSE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
-                    StatisConstans.MY_PERMISSIONS_REQUEST_LOCATION);
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    StatisConstans.MY_PERMISSIONS_REQUEST_LOCATION);
-        } else {
-            try {
-                mlocation = getLocation();
-            } catch (Exception e) {
-                e.printStackTrace();
+//        if (ContextCompat.checkSelfPermission(this,
+        permissionRequests(Manifest.permission.ACCESS_COARSE_LOCATION, new OnBooleanListener() {
+            @Override
+            public void onResulepermiss(boolean bln) {
+                if (bln) {
+                    try {
+                        mlocation = getLocation();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    ToastUtil.show(MainActivity.this, "请允许获取位置权限！");
+                }
             }
-        }
+        });
+//                Manifest.permission.ACCESS_COARSE_LOCATION)
+//                != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this,
+//                Manifest.permission.ACCESS_FINE_LOCATION)
+//                != PackageManager.PERMISSION_GRANTED) {
+//            ActivityCompat.requestPermissions(this,
+//                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+//                    StatisConstans.MY_PERMISSIONS_REQUEST_LOCATION);
+//            ActivityCompat.requestPermissions(this,
+//                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+//                    StatisConstans.MY_PERMISSIONS_REQUEST_LOCATION);
+//        } else {
+//            try {
+//                mlocation = getLocation();
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
     }
 
     private void initialization() {
@@ -492,19 +507,19 @@ public class MainActivity extends BaseBusNoSocllowActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == StatisConstans.MY_PERMISSIONS_REQUEST_LOCATION) {
-            if (grantResults.length > 0
-                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                try {
-                    mlocation = getLocation();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            } else {
-                Toast.makeText(MainActivity.this, "请允许才能进行定位", Toast.LENGTH_SHORT).show();
-            }
-            return;
-        }
+//        if (requestCode == StatisConstans.MY_PERMISSIONS_REQUEST_LOCATION) {
+//            if (grantResults.length > 0
+//                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                try {
+//                    mlocation = getLocation();
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            } else {
+//                Toast.makeText(MainActivity.this, "请允许才能进行定位", Toast.LENGTH_SHORT).show();
+//            }
+//            return;
+//        }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
