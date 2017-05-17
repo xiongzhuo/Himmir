@@ -29,6 +29,7 @@ public class App extends Application {
         super.onCreate();
         Fresco.initialize(this);
         x.Ext.init(this);
+        //解决7.0的相机图片问题
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
         builder.detectFileUriExposure();

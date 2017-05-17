@@ -11,7 +11,6 @@ import android.widget.AdapterView;
 import com.himmiractivity.Adapter.ListViewAdapter;
 import com.himmiractivity.App;
 import com.himmiractivity.base.BaseBusActivity;
-import com.himmiractivity.base.BaseBusNoSocllowActivity;
 import com.himmiractivity.circular_progress_bar.CircularProgressBar;
 import com.himmiractivity.entity.ManagerShardBean;
 import com.himmiractivity.interfaces.OnllClick;

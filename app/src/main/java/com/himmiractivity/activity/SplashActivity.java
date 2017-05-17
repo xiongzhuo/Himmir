@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 
 import com.himmiractivity.Utils.SharedPreferencesDB;
-import com.himmiractivity.base.BaseBusActivity;
 import com.himmiractivity.base.BaseBusNoSocllowActivity;
 import com.himmiractivity.entity.UserData;
 import com.himmiractivity.interfaces.StatisConstans;

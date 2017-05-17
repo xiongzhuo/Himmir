@@ -73,14 +73,6 @@ public class ChangePhotosUtils {
      * 拍照
      */
     public static void takephotos(Activity context) {
-//        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//        File cameraPhoto = new File(Environment.getExternalStorageDirectory(), "temp.jpg");
-//        Uri photoUri = FileProvider.getUriForFile(
-//                context,
-//                "activity.hamir.com.himmir",
-//                cameraPhoto);
-//        intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
-//        context.startActivityForResult(intent, P_CAMERA);
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(
                 Environment.getExternalStorageDirectory(), "temp.jpg")));

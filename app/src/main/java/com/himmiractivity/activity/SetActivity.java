@@ -4,7 +4,6 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -14,9 +13,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -473,15 +469,9 @@ public class SetActivity extends BaseBusActivity {
         }
         /* 拍照 */
         if (requestCode == P_CAMERA) {
-//            File cameraPhoto = new File(Environment.getExternalStorageDirectory(), "temp.jpg");
             // 设置文件保存路径这里放在跟目录下
             File picture = new File(Environment.getExternalStorageDirectory()
                     + "/temp.jpg");
-//            Uri photoUri = FileProvider.getUriForFile(
-//                    SetActivity.this,
-//                    "activity.hamir.com.himmir",
-//                    picture);
-//            startPhotoZoom(Uri.parse(data.getStringExtra("")));
             startPhotoZoom(Uri.fromFile(picture));
         }
 

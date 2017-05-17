@@ -1,6 +1,5 @@
 package com.himmiractivity.base;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -8,10 +7,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
-import android.telephony.TelephonyManager;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -28,9 +24,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.himmiractivity.Utils.AppManager;
 import com.himmiractivity.Utils.SharedPreferencesDB;
 import com.himmiractivity.Utils.ToastUtils;
-import com.himmiractivity.activity.MainActivity;
 import com.himmiractivity.interfaces.OnBooleanListener;
-import com.himmiractivity.interfaces.StatisConstans;
 import com.himmiractivity.view.SwipeBackLayout;
 import com.zhy.autolayout.AutoLayoutActivity;
 
