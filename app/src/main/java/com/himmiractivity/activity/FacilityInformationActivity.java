@@ -18,7 +18,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.himmiractivity.App;
-import com.himmiractivity.Utils.GpsUtils;
 import com.himmiractivity.Utils.SocketSingle;
 import com.himmiractivity.Utils.Utils;
 import com.himmiractivity.base.BaseBusActivity;

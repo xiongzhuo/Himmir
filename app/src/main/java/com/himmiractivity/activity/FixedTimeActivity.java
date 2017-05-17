@@ -16,15 +16,14 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 
 import com.himmiractivity.App;
-import com.himmiractivity.Utils.GpsUtils;
 import com.himmiractivity.Utils.SocketSingle;
 import com.himmiractivity.Utils.ToastUtil;
 import com.himmiractivity.base.BaseBusActivity;
 import com.himmiractivity.circular_progress_bar.CircularProgressBar;
 import com.himmiractivity.entity.PmAllData;
 import com.himmiractivity.interfaces.StatisConstans;
-import com.himmiractivity.service.Protocal;
 import com.himmiractivity.mining.app.zxing.ScoketOFFeON;
+import com.himmiractivity.service.Protocal;
 import com.himmiractivity.util.ThreadPoolUtils;
 
 import java.net.Socket;

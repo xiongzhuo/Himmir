@@ -24,7 +24,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import activity.hamir.com.himmir.R;
-import butterknife.BindView;
 import butterknife.BindViews;
 
 /**

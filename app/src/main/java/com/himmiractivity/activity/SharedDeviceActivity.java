@@ -2,17 +2,13 @@ package com.himmiractivity.activity;
 
 import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.himmiractivity.App;
 import com.himmiractivity.Utils.ToastUtil;
@@ -99,20 +95,6 @@ public class SharedDeviceActivity extends BaseBusActivity {
                         }
                     }
                 });
-//                if (ContextCompat.checkSelfPermission(this,
-//                        Manifest.permission.WRITE_EXTERNAL_STORAGE)
-//                        != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this,
-//                        Manifest.permission.CAMERA)
-//                        != PackageManager.PERMISSION_GRANTED) {
-//                    ActivityCompat.requestPermissions(this,
-//                            new String[]{Manifest.permission.CAMERA},
-//                            StatisConstans.MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
-//                } else {
-//                    intent = new Intent();
-//                    intent.setClass(SharedDeviceActivity.this, CaptureActivity.class);
-//                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                    startActivityForResult(intent, SCANNIN_GREQUEST_CODE);
-//                }
                 break;
             case R.id.ll_add_shared:
                 permissionRequests(Manifest.permission.CAMERA, new OnBooleanListener() {
@@ -128,20 +110,6 @@ public class SharedDeviceActivity extends BaseBusActivity {
                         }
                     }
                 });
-//                if (ContextCompat.checkSelfPermission(this,
-//                        Manifest.permission.WRITE_EXTERNAL_STORAGE)
-//                        != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this,
-//                        Manifest.permission.CAMERA)
-//                        != PackageManager.PERMISSION_GRANTED) {
-//                    ActivityCompat.requestPermissions(this,
-//                            new String[]{Manifest.permission.CAMERA},
-//                            StatisConstans.ADD_SHARD);
-//                } else {
-//                    intent = new Intent();
-//                    intent.setClass(SharedDeviceActivity.this, CaptureActivity.class);
-//                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                    startActivityForResult(intent, ADD_SHARED);
-//                }
                 break;
             case R.id.ll_added_shared:
                 intent = new Intent();
@@ -160,29 +128,6 @@ public class SharedDeviceActivity extends BaseBusActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        if (requestCode == StatisConstans.MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE) {
-//            if (grantResults.length > 0
-//                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                Intent intent = new Intent();
-//                intent.setClass(SharedDeviceActivity.this, CaptureActivity.class);
-//                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                startActivityForResult(intent, SCANNIN_GREQUEST_CODE);
-//            } else {
-//                Toast.makeText(SharedDeviceActivity.this, "请你允许才能扫描二维码", Toast.LENGTH_SHORT).show();
-//            }
-//            return;
-//        } else if (requestCode == StatisConstans.ADD_SHARD) {
-//            if (grantResults.length > 0
-//                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                Intent intent = new Intent();
-//                intent.setClass(SharedDeviceActivity.this, CaptureActivity.class);
-//                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                startActivityForResult(intent, ADD_SHARED);
-//            } else {
-//                Toast.makeText(SharedDeviceActivity.this, "请你允许才能扫描二维码", Toast.LENGTH_SHORT).show();
-//            }
-//            return;
-//        }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 

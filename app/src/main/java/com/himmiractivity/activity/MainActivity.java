@@ -6,7 +6,6 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -18,7 +17,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
@@ -312,23 +310,6 @@ public class MainActivity extends BaseBusNoSocllowActivity {
                 }
             }
         });
-//                Manifest.permission.ACCESS_COARSE_LOCATION)
-//                != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this,
-//                Manifest.permission.ACCESS_FINE_LOCATION)
-//                != PackageManager.PERMISSION_GRANTED) {
-//            ActivityCompat.requestPermissions(this,
-//                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
-//                    StatisConstans.MY_PERMISSIONS_REQUEST_LOCATION);
-//            ActivityCompat.requestPermissions(this,
-//                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-//                    StatisConstans.MY_PERMISSIONS_REQUEST_LOCATION);
-//        } else {
-//            try {
-//                mlocation = getLocation();
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        }
     }
 
     private void initialization() {
@@ -507,19 +488,6 @@ public class MainActivity extends BaseBusNoSocllowActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        if (requestCode == StatisConstans.MY_PERMISSIONS_REQUEST_LOCATION) {
-//            if (grantResults.length > 0
-//                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                try {
-//                    mlocation = getLocation();
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//            } else {
-//                Toast.makeText(MainActivity.this, "请允许才能进行定位", Toast.LENGTH_SHORT).show();
-//            }
-//            return;
-//        }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 

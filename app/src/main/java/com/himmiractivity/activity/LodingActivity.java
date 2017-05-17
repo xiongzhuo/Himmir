@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import com.himmiractivity.Utils.CheckMobileAndEmail;
 import com.himmiractivity.Utils.ToastUtil;
-import com.himmiractivity.base.BaseBusActivity;
 import com.himmiractivity.base.BaseBusNoSocllowActivity;
 import com.himmiractivity.entity.UserData;
 import com.himmiractivity.interfaces.StatisConstans;

@@ -4,11 +4,7 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.HeaderViewListAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.himmiractivity.entity.Space;

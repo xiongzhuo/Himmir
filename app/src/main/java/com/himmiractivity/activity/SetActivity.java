@@ -179,15 +179,6 @@ public class SetActivity extends BaseBusActivity {
                 }
             }
         });
-//        if (ContextCompat.checkSelfPermission(this,
-//                Manifest.permission.CALL_PHONE)
-//                != PackageManager.PERMISSION_GRANTED) {
-//            ActivityCompat.requestPermissions(this,
-//                    new String[]{Manifest.permission.CALL_PHONE},
-//                    StatisConstans.MY_PERMISSIONS_REQUEST_CALL_PHONE);
-//        } else {
-//            callPhone();
-//        }
     }
 
     public void getPhoto() {
@@ -211,21 +202,6 @@ public class SetActivity extends BaseBusActivity {
                 }
             }
         });
-//        if (ContextCompat.checkSelfPermission(this,
-//                Manifest.permission.WRITE_EXTERNAL_STORAGE)
-//                != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this,
-//                Manifest.permission.CAMERA)
-//                != PackageManager.PERMISSION_GRANTED) {
-//            ActivityCompat.requestPermissions(this,
-//                    new String[]{Manifest.permission.CAMERA},
-//                    StatisConstans.MY_PERMISSIONS_REQUEST_CAMERA);
-//            ActivityCompat.requestPermissions(this,
-//                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-//                    StatisConstans.MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
-//        } else {
-//            ChangePhotosUtils
-//                    .changePhotos(SetActivity.this);
-//        }
     }
 
     public void getWrite() {
@@ -239,14 +215,6 @@ public class SetActivity extends BaseBusActivity {
                 }
             }
         });
-//        if (ContextCompat.checkSelfPermission(this,
-//                Manifest.permission.WRITE_EXTERNAL_STORAGE)
-//                != PackageManager.PERMISSION_GRANTED) {
-//            ActivityCompat.requestPermissions(this,
-//                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-//                    StatisConstans.MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
-//        } else {
-//        }
     }
 
     public void callPhone() {
@@ -377,23 +345,6 @@ public class SetActivity extends BaseBusActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        if (requestCode == StatisConstans.MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE) {
-//            if (grantResults.length > 0
-//                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                ChangePhotosUtils
-//                        .changePhotos(SetActivity.this);
-//            } else {
-//                Toast.makeText(SetActivity.this, "请您允许才能选取图片", Toast.LENGTH_SHORT).show();
-//            }
-//        } else if (requestCode == StatisConstans.MY_PERMISSIONS_REQUEST_CAMERA) {
-//            if (grantResults.length > 0
-//                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                ChangePhotosUtils
-//                        .changePhotos(SetActivity.this);
-//            } else {
-//                Toast.makeText(SetActivity.this, "请您允许才能拍照", Toast.LENGTH_SHORT).show();
-//            }
-//        }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 

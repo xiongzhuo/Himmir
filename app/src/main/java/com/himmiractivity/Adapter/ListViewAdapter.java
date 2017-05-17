@@ -14,7 +14,6 @@ import com.himmiractivity.enums.DragEdge;
 import com.himmiractivity.enums.ShowMode;
 import com.himmiractivity.interfaces.OnllClick;
 import com.himmiractivity.interfaces.SwipeListener;
-import com.himmiractivity.request.DelChareUserRequest;
 import com.himmiractivity.zlistview.ZSwipeItem;
 
 import java.util.List;

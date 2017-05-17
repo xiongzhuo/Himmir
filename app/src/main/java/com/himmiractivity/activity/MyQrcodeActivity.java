@@ -1,6 +1,5 @@
 package com.himmiractivity.activity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -10,12 +9,10 @@ import android.os.Message;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -29,7 +26,6 @@ import com.himmiractivity.Utils.ToastUtils;
 import com.himmiractivity.Utils.Utils;
 import com.himmiractivity.base.BaseBusActivity;
 import com.himmiractivity.interfaces.StatisConstans;
-import com.himmiractivity.request.ModifyNameRequest;
 import com.himmiractivity.request.ReviseSharingNameRequest;
 import com.himmiractivity.view.ResetNameDialog;
 
