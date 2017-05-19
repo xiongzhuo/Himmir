@@ -19,121 +19,121 @@ import javax.crypto.spec.SecretKeySpec;
 
 
 public class Protocol {
-    public static interface MsgType {
-        public static final byte DEV_SERVER_CMD_LOGIN = (byte) 0;
-        public static final byte SERVER_DEV_ACK_LOGIN = (byte) 1;
-        public static final byte DEV_SERVER_CMD_HEARTBEAT = (byte) 2;
-        public static final byte SERVER_DEV_ACK_HEARTBEAT = (byte) 3;
-        public static final byte DEV_SERVER_CMD_REPORT = (byte) 4;
-        public static final byte SERVER_DEV_CMD_CONTROL = (byte) 5;
-        public static final byte DEV_SERVER_ACK_CONTROL = (byte) 6;
-        public static final byte SERVER_DEV_CMD_SETUP = (byte) 7;
-        public static final byte DEV_SERVER_ACK_SETUP = (byte) 8;
-        public static final byte SERVER_DEV_CMD_DEMAND = (byte) 9;
-        public static final byte DEV_SERVER_ACK_DEMAND = (byte) 10;
-        public static final byte APP_DEV_CMD_ACTIVATE = (byte) 11;
-        public static final byte DEV_APP_ACK_ACTIVATE = (byte) 12;
-        public static final byte SERVER_DEV_CMD_READY = (byte) 13;
-        public static final byte APP_DEV_CMD_CONFIG = (byte) 14;
-        public static final byte DEV_APP_ACK_CONFIG = (byte) 15;
-        public static final byte APP_DEV_CMD_SETUP = (byte) 16;
-        public static final byte DEV_APP_ACK_SETUP = (byte) 17;
-        public static final byte APP_DEV_CMD_DEMAND = (byte) 18;
-        public static final byte DEV_APP_ACK_DEMAND = (byte) 19;
-        public static final byte DEV_SERVER_CMD_HISTORY = (byte) 20;
-        public static final byte APP_SERVER_CMD_DEMAND = (byte) 21;  //21 ：app 向服务器查询
-        public static final byte SERVER_APP_ACK_DEMAND = (byte) 22;  //22 ：服务器回 app 回查询
-        public static final byte APP_SERVER_CMD_CONTROL = (byte) 23; //23 ：app 向服务器 发控制命令
-        public static final byte SERVER_APP_ACK_CONTROL = (byte) 24; //24 ：服务器
+    public interface MsgType {
+        byte DEV_SERVER_CMD_LOGIN = (byte) 0;
+        byte SERVER_DEV_ACK_LOGIN = (byte) 1;
+        byte DEV_SERVER_CMD_HEARTBEAT = (byte) 2;
+        byte SERVER_DEV_ACK_HEARTBEAT = (byte) 3;
+        byte DEV_SERVER_CMD_REPORT = (byte) 4;
+        byte SERVER_DEV_CMD_CONTROL = (byte) 5;
+        byte DEV_SERVER_ACK_CONTROL = (byte) 6;
+        byte SERVER_DEV_CMD_SETUP = (byte) 7;
+        byte DEV_SERVER_ACK_SETUP = (byte) 8;
+        byte SERVER_DEV_CMD_DEMAND = (byte) 9;
+        byte DEV_SERVER_ACK_DEMAND = (byte) 10;
+        byte APP_DEV_CMD_ACTIVATE = (byte) 11;
+        byte DEV_APP_ACK_ACTIVATE = (byte) 12;
+        byte SERVER_DEV_CMD_READY = (byte) 13;
+        byte APP_DEV_CMD_CONFIG = (byte) 14;
+        byte DEV_APP_ACK_CONFIG = (byte) 15;
+        byte APP_DEV_CMD_SETUP = (byte) 16;
+        byte DEV_APP_ACK_SETUP = (byte) 17;
+        byte APP_DEV_CMD_DEMAND = (byte) 18;
+        byte DEV_APP_ACK_DEMAND = (byte) 19;
+        byte DEV_SERVER_CMD_HISTORY = (byte) 20;
+        byte APP_SERVER_CMD_DEMAND = (byte) 21;  //21 ：app 向服务器查询
+        byte SERVER_APP_ACK_DEMAND = (byte) 22;  //22 ：服务器回 app 回查询
+        byte APP_SERVER_CMD_CONTROL = (byte) 23; //23 ：app 向服务器 发控制命令
+        byte SERVER_APP_ACK_CONTROL = (byte) 24; //24 ：服务器
     }
 
     public static interface PayloardKey {
-        public static final byte D_POWER = (byte) 0x10;// 开关机
-        public static final byte D_MODE = (byte) 0x20; // 模式
-        public static final byte D_EXHAUST_MODE = (byte) 0x22;// 新排风模式
-        public static final byte D_EXHAUST_RATIO = (byte) 0x23; // 排风比例
-        public static final byte D_LCD_BACKLIGHT = (byte) 0x21; // 背光时间
-        public static final byte D_AUX_HEATING = (byte) 0x24; // 辅热温度值
-        public static final byte D_CONST_TEMP_MODE = (byte) 0x25; // 恒温模式
-        public static final byte D_CONST_HUMI_MODE = (byte) 0x26; // 恒湿模式
-        public static final byte D_CONST_TEMP_PARA = (byte) 0x27; // 恒温参数
-        public static final byte D_CONST_HUMI_PARA = (byte) 0x28; // 恒湿参数
-        public static final byte D_FAN_FREQ = (byte) 0x31; // 风机频率
-        public static final byte D_BLOWER_SPEED = (byte) 0x32; // 送风机转速
-        public static final byte D_EXHAUST_SPEED = (byte) 0x33; // 排风机转速
-        public static final byte D_BLOWING_RATE = (byte) 0x34; // 风量
-        public static final byte D_THAW_START_TEMP = (byte) 0x41; // 融冰启动温度
-        public static final byte D_THAW_STOP_TEMP = (byte) 0x42; // 融冰停止温度
-        public static final byte D_THAW_TIME = (byte) 0x43; // 融冰时间
-        public static final byte D_THAW_INV = (byte) 0x44; // 融冰间隔时间
-        public static final byte D_DUSTWIPER_CLEAR_PERIOD = (byte) 0x45; // 除尘器清洗周期
-        public static final byte D_DUSTWIPER_CLEAR_REMAIN = (byte) 0x46; // 除尘器清洗周期剩余时间
-        public static final byte D_TIME_MODE = (byte) 0x50; // 定时模式
-        public static final byte D_TIMER1 = (byte) 0x51; // 定时器1
-        public static final byte D_TIMER2 = (byte) 0x52; // 定时器2
-        public static final byte D_TIMER3 = (byte) 0x53; // 定时器3
-        public static final byte D_CO2_ADJ = (byte) 0x61; // CO2调节值
-        public static final byte D_FUNC_STATUS = (byte) 0x62; // 功能状态
-        public static final byte D_PM_ADJ = (byte) 0x63; // PM调节
+        byte D_POWER = (byte) 0x10;// 开关机
+        byte D_MODE = (byte) 0x20; // 模式
+        byte D_EXHAUST_MODE = (byte) 0x22;// 新排风模式
+        byte D_EXHAUST_RATIO = (byte) 0x23; // 排风比例
+        byte D_LCD_BACKLIGHT = (byte) 0x21; // 背光时间
+        byte D_AUX_HEATING = (byte) 0x24; // 辅热温度值
+        byte D_CONST_TEMP_MODE = (byte) 0x25; // 恒温模式
+        byte D_CONST_HUMI_MODE = (byte) 0x26; // 恒湿模式
+        byte D_CONST_TEMP_PARA = (byte) 0x27; // 恒温参数
+        byte D_CONST_HUMI_PARA = (byte) 0x28; // 恒湿参数
+        byte D_FAN_FREQ = (byte) 0x31; // 风机频率
+        byte D_BLOWER_SPEED = (byte) 0x32; // 送风机转速
+        byte D_EXHAUST_SPEED = (byte) 0x33; // 排风机转速
+        byte D_BLOWING_RATE = (byte) 0x34; // 风量
+        byte D_THAW_START_TEMP = (byte) 0x41; // 融冰启动温度
+        byte D_THAW_STOP_TEMP = (byte) 0x42; // 融冰停止温度
+        byte D_THAW_TIME = (byte) 0x43; // 融冰时间
+        byte D_THAW_INV = (byte) 0x44; // 融冰间隔时间
+        byte D_DUSTWIPER_CLEAR_PERIOD = (byte) 0x45; // 除尘器清洗周期
+        byte D_DUSTWIPER_CLEAR_REMAIN = (byte) 0x46; // 除尘器清洗周期剩余时间
+        byte D_TIME_MODE = (byte) 0x50; // 定时模式
+        byte D_TIMER1 = (byte) 0x51; // 定时器1
+        byte D_TIMER2 = (byte) 0x52; // 定时器2
+        byte D_TIMER3 = (byte) 0x53; // 定时器3
+        byte D_CO2_ADJ = (byte) 0x61; // CO2调节值
+        byte D_FUNC_STATUS = (byte) 0x62; // 功能状态
+        byte D_PM_ADJ = (byte) 0x63; // PM调节
 
-        public static final byte D_SENSOR_INDOOR_TEMP = (byte) 0x71; // 室内温度
-        public static final byte D_SENSOR_OUTDOOR_TEMP = (byte) 0x72; // 室外温度
-        public static final byte D_SENSOR_FAN_TEMP = (byte) 0x73; // 新风温度
-        public static final byte D_SENSOR_EXHAUST_TEMP = (byte) 0x74; // 排风温度
-        public static final byte D_CO2_THICKNESS = (byte) 0x75; // CO2浓度
-        public static final byte D_INDOOR_PM_THICKNESS = (byte) 0x76; // 室内颗粒物浓度
-        public static final byte D_OUTDOOR_PM_THICKNESS = (byte) 0x77; // 室外颗粒物浓度
-        public static final byte D_INDOOR_HUMI = (byte) 0x78; // 室内湿度
-        public static final byte D_SYSTEM_CLOCK = (byte) 0x01; // 系统时间校准
-        public static final byte D_FAULT_STATUS = (byte) 0x0f; // 故障状态
+        byte D_SENSOR_INDOOR_TEMP = (byte) 0x71; // 室内温度
+        byte D_SENSOR_OUTDOOR_TEMP = (byte) 0x72; // 室外温度
+        byte D_SENSOR_FAN_TEMP = (byte) 0x73; // 新风温度
+        byte D_SENSOR_EXHAUST_TEMP = (byte) 0x74; // 排风温度
+        byte D_CO2_THICKNESS = (byte) 0x75; // CO2浓度
+        byte D_INDOOR_PM_THICKNESS = (byte) 0x76; // 室内颗粒物浓度
+        byte D_OUTDOOR_PM_THICKNESS = (byte) 0x77; // 室外颗粒物浓度
+        byte D_INDOOR_HUMI = (byte) 0x78; // 室内湿度
+        byte D_SYSTEM_CLOCK = (byte) 0x01; // 系统时间校准
+        byte D_FAULT_STATUS = (byte) 0x0f; // 故障状态
 
     }
 
     public static interface Key_IV {
-        public static final byte[] Public_Key = {0x3a, 0x46, 0x72, 0x2b, 0x45, 0x5d, 0x4b, 0x73, 0x7e, 0x65, 0x21,
+        byte[] Public_Key = {0x3a, 0x46, 0x72, 0x2b, 0x45, 0x5d, 0x4b, 0x73, 0x7e, 0x65, 0x21,
                 0x42, 0x6e, 0x6c, 0x46, 0x3d};
-        public static final byte[] Public_IV = {0x4f, 0x3c, 0x64, 0x39, 0x3a, 0x76, 0x2a, 0x32, 0x45, 0x3f, 0x41, 0x22,
+        byte[] Public_IV = {0x4f, 0x3c, 0x64, 0x39, 0x3a, 0x76, 0x2a, 0x32, 0x45, 0x3f, 0x41, 0x22,
                 0x2e, 0x37, 0x2b, 0x5e};
-        public static final byte[] Private_KEY = {0x3a, 0x46, 0x72, 0x2b, 0x45, 0x5d, 0x4b, 0x73, 0x7e, 0x65, 0x21,
+        byte[] Private_KEY = {0x3a, 0x46, 0x72, 0x2b, 0x45, 0x5d, 0x4b, 0x73, 0x7e, 0x65, 0x21,
                 0x42, 0x6e, 0x6c, 0x46, 0x3d};
-        public static final byte[] Private_IV = {0x4f, 0x3c, 0x64, 0x39, 0x3a, 0x76, 0x2a, 0x32, 0x45, 0x3f, 0x41,
+        byte[] Private_IV = {0x4f, 0x3c, 0x64, 0x39, 0x3a, 0x76, 0x2a, 0x32, 0x45, 0x3f, 0x41,
                 0x22, 0x2e, 0x37, 0x2b, 0x5e};
     }
 
     private static interface Packe_Def {
-        public static final String ConstHeader = "smart.hnliuxing.com";
-        public static final byte ConstHeaderLength = 15;
-        public static final byte ConstSaveDataLength = 4;
-        public static final byte DEV_OFF_ON = (byte) 0xea; // 设备在线状态
-        public static final byte DEV_Q_DATA = (byte) 0xda; // 设备所有状态
+        String ConstHeader = "smart.hnliuxing.com";
+        byte ConstHeaderLength = 15;
+        byte ConstSaveDataLength = 4;
+        byte DEV_OFF_ON = (byte) 0xea; // 设备在线状态
+        byte DEV_Q_DATA = (byte) 0xda; // 设备所有状态
         //包类型
-        public static final short DIR_SVR_DEV = (short) 0xab00; // 服务器至设备
-        public static final short DIR_DEV_SVR = (short) 0xba00; // 设备至服务器
-        public static final short DIR_APP_DEV = (short) 0xcb00; // app至设备
-        public static final short DIR_DEV_APP = (short) 0xbc00; // 设备至app
-        public static final short DIR_APP_SVR = (short) 0xae00;// app至服务器
-        public static final short DIR_SVR_APP = (short) 0xea00;// 服务器至app
-        public static final short DIR_MASK = (short) 0xff00;
+        short DIR_SVR_DEV = (short) 0xab00; // 服务器至设备
+        short DIR_DEV_SVR = (short) 0xba00; // 设备至服务器
+        short DIR_APP_DEV = (short) 0xcb00; // app至设备
+        short DIR_DEV_APP = (short) 0xbc00; // 设备至app
+        short DIR_APP_SVR = (short) 0xae00;// app至服务器
+        short DIR_SVR_APP = (short) 0xea00;// 服务器至app
+        short DIR_MASK = (short) 0xff00;
 
-        public static final short PACKET_TYPE_CMD = (short) 0x0000; // 命令包
-        public static final short PACKET_TYPE_ACK = (short) 0x0080; // 回应包
-        public static final short PACKET_TYPE_MASK = (short) 0x00f0;
-        public static final short ENCRYPT_TYPE_PUBLIC = (short) 0x0000; // 公钥加密
-        public static final short ENCRYPT_TYPE_ACTIVATE = (short) 0x0002; // 激活用密钥
-        public static final short ENCRYPT_TYPE_MASK = (short) 0x000f; // 密码MASK
+        short PACKET_TYPE_CMD = (short) 0x0000; // 命令包
+        short PACKET_TYPE_ACK = (short) 0x0080; // 回应包
+        short PACKET_TYPE_MASK = (short) 0x00f0;
+        short ENCRYPT_TYPE_PUBLIC = (short) 0x0000; // 公钥加密
+        short ENCRYPT_TYPE_ACTIVATE = (short) 0x0002; // 激活用密钥
+        short ENCRYPT_TYPE_MASK = (short) 0x000f; // 密码MASK
 
         //包类型
         //1.Serverto Dev
-        public static final short ptype_Server_Dev_Cmd_Pub = (short) (DIR_SVR_DEV | PACKET_TYPE_CMD | ENCRYPT_TYPE_PUBLIC);
-        public static final short ptype_Server_Dev_Cmd_Act = (short) (DIR_SVR_DEV | PACKET_TYPE_CMD | ENCRYPT_TYPE_ACTIVATE);
-        public static final short ptype_Server_Dev_Ack_Pub = (short) (DIR_SVR_DEV | PACKET_TYPE_ACK | ENCRYPT_TYPE_ACTIVATE);
-        public static final short ptyte_App_Dev_Act_Act = (short) (DIR_APP_DEV | PACKET_TYPE_CMD | ENCRYPT_TYPE_PUBLIC);
+        short ptype_Server_Dev_Cmd_Pub = (short) (DIR_SVR_DEV | PACKET_TYPE_CMD | ENCRYPT_TYPE_PUBLIC);
+        short ptype_Server_Dev_Cmd_Act = (short) (DIR_SVR_DEV | PACKET_TYPE_CMD | ENCRYPT_TYPE_ACTIVATE);
+        short ptype_Server_Dev_Ack_Pub = (short) (DIR_SVR_DEV | PACKET_TYPE_ACK | ENCRYPT_TYPE_ACTIVATE);
+        short ptyte_App_Dev_Act_Act = (short) (DIR_APP_DEV | PACKET_TYPE_CMD | ENCRYPT_TYPE_PUBLIC);
         //2.Dev to Server
-        public static final short ptype_Dev_Server_Ack_Pub = (short) (DIR_DEV_SVR | PACKET_TYPE_ACK | ENCRYPT_TYPE_PUBLIC); //上报用什么？
-        public static final short ptype_Dev_Server_Cmd_Pub = (short) (DIR_DEV_SVR | PACKET_TYPE_CMD | ENCRYPT_TYPE_PUBLIC); //上报用什么？
+        short ptype_Dev_Server_Ack_Pub = (short) (DIR_DEV_SVR | PACKET_TYPE_ACK | ENCRYPT_TYPE_PUBLIC); //上报用什么？
+        short ptype_Dev_Server_Cmd_Pub = (short) (DIR_DEV_SVR | PACKET_TYPE_CMD | ENCRYPT_TYPE_PUBLIC); //上报用什么？
         //3.server to app
-        public static final short ptype_Server_App_Ack_Pub = (short) (DIR_SVR_APP | PACKET_TYPE_ACK | ENCRYPT_TYPE_PUBLIC);
-        public static final short ptype_App_Server_Cmd_Pub = (short) (DIR_APP_SVR | PACKET_TYPE_ACK | ENCRYPT_TYPE_PUBLIC);
+        short ptype_Server_App_Ack_Pub = (short) (DIR_SVR_APP | PACKET_TYPE_ACK | ENCRYPT_TYPE_PUBLIC);
+        short ptype_App_Server_Cmd_Pub = (short) (DIR_APP_SVR | PACKET_TYPE_ACK | ENCRYPT_TYPE_PUBLIC);
 
     }
 
@@ -861,7 +861,6 @@ public class Protocol {
         byte cmd = deData[4];
         switch (cmd) {
             case MsgType.DEV_SERVER_CMD_LOGIN:
-
                 break;
             case MsgType.DEV_SERVER_CMD_REPORT:
                 int playlen = deData.length - 5;
