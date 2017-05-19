@@ -5,6 +5,7 @@ import android.app.Application;
 import android.os.StrictMode;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.himmiractivity.db.ATDbManager;
 
 import org.xutils.x;
 
@@ -15,6 +16,7 @@ public class App extends Application {
     private List<Activity> activityList = new LinkedList<>();
     //为了实现每次使用该类时不创建新的对象而创建的静态对象
     private static App instance;
+    private ATDbManager atDbManager;
 
     //实例化一次
     public synchronized static App getInstance() {
@@ -29,6 +31,7 @@ public class App extends Application {
         super.onCreate();
         Fresco.initialize(this);
         x.Ext.init(this);
+        atDbManager = new ATDbManager(this);
         //解决7.0的相机图片问题
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
@@ -55,5 +58,15 @@ public class App extends Application {
         } finally {
             System.exit(0);
         }
+    }
+
+    public ATDbManager getAtDbManager() {
+        return atDbManager;
+    }
+
+    @Override
+    public void onTerminate() {
+        instance = null;
+        super.onTerminate();
     }
 }

@@ -1,27 +1,21 @@
 package com.himmiractivity.liuxing_scoket;
 
-import android.content.Context;
 import android.os.Handler;
 import android.util.Log;
 
-import com.himmiractivity.Utils.ToastUtil;
 import com.himmiractivity.entity.DataServerBean;
 import com.himmiractivity.entity.PmAllData;
 import com.himmiractivity.interfaces.StatisConstans;
 
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.Socket;
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-
-import java.io.DataOutputStream;
-import java.nio.*;
-import java.io.IOException;
-import java.net.Socket;
-import java.lang.Thread;
-
-import okio.*;
 
 
 public class Protocol {

@@ -11,14 +11,14 @@ import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-import okhttp3.Callback;
-import okhttp3.Headers;
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
+//import okhttp3.Callback;
+//import okhttp3.Headers;
+//import okhttp3.MediaType;
+//import okhttp3.MultipartBody;
+//import okhttp3.OkHttpClient;
+//import okhttp3.Request;
+//import okhttp3.RequestBody;
+//import okhttp3.Response;
 
 /**
  * Created by Administrator on 2017/3/17.
@@ -26,13 +26,13 @@ import okhttp3.Response;
 
 public class UploadHelper {
 
-    public static final String TAG = "UploadHelper";
+  /*  public static final String TAG = "UploadHelper";
     private static final MediaType MEDIA_TYPE_PNG = MediaType.parse("image/jpeg");
     private final OkHttpClient client = new OkHttpClient();
 
     public String upload(String mobile, String userDeviceUuid, String userToken, File file) throws Exception {
 
-        RequestBody fileBody = RequestBody.create(MEDIA_TYPE_PNG, file);
+        RequestBody fileBody = RequestBody.create(MEDIA_TYPE_PNG, file);*/
 ///                .addPart(
 //                        Headers.of("Content-Disposition", "form-data; name=\"file\"; filename=\"" + fileName + "\""),
 //                        RequestBody.create(MEDIA_TYPE_PNG, file))
@@ -49,7 +49,7 @@ public class UploadHelper {
 //                .addFormDataPart("mobile", mobile)
 //                .addFormDataPart("image", file.getName(), fileBody)
 //                .build();
-        RequestBody requestBody = new MultipartBody.Builder()
+       /* RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addPart(Headers.of(
                         "Content-Disposition",
@@ -89,7 +89,7 @@ public class UploadHelper {
                     Log.i("lfq", response.message() + " error : body " + response.body().string());
                 }
             }
-        });
+        });*/
 //        try {
 //            response = client.newCall(request).execute();
 //            String jsonString = response.body().string();
@@ -111,6 +111,6 @@ public class UploadHelper {
 //        } catch (Exception e) {
 //            Log.d(TAG, "upload IOException ", e);
 //        }
-        return null;
-    }
+//        return null;
+//    }
 }

@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.apkfuns.logutils.LogUtils;
 import com.himmiractivity.Utils.ToastUtils;
 
 import butterknife.ButterKnife;
@@ -44,7 +43,6 @@ public abstract class BaseBusFragment extends Fragment {
         ButterKnife.bind(this, mViewLayout);
         this.initView(this.mViewLayout, savedInstanceState);
         this.initData();
-        LogUtils.e("onCreateView");
         return mViewLayout;
     }
 
