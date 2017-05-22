@@ -56,7 +56,7 @@ import activity.hamir.com.himmir.R;
 public class CaptureActivity extends Activity implements Callback {
 
     private Button btnLight;
-    //    private Button btnOpenImage;
+    private Button btnOpenImage;
     private boolean playBeep;
     private boolean vibrate;
     private boolean hasSurface;
@@ -79,7 +79,7 @@ public class CaptureActivity extends Activity implements Callback {
         CameraManager.init(getApplication());
         viewfinderView = (ViewfinderView) findViewById(R.id.viewfinder_view);
         btnLight = (Button) findViewById(R.id.btn_light);
-//        btnOpenImage = (Button) findViewById(R.id.btn_openimg);
+        btnOpenImage = (Button) findViewById(R.id.btn_openimg);
         hasSurface = false;
         inactivityTimer = new InactivityTimer(this);
         setListener();
@@ -99,6 +99,12 @@ public class CaptureActivity extends Activity implements Callback {
             @Override
             public void onClick(View view) {
                 IfOpenLight(btnLight);
+            }
+        });
+        btnOpenImage.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                pickPictureFromAblum(btnOpenImage);
             }
         });
     }
