@@ -11,6 +11,7 @@ import com.himmiractivity.Utils.JsonUtils;
 import com.himmiractivity.Utils.MD5;
 import com.himmiractivity.Utils.SharedPreferencesDB;
 import com.himmiractivity.Utils.ToastUtil;
+import com.himmiractivity.activity.LodingActivity;
 import com.himmiractivity.entity.JsonResult;
 import com.himmiractivity.entity.UserData;
 import com.himmiractivity.interfaces.StatisConstans;
@@ -74,7 +75,6 @@ public class LodingRequest {
                     //手机号码已经被其它账号绑定
                     if (!result.isFlag()) {
                         ToastUtil.show(context, result.getMsg());
-                        handler.sendEmptyMessage(StatisConstans.MSG_RECEIVED_BOUND);
                     }
                     //手机号码正常
                     else {
@@ -87,7 +87,7 @@ public class LodingRequest {
 
             @Override
             public void onError(Throwable ex, boolean isOnCallback) {
-                handler.sendEmptyMessage(StatisConstans.MSG_RECEIVED_BOUND);
+                ToastUtil.show(context, "网络请求失败");
                 Log.i("logTest_xz", "onError");
                 if (null != dialogView) {
                     dialogView.cancel();

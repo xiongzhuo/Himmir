@@ -52,9 +52,6 @@ public class LodingActivity extends BaseBusNoSocllowActivity {
                     startActivity(intent);
                     finish();
                     break;
-                case StatisConstans.MSG_RECEIVED_BOUND:
-                    ToastUtil.show(LodingActivity.this, "网络请求失败");
-                    break;
                 default:
                     break;
             }
