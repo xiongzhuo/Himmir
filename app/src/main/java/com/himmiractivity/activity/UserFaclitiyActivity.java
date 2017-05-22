@@ -101,6 +101,8 @@ public class UserFaclitiyActivity extends BaseBusActivity implements AlxRefreshL
                 } catch (Exception e) {
                     if (Utils.isNetworkAvailable(UserFaclitiyActivity.this)) {
                         try {
+                            socket.close();
+                            socket = null;
                             socket = SocketSingle.getInstance(ip, Integer.valueOf(port), true);
                             threadPoolUtils.execute(new Thread(new Runnable() {
                                 @Override

@@ -32,6 +32,7 @@ import com.himmiractivity.util.ThreadPoolUtils;
 import com.himmiractivity.view.PercentView;
 import com.himmiractivity.view.SuperSwipeRefreshLayout;
 
+import java.io.IOException;
 import java.net.Socket;
 import java.util.List;
 
@@ -98,8 +99,16 @@ public class FacilityInformationActivity extends BaseBusActivity implements Supe
                             @Override
                             public void run() {
                                 if (Utils.isNetworkAvailable(FacilityInformationActivity.this)) {
-                                    socket = SocketSingle.getInstance(ip, Integer.parseInt(port), true);
-                                    ScoketOFFeON.receMessage(socket, protocal, handler);
+                                    try {
+                                        if (socket != null) {
+                                            socket.close();
+                                            socket = null;
+                                        }
+                                        socket = SocketSingle.getInstance(ip, Integer.parseInt(port), true);
+                                        ScoketOFFeON.receMessage(socket, protocal, handler);
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
                                 }
                             }
                         }));
