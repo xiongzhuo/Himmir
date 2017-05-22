@@ -22,6 +22,7 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -54,13 +55,13 @@ import activity.hamir.com.himmir.R;
  */
 public class CaptureActivity extends Activity implements Callback {
 
-    //    private Button btnLight;
-//    private Button btnOpenImage;
+    private Button btnLight;
+    //    private Button btnOpenImage;
     private boolean playBeep;
     private boolean vibrate;
     private boolean hasSurface;
     private String characterSet;
-    //    private int ifOpenLight = 0;//判断是否开启闪光灯
+    private int ifOpenLight = 0;//判断是否开启闪光灯
     private MediaPlayer mediaPlayer;
     private ViewfinderView viewfinderView;
     private CaptureActivityHandler handler;
@@ -77,7 +78,7 @@ public class CaptureActivity extends Activity implements Callback {
         setContentView(R.layout.act_capture);
         CameraManager.init(getApplication());
         viewfinderView = (ViewfinderView) findViewById(R.id.viewfinder_view);
-//        btnLight = (Button) findViewById(R.id.btn_light);
+        btnLight = (Button) findViewById(R.id.btn_light);
 //        btnOpenImage = (Button) findViewById(R.id.btn_openimg);
         hasSurface = false;
         inactivityTimer = new InactivityTimer(this);
@@ -92,6 +93,12 @@ public class CaptureActivity extends Activity implements Callback {
             @Override
             public void onClick(View v) {
                 onBackPressed();
+            }
+        });
+        btnLight.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                IfOpenLight(btnLight);
             }
         });
     }
@@ -270,24 +277,24 @@ public class CaptureActivity extends Activity implements Callback {
     }
 
     // 是否开启闪光灯
-//    public void IfOpenLight(View v) {
-//        ifOpenLight++;
-//
-//        switch (ifOpenLight % 2) {
-//            case 0:
-//                //关闪光灯
-//                CameraManager.get().closeLight();
-//                btnLight.setText(getString(R.string.str_open_light));
-//                break;
-//            case 1:
-//                //开闪光灯
-//                CameraManager.get().openLight();
-//                btnLight.setText(getString(R.string.str_close_light));
-//                break;
-//            default:
-//                break;
-//        }
-//    }
+    public void IfOpenLight(View v) {
+        ifOpenLight++;
+
+        switch (ifOpenLight % 2) {
+            case 0:
+                //关闪光灯
+                CameraManager.get().closeLight();
+                btnLight.setText("打开闪光灯");
+                break;
+            case 1:
+                //开闪光灯
+                CameraManager.get().openLight();
+                btnLight.setText("关闭闪光灯");
+                break;
+            default:
+                break;
+        }
+    }
 
     private void initCamera(SurfaceHolder surfaceHolder) {
         try {

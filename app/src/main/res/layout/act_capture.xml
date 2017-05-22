@@ -32,6 +32,20 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true" />
+
         </RelativeLayout>
+
+        <Button
+            android:id="@+id/btn_light"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/loding_bg_sel"
+            android:padding="@dimen/dp10"
+            android:text="打开闪光灯"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp16" />
     </RelativeLayout>
 </FrameLayout>
