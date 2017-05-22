@@ -68,6 +68,7 @@ import butterknife.BindView;
 import butterknife.BindViews;
 
 public class MainActivity extends BaseBusNoSocllowActivity {
+    private long exitTime = 0;
     @BindView(R.id.progress)
     CircularProgressBar progressBar;
     @BindView(R.id.ll_content)
@@ -738,4 +739,14 @@ public class MainActivity extends BaseBusNoSocllowActivity {
         textViews.get(8).setText("--");
     }
 
+    @Override
+    public void onBackPressed() {
+        if ((System.currentTimeMillis() - exitTime) > 2000) {
+            Toast.makeText(getApplicationContext(), "再按一次退出程序", Toast.LENGTH_SHORT).show();
+            exitTime = System.currentTimeMillis();
+        } else {
+            finish();
+            System.exit(0);
+        }
+    }
 }
