@@ -35,6 +35,7 @@ import com.google.zxing.NotFoundException;
 import com.google.zxing.Result;
 import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.qrcode.QRCodeReader;
+import com.himmiractivity.base.BaseBusActivity;
 import com.himmiractivity.mining.app.zxing.camera.CameraManager;
 import com.himmiractivity.mining.app.zxing.decoding.CaptureActivityHandler;
 import com.himmiractivity.mining.app.zxing.decoding.InactivityTimer;
@@ -43,71 +44,34 @@ import com.himmiractivity.mining.app.zxing.view.ViewfinderView;
 
 import java.io.IOException;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
 import activity.hamir.com.himmir.R;
+import butterknife.BindView;
+import butterknife.BindViews;
 
 /**
  * Initial the camera
  *
  * @author zhangguoyu
  */
-public class CaptureActivity extends Activity implements Callback {
-
-    private Button btnLight;
-    private Button btnOpenImage;
+public class CaptureActivity extends BaseBusActivity implements Callback {
+    @BindViews({R.id.btn_light, R.id.btn_openimg, R.id.button_back})
+    List<ImageView> imageViews;
     private boolean playBeep;
     private boolean vibrate;
     private boolean hasSurface;
     private String characterSet;
     private int ifOpenLight = 0;//判断是否开启闪光灯
     private MediaPlayer mediaPlayer;
-    private ViewfinderView viewfinderView;
+    @BindView(R.id.viewfinder_view)
+    ViewfinderView viewfinderView;
     private CaptureActivityHandler handler;
     private Vector<BarcodeFormat> decodeFormats;
     private InactivityTimer inactivityTimer;
     private static final float BEEP_VOLUME = 0.10f;
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        }
-        setContentView(R.layout.act_capture);
-        CameraManager.init(getApplication());
-        viewfinderView = (ViewfinderView) findViewById(R.id.viewfinder_view);
-        btnLight = (Button) findViewById(R.id.btn_light);
-        btnOpenImage = (Button) findViewById(R.id.btn_openimg);
-        hasSurface = false;
-        inactivityTimer = new InactivityTimer(this);
-        setListener();
-    }
-
-    /**
-     * 注册事件
-     */
-    private void setListener() {
-        ((ImageView) findViewById(R.id.button_back)).setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
-        btnLight.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                IfOpenLight(btnLight);
-            }
-        });
-        btnOpenImage.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                pickPictureFromAblum(btnOpenImage);
-            }
-        });
-    }
 
     @Override
     protected void onResume() {
@@ -147,6 +111,43 @@ public class CaptureActivity extends Activity implements Callback {
     protected void onDestroy() {
         inactivityTimer.shutdown();
         super.onDestroy();
+    }
+
+    @Override
+    protected int getContentLayoutId() {
+        return R.layout.act_capture;
+    }
+
+    @Override
+    public void onMultiClick(View v) {
+        switch (v.getId()) {
+            case R.id.btn_light:
+                IfOpenLight(imageViews.get(0));
+                break;
+            case R.id.btn_openimg:
+                pickPictureFromAblum(imageViews.get(1));
+                break;
+            case R.id.button_back:
+                onBackPressed();
+                break;
+            default:
+                break;
+        }
+    }
+
+    @Override
+    protected void initView(Bundle savedInstanceState) {
+        CameraManager.init(getApplication());
+        hasSurface = false;
+        inactivityTimer = new InactivityTimer(this);
+        imageViews.get(0).setOnClickListener(this);
+        imageViews.get(1).setOnClickListener(this);
+        imageViews.get(2).setOnClickListener(this);
+    }
+
+    @Override
+    protected void initData() {
+
     }
 
     /**
@@ -290,12 +291,10 @@ public class CaptureActivity extends Activity implements Callback {
             case 0:
                 //关闪光灯
                 CameraManager.get().closeLight();
-                btnLight.setText("打开闪光灯");
                 break;
             case 1:
                 //开闪光灯
                 CameraManager.get().openLight();
-                btnLight.setText("关闭闪光灯");
                 break;
             default:
                 break;

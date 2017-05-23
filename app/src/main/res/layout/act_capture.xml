@@ -34,36 +34,5 @@
                 android:layout_alignParentTop="true" />
 
         </RelativeLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:gravity="center_horizontal"
-            android:layout_marginBottom="20dp"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/btn_light"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:background="@drawable/loding_bg_sel"
-                android:padding="@dimen/dp10"
-                android:text="打开闪光灯"
-                android:textColor="@color/white"
-                android:textSize="@dimen/sp16" />
-
-            <Button
-                android:id="@+id/btn_openimg"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/loding_bg_sel"
-                android:padding="@dimen/dp10"
-                android:layout_marginLeft="@dimen/dp10"
-                android:text="相册中选取"
-                android:textColor="@color/white"
-                android:textSize="@dimen/sp16" />
-        </LinearLayout>
     </RelativeLayout>
 </FrameLayout>

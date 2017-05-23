@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.himmiractivity.App;
+import com.himmiractivity.Utils.ChangePhotosUtils;
 import com.himmiractivity.Utils.ToastUtil;
 import com.himmiractivity.base.BaseBusActivity;
 import com.himmiractivity.entity.AddedBean;
@@ -82,31 +83,49 @@ public class SharedDeviceActivity extends BaseBusActivity {
                 startActivity(intentMy);
                 break;
             case R.id.ll_projection_screen:
-                permissionRequests(Manifest.permission.CAMERA, new OnBooleanListener() {
+                permissionRequests(Manifest.permission.WRITE_EXTERNAL_STORAGE, new OnBooleanListener() {
                     @Override
                     public void onResulepermiss(boolean bln) {
                         if (bln) {
-                            intent = new Intent();
-                            intent.setClass(SharedDeviceActivity.this, CaptureActivity.class);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            startActivityForResult(intent, SCANNIN_GREQUEST_CODE);
+                            permissionRequests(Manifest.permission.CAMERA, new OnBooleanListener() {
+                                @Override
+                                public void onResulepermiss(boolean bln) {
+                                    if (bln) {
+                                        intent = new Intent();
+                                        intent.setClass(SharedDeviceActivity.this, CaptureActivity.class);
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        startActivityForResult(intent, SCANNIN_GREQUEST_CODE);
+                                    } else {
+                                        ToastUtil.show(SharedDeviceActivity.this, "请允许相机权限！");
+                                    }
+                                }
+                            });
                         } else {
-                            ToastUtil.show(SharedDeviceActivity.this, "请允许调用相机权限！");
+                            ToastUtil.show(SharedDeviceActivity.this, "请允许读写权限！");
                         }
                     }
                 });
                 break;
             case R.id.ll_add_shared:
-                permissionRequests(Manifest.permission.CAMERA, new OnBooleanListener() {
+                permissionRequests(Manifest.permission.WRITE_EXTERNAL_STORAGE, new OnBooleanListener() {
                     @Override
                     public void onResulepermiss(boolean bln) {
                         if (bln) {
-                            intent = new Intent();
-                            intent.setClass(SharedDeviceActivity.this, CaptureActivity.class);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            startActivityForResult(intent, ADD_SHARED);
+                            permissionRequests(Manifest.permission.CAMERA, new OnBooleanListener() {
+                                @Override
+                                public void onResulepermiss(boolean bln) {
+                                    if (bln) {
+                                        intent = new Intent();
+                                        intent.setClass(SharedDeviceActivity.this, CaptureActivity.class);
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        startActivityForResult(intent, ADD_SHARED);
+                                    } else {
+                                        ToastUtil.show(SharedDeviceActivity.this, "请允许相机权限！");
+                                    }
+                                }
+                            });
                         } else {
-                            ToastUtil.show(SharedDeviceActivity.this, "请允许调用相机权限！");
+                            ToastUtil.show(SharedDeviceActivity.this, "请允许读写权限！");
                         }
                     }
                 });
