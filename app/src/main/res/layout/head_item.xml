@@ -3,8 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    android:orientation="horizontal"
-    android:padding="10dp">
+    android:orientation="horizontal">
 
     <RadioButton
         android:id="@+id/rb_ad_type"
@@ -16,8 +15,8 @@
         android:drawablePadding="@dimen/x5"
         android:gravity="center_vertical"
         android:orientation="vertical"
-        android:padding="@dimen/x20"
+        android:padding="@dimen/x15"
         android:textColor="@color/black"
-        android:textSize="20sp" />
+        android:textSize="@dimen/x14" />
 
 </LinearLayout>
