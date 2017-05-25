@@ -287,10 +287,7 @@ public class InformationComitActivity extends BaseBusActivity {
         String stroe = clearEditTexts.get(2).getText().toString().trim();
         String room = btnChooseRoom.getText().toString().trim();
         String device = textViews.get(4).getText().toString().trim();
-        if (!isdeploy) {
-            ToastUtil.show(this, "请重新激活配置档!");
-            return;
-        } else if (TextUtils.isEmpty(name)) {
+        if (TextUtils.isEmpty(name)) {
             ToastUtil.show(this, "用户姓名不能为空!");
             return;
         } else if (TextUtils.isEmpty(stroe)) {
@@ -304,6 +301,9 @@ public class InformationComitActivity extends BaseBusActivity {
             return;
         } else if (TextUtils.isEmpty(device)) {
             ToastUtil.show(this, "请输入设备昵称");
+            return;
+        } else if (!isdeploy) {
+            ToastUtil.show(this, "请重新激活配置档!");
             return;
         }
         for (int i = 0; i < articleInfo.getUserDevsNickname().size(); i++) {
