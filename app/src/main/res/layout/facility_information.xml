@@ -9,7 +9,7 @@
         android:id="@+id/title_bar"
         layout="@layout/title_top_view"
         android:layout_width="fill_parent"
-        android:layout_height="50dp" />
+        android:layout_height="@dimen/x40" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -18,8 +18,8 @@
 
         <com.himmiractivity.circular_progress_bar.CircularProgressBar
             android:id="@+id/progress"
-            android:layout_width="42dp"
-            android:layout_height="42dp"
+            android:layout_width="@dimen/x42"
+            android:layout_height="@dimen/x42"
             android:layout_centerInParent="true"
             android:layout_gravity="center"
             android:indeterminate="true"
@@ -44,6 +44,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
+                    android:paddingBottom="@dimen/x20"
                     android:visibility="gone">
 
                     <LinearLayout
@@ -51,7 +52,7 @@
                         android:layout_height="wrap_content"
                         android:gravity="center_horizontal"
                         android:orientation="horizontal"
-                        android:paddingTop="@dimen/dp30"
+                        android:paddingTop="@dimen/x30"
                         android:weightSum="3">
 
                         <LinearLayout
@@ -72,10 +73,10 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:gravity="right"
-                                android:paddingLeft="10dp"
+                                android:paddingLeft="@dimen/x10"
                                 android:text=""
                                 android:textColor="@color/black"
-                                android:textSize="@dimen/sp14" />
+                                android:textSize="@dimen/x14" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -90,7 +91,7 @@
                                 android:layout_height="wrap_content"
                                 android:text=" | 室外PM"
                                 android:textColor="@color/black"
-                                android:textSize="@dimen/sp14" />
+                                android:textSize="@dimen/x14" />
 
                             <TextView
                                 android:id="@+id/tv_out_side"
@@ -98,7 +99,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="2.5"
                                 android:textColor="@color/black"
-                                android:textSize="@dimen/sp14" />
+                                android:textSize="@dimen/x14" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -114,28 +115,28 @@
                                 android:layout_height="wrap_content"
                                 android:text="--"
                                 android:textColor="@color/black"
-                                android:textSize="@dimen/sp14" />
+                                android:textSize="@dimen/x14" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text=" ug / m³"
                                 android:textColor="@color/black"
-                                android:textSize="@dimen/sp14" />
+                                android:textSize="@dimen/x14" />
                         </LinearLayout>
                     </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginBottom="@dimen/dp50"
-                        android:layout_marginTop="@dimen/dp50"
+                        android:layout_marginBottom="@dimen/x50"
+                        android:layout_marginTop="@dimen/x50"
                         android:gravity="center">
 
                         <com.himmiractivity.view.PercentView
                             android:id="@+id/percent_view"
                             android:layout_width="wrap_content"
-                            android:layout_height="150dp"
+                            android:layout_height="@dimen/x140"
                             android:background="@color/white"></com.himmiractivity.view.PercentView>
                     </LinearLayout>
 
@@ -149,8 +150,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
-                            android:paddingLeft="20dp"
-                            android:paddingRight="20dp"
+                            android:paddingLeft="@dimen/x20"
+                            android:paddingRight="@dimen/x20"
                             android:weightSum="7">
 
                             <LinearLayout
@@ -175,7 +176,7 @@
                                     android:maxLines="1"
                                     android:text="--"
                                     android:textColor="@color/green"
-                                    android:textSize="24sp" />
+                                    android:textSize="@dimen/x18" />
 
                                 <TextView
                                     android:id="@+id/textView"
@@ -184,7 +185,7 @@
                                     android:layout_gravity="center_vertical"
                                     android:text="ppm"
                                     android:textColor="@color/green"
-                                    android:textSize="@dimen/sp12" />
+                                    android:textSize="@dimen/x12" />
                             </LinearLayout>
 
                             <LinearLayout
@@ -206,7 +207,7 @@
                                     android:maxLines="1"
                                     android:text="--"
                                     android:textColor="@color/green"
-                                    android:textSize="24sp" />
+                                    android:textSize="@dimen/x18" />
 
                                 <TextView
                                     android:id="@+id/textView2"
@@ -216,17 +217,17 @@
                                     android:gravity="center_vertical"
                                     android:text=" ℃"
                                     android:textColor="@color/green"
-                                    android:textSize="@dimen/sp12" />
+                                    android:textSize="@dimen/x12" />
                             </LinearLayout>
                         </LinearLayout>
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="30dp"
+                            android:layout_marginTop="@dimen/x30"
                             android:orientation="horizontal"
-                            android:paddingLeft="20dp"
-                            android:paddingRight="20dp"
+                            android:paddingLeft="@dimen/x20"
+                            android:paddingRight="@dimen/x20"
                             android:weightSum="7">
 
                             <LinearLayout
@@ -251,7 +252,7 @@
                                     android:maxLines="1"
                                     android:text="--"
                                     android:textColor="@color/green"
-                                    android:textSize="24sp" />
+                                    android:textSize="@dimen/x18" />
 
                                 <TextView
                                     android:layout_width="wrap_content"
@@ -259,7 +260,7 @@
                                     android:layout_gravity="center_vertical"
                                     android:text="m³/h"
                                     android:textColor="@color/green"
-                                    android:textSize="@dimen/sp12" />
+                                    android:textSize="@dimen/x12" />
                             </LinearLayout>
 
                             <LinearLayout
@@ -281,7 +282,7 @@
                                     android:maxLines="1"
                                     android:text="--"
                                     android:textColor="@color/green"
-                                    android:textSize="24sp" />
+                                    android:textSize="@dimen/x18" />
 
                                 <TextView
                                     android:layout_width="wrap_content"
@@ -290,7 +291,7 @@
                                     android:gravity="center_vertical"
                                     android:text=" ℃"
                                     android:textColor="@color/green"
-                                    android:textSize="@dimen/sp12" />
+                                    android:textSize="@dimen/x12" />
                             </LinearLayout>
                         </LinearLayout>
                     </LinearLayout>

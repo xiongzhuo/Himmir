@@ -9,79 +9,83 @@
         android:id="@+id/title_bar"
         layout="@layout/title_top_view"
         android:layout_width="fill_parent"
-        android:layout_height="50dp" />
+        android:layout_height="@dimen/x40" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginLeft="@dimen/x20"
+        android:layout_marginRight="@dimen/x20"
+        android:layout_marginTop="@dimen/x15"
         android:orientation="vertical">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="输入旧密码"
-            android:textColor="@android:color/black" />
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/x14" />
 
         <com.himmiractivity.view.ClearEditText
             android:id="@+id/et_old_pass"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="@dimen/x15"
             android:background="@drawable/edittext_bg"
             android:hint="输入旧密码"
             android:inputType="textPassword"
             android:maxLength="16"
-            android:paddingBottom="10dp"
-            android:paddingLeft="15dp"
-            android:paddingRight="15dp"
-            android:paddingTop="10dp"
+            android:paddingBottom="@dimen/x10"
+            android:paddingLeft="@dimen/x15"
+            android:paddingRight="@dimen/x15"
+            android:paddingTop="@dimen/x10"
             android:textColorHint="@android:color/darker_gray" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="@dimen/x15"
             android:text="设置新密码"
-            android:textColor="@android:color/black" />
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/x14" />
 
         <com.himmiractivity.view.ClearEditText
             android:id="@+id/et_new_pass"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="@dimen/x15"
             android:background="@drawable/edittext_bg"
             android:hint="新密码至少6位，不超过16位"
             android:inputType="textPassword"
             android:maxLength="16"
-            android:paddingBottom="10dp"
-            android:paddingLeft="15dp"
-            android:paddingRight="15dp"
-            android:paddingTop="10dp"
+            android:paddingBottom="@dimen/x10"
+            android:paddingLeft="@dimen/x15"
+            android:paddingRight="@dimen/x15"
+            android:paddingTop="@dimen/x10"
             android:textColorHint="@android:color/darker_gray" />
 
         <TextView
+            android:id="@+id/textView3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="@dimen/x15"
             android:text="确认新密码"
-            android:textColor="@android:color/black" />
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/x14" />
 
         <com.himmiractivity.view.ClearEditText
             android:id="@+id/et_pass_new_comit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="@dimen/x15"
             android:background="@drawable/edittext_bg"
             android:hint="确认新密码"
             android:inputType="textPassword"
             android:maxLength="16"
-            android:paddingBottom="10dp"
-            android:paddingLeft="15dp"
-            android:paddingRight="15dp"
-            android:paddingTop="10dp"
+            android:paddingBottom="@dimen/x10"
+            android:paddingLeft="@dimen/x15"
+            android:paddingRight="@dimen/x15"
+            android:paddingTop="@dimen/x10"
             android:textColorHint="@android:color/darker_gray" />
 
         <Button
@@ -90,7 +94,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="60dp"
             android:background="@drawable/loding_bg_sel"
-            android:padding="10dp"
+            android:padding="@dimen/x10"
             android:text="确定"
             android:textColor="@color/white" />
     </LinearLayout>

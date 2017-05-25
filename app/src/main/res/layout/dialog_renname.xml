@@ -13,7 +13,7 @@
         android:layout_margin="15dp"
         android:text=""
         android:textColor="@color/black"
-        android:textSize="@dimen/sp18" />
+        android:textSize="@dimen/x18" />
 
     <TextView
         android:id="@+id/tv_hint"
@@ -22,7 +22,7 @@
         android:layout_gravity="center_horizontal"
         android:text=""
         android:textColor="@android:color/darker_gray"
-        android:textSize="@dimen/sp16"
+        android:textSize="@dimen/x16"
         android:visibility="gone" />
 
     <EditText
@@ -57,7 +57,7 @@
             android:padding="10dp"
             android:text="取消"
             android:textColor="@color/royalblue"
-            android:textSize="@dimen/sp18" />
+            android:textSize="@dimen/x18" />
 
         <View
             android:layout_width="0.5dp"
@@ -74,7 +74,7 @@
             android:padding="10dp"
             android:text="确定"
             android:textColor="@color/royalblue"
-            android:textSize="@dimen/sp18" />
+            android:textSize="@dimen/x18" />
 
     </LinearLayout>
 </LinearLayout>

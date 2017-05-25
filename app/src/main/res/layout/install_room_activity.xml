@@ -9,18 +9,18 @@
         android:id="@+id/title_bar"
         layout="@layout/title_top_view"
         android:layout_width="fill_parent"
-        android:layout_height="50dp" />
+        android:layout_height="@dimen/x40" />
 
     <TextView
         android:id="@+id/tv_add_room"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:drawableLeft="@drawable/evaluation_add"
-        android:drawablePadding="5dp"
-        android:padding="15dp"
+        android:drawablePadding="@dimen/x5"
+        android:padding="@dimen/x15"
         android:text="添加新房间"
         android:textColor="@android:color/darker_gray"
-        android:textSize="18sp" />
+        android:textSize="@dimen/x18" />
 
     <com.himmiractivity.xlistview.XListView
         android:id="@+id/listview_room"

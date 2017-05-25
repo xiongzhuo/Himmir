@@ -9,7 +9,7 @@
         android:id="@+id/title_bar"
         layout="@layout/title_top_view"
         android:layout_width="fill_parent"
-        android:layout_height="50dp" />
+        android:layout_height="@dimen/x40" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -23,10 +23,10 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="30dp"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginBottom="@dimen/x30"
+                android:layout_marginLeft="@dimen/x15"
+                android:layout_marginRight="@dimen/x15"
+                android:layout_marginTop="@dimen/x20"
                 android:layout_weight="1"
                 android:orientation="vertical">
 
@@ -46,16 +46,16 @@
                         android:id="@+id/tv_unit_type"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
+                        android:layout_marginLeft="@dimen/x10"
                         android:text=""
                         android:textColor="@color/black"
-                        android:textSize="16sp" />
+                        android:textSize="@dimen/x16" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
+                    android:layout_marginTop="@dimen/x15"
                     android:orientation="horizontal">
 
                     <TextView
@@ -63,22 +63,22 @@
                         android:layout_height="wrap_content"
                         android:text="出厂时间："
                         android:textColor="@color/black"
-                        android:textSize="16sp" />
+                        android:textSize="@dimen/x16" />
 
                     <TextView
                         android:id="@+id/tv_manufacturing_date"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
+                        android:layout_marginLeft="@dimen/x10"
                         android:text=""
                         android:textColor="@color/black"
-                        android:textSize="16sp" />
+                        android:textSize="@dimen/x16" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="30dp"
+                    android:layout_marginTop="@dimen/x30"
                     android:orientation="horizontal">
 
                     <TextView
@@ -87,26 +87,26 @@
                         android:layout_gravity="center_vertical"
                         android:text="用户姓名："
                         android:textColor="@color/black"
-                        android:textSize="16sp" />
+                        android:textSize="@dimen/x16" />
 
                     <com.himmiractivity.view.ClearEditText
                         android:id="@+id/et_username"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
+                        android:layout_marginLeft="@dimen/x10"
                         android:background="@drawable/edittext_bg"
                         android:hint="用户姓名"
                         android:maxLength="15"
-                        android:padding="@dimen/dp10"
+                        android:padding="@dimen/x10"
                         android:text=""
                         android:textColor="@color/black"
-                        android:textSize="16sp" />
+                        android:textSize="@dimen/x16" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="30dp"
+                    android:layout_marginTop="@dimen/x30"
                     android:orientation="vertical">
 
                     <TextView
@@ -115,40 +115,40 @@
                         android:layout_gravity="center_vertical"
                         android:text="购买地址："
                         android:textColor="@color/black"
-                        android:textSize="16sp" />
+                        android:textSize="@dimen/x16" />
 
 
                     <TextView
                         android:id="@+id/tv_city_choise"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/dp10"
+                        android:layout_marginTop="@dimen/x10"
                         android:background="@drawable/edittext_bg"
                         android:gravity="center_vertical"
                         android:hint="点击选择地址"
-                        android:padding="@dimen/dp10"
+                        android:padding="@dimen/x10"
                         android:text=""
                         android:textColor="@color/black"
-                        android:textSize="16sp" />
+                        android:textSize="@dimen/x16" />
 
                     <com.himmiractivity.view.ClearEditText
                         android:id="@+id/bt_stroe"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/dp10"
+                        android:layout_marginTop="@dimen/x10"
                         android:background="@drawable/edittext_bg"
                         android:gravity="center_vertical"
                         android:hint="门店全称"
                         android:maxLength="30"
-                        android:padding="@dimen/dp10"
+                        android:padding="@dimen/x10"
                         android:textColor="@color/black"
-                        android:textSize="16sp" />
+                        android:textSize="@dimen/x16" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="30dp"
+                    android:layout_marginTop="@dimen/x30"
                     android:orientation="vertical">
 
                     <TextView
@@ -157,43 +157,43 @@
                         android:layout_gravity="center_vertical"
                         android:text="安装地址："
                         android:textColor="@color/black"
-                        android:textSize="16sp" />
+                        android:textSize="@dimen/x16" />
 
 
                     <TextView
                         android:id="@+id/tv_install_site"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/dp10"
+                        android:layout_marginTop="@dimen/x10"
                         android:background="@drawable/edittext_bg"
                         android:gravity="center_vertical"
                         android:hint="点击选择地址"
-                        android:padding="@dimen/dp10"
+                        android:padding="@dimen/x10"
                         android:text=""
                         android:textColor="@color/black"
-                        android:textSize="16sp" />
+                        android:textSize="@dimen/x16" />
 
                     <com.himmiractivity.view.ClearEditText
                         android:id="@+id/et_full_address"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/dp10"
+                        android:layout_marginTop="@dimen/x10"
                         android:background="@drawable/edittext_bg"
                         android:hint="详细地址"
                         android:maxLength="30"
-                        android:padding="@dimen/dp10"
+                        android:padding="@dimen/x10"
                         android:text=""
                         android:textColor="@color/black"
-                        android:textSize="16sp" />
+                        android:textSize="@dimen/x16" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginTop="10dp"
+                        android:layout_marginTop="@dimen/x10"
                         android:text="此地址为默认售后地址，请认真填写"
                         android:textColor="@color/black"
-                        android:textSize="16sp" />
+                        android:textSize="@dimen/x16" />
                 </LinearLayout>
 
                 <Button
@@ -201,18 +201,18 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginTop="@dimen/dp10"
+                    android:layout_marginTop="@dimen/x10"
                     android:background="@null"
                     android:button="@null"
-                    android:padding="@dimen/dp10"
+                    android:padding="@dimen/x10"
                     android:text="选择安装房间"
                     android:textColor="@color/green"
-                    android:textSize="20sp" />
+                    android:textSize="@dimen/x20" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp10"
+                    android:layout_marginTop="@dimen/x10"
                     android:orientation="horizontal">
 
                     <TextView
@@ -221,20 +221,20 @@
                         android:layout_gravity="center_vertical"
                         android:text="设备昵称："
                         android:textColor="@color/black"
-                        android:textSize="16sp" />
+                        android:textSize="@dimen/x16" />
 
                     <com.himmiractivity.view.ClearEditText
                         android:id="@+id/et_nice"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
+                        android:layout_marginLeft="@dimen/x10"
                         android:background="@drawable/edittext_bg"
                         android:hint="设备昵称"
                         android:maxLength="15"
-                        android:padding="@dimen/dp10"
+                        android:padding="@dimen/x10"
                         android:text=""
                         android:textColor="@color/black"
-                        android:textSize="16sp" />
+                        android:textSize="@dimen/x16" />
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>

@@ -8,7 +8,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:padding="@dimen/dp10"
+        android:padding="@dimen/x10"
         android:src="@drawable/back" />
 
     <LinearLayout
@@ -21,14 +21,14 @@
             android:id="@+id/btn_openimg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="@dimen/dp10"
+            android:padding="@dimen/x10"
             android:src="@drawable/qrcode_scan_pic_nor" />
 
         <ImageView
             android:id="@+id/btn_light"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="@dimen/dp10"
+            android:padding="@dimen/x10"
             android:src="@drawable/qrcode_scan_torch_nor" />
     </LinearLayout>
 </LinearLayout>

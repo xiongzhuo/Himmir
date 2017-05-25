@@ -85,6 +85,7 @@ public class FacilityInformationActivity extends BaseBusActivity implements Supe
                         @Override
                         public void run() {
                             try {
+                                Thread.sleep(1000);
                                 ScoketOFFeON.sendMessage(socket, protocal, mac);
                             } catch (Exception e) {
                                 handler.sendEmptyMessage(StatisConstans.FAIL_TWO);

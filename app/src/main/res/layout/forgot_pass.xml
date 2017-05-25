@@ -9,15 +9,15 @@
         android:id="@+id/title_bar"
         layout="@layout/title_top_view"
         android:layout_width="fill_parent"
-        android:layout_height="50dp" />
+        android:layout_height="@dimen/x40" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
-        android:paddingTop="30dp">
+        android:paddingLeft="@dimen/x20"
+        android:paddingRight="@dimen/x20"
+        android:paddingTop="@dimen/x30">
 
         <com.himmiractivity.view.ClearEditText
             android:id="@+id/et_phone"
@@ -27,16 +27,16 @@
             android:hint="请输入手机号码"
             android:inputType="number"
             android:maxLength="11"
-            android:paddingBottom="10dp"
-            android:paddingLeft="15dp"
-            android:paddingRight="15dp"
-            android:paddingTop="10dp"
+            android:paddingBottom="@dimen/x10"
+            android:paddingLeft="@dimen/x15"
+            android:paddingRight="@dimen/x15"
+            android:paddingTop="@dimen/x10"
             android:textColorHint="@android:color/darker_gray" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="@dimen/x15"
             android:orientation="horizontal">
 
             <com.himmiractivity.view.ClearEditText
@@ -48,16 +48,16 @@
                 android:hint="获取验证码"
                 android:inputType="number"
                 android:maxLength="6"
-                android:padding="10dp"
+                android:padding="@dimen/x10"
                 android:textColorHint="@android:color/darker_gray" />
 
             <Button
                 android:id="@+id/btn_identify"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
+                android:layout_marginLeft="@dimen/x8"
                 android:background="@drawable/loding_bg_sel"
-                android:padding="10dp"
+                android:padding="@dimen/x10"
                 android:text="获取验证码"
                 android:textColor="@color/white" />
         </LinearLayout>
@@ -66,39 +66,39 @@
             android:id="@+id/et_pass"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="@dimen/x15"
             android:background="@drawable/edittext_bg"
             android:hint="请输入密码"
             android:inputType="textPassword"
             android:maxLength="16"
-            android:paddingBottom="10dp"
-            android:paddingLeft="15dp"
-            android:paddingRight="15dp"
-            android:paddingTop="10dp"
+            android:paddingBottom="@dimen/x10"
+            android:paddingLeft="@dimen/x15"
+            android:paddingRight="@dimen/x15"
+            android:paddingTop="@dimen/x10"
             android:textColorHint="@android:color/darker_gray" />
 
         <com.himmiractivity.view.ClearEditText
             android:id="@+id/et_pass_comit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="@dimen/x15"
             android:background="@drawable/edittext_bg"
             android:hint="确认密码"
             android:inputType="textPassword"
             android:maxLength="16"
-            android:paddingBottom="10dp"
-            android:paddingLeft="15dp"
-            android:paddingRight="15dp"
-            android:paddingTop="10dp"
+            android:paddingBottom="@dimen/x10"
+            android:paddingLeft="@dimen/x15"
+            android:paddingRight="@dimen/x15"
+            android:paddingTop="@dimen/x10"
             android:textColorHint="@android:color/darker_gray" />
 
         <Button
             android:id="@+id/btn_rese_pass"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="@dimen/x15"
             android:background="@drawable/loding_bg_sel"
-            android:padding="10dp"
+            android:padding="@dimen/x10"
             android:text="重置密码"
             android:textColor="@color/white" />
     </LinearLayout>

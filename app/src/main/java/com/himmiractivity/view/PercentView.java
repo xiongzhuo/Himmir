@@ -211,14 +211,14 @@ public class PercentView extends View {
         bitmapPaint.setStyle(Paint.Style.FILL);
         bitmapPaint.setAntiAlias(true);
 
-        outerArcWidth = context.getResources().getDimensionPixelOffset(R.dimen.dp2);
-        insideArcWidth = context.getResources().getDimensionPixelOffset(R.dimen.dp12);
-        spaceWidth = context.getResources().getDimensionPixelOffset(R.dimen.dp12);
-        scrollCircleRadius = context.getResources().getDimensionPixelOffset(R.dimen.dp4);
-        percentTextSize = context.getResources().getDimensionPixelOffset(R.dimen.dp8);
-        textSizeAim = context.getResources().getDimensionPixelOffset(R.dimen.sp40);
-        textSizeTag = context.getResources().getDimensionPixelOffset(R.dimen.sp14);
-        textSizeButtom = context.getResources().getDimensionPixelOffset(R.dimen.sp12);
+        outerArcWidth = context.getResources().getDimensionPixelOffset(R.dimen.x2);
+        insideArcWidth = context.getResources().getDimensionPixelOffset(R.dimen.x12);
+        spaceWidth = context.getResources().getDimensionPixelOffset(R.dimen.x12);
+        scrollCircleRadius = context.getResources().getDimensionPixelOffset(R.dimen.x4);
+        percentTextSize = context.getResources().getDimensionPixelOffset(R.dimen.x8);
+        textSizeAim = context.getResources().getDimensionPixelOffset(R.dimen.x40);
+        textSizeTag = context.getResources().getDimensionPixelOffset(R.dimen.x14);
+        textSizeButtom = context.getResources().getDimensionPixelOffset(R.dimen.x12);
         pinkColor = ContextCompat.getColor(context, R.color.bar_gray);
         greenColor = ContextCompat.getColor(context, R.color.percent_green);
         greenColortwo = ContextCompat.getColor(context, R.color.percent_green_two);

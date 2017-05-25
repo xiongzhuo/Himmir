@@ -30,7 +30,7 @@
             android:padding="16dp"
             android:text="重命名"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp18" />
+            android:textSize="@dimen/x14" />
 
         <TextView
             android:id="@+id/tv_pick_phone"
@@ -41,7 +41,7 @@
             android:padding="16dp"
             android:text="校时"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp18" />
+            android:textSize="@dimen/x14" />
 
         <TextView
             android:id="@+id/tv_pick_zone"
@@ -52,7 +52,7 @@
             android:padding="16dp"
             android:text="定时"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp18" />
+            android:textSize="@dimen/x14" />
 
 
         <TextView
@@ -64,7 +64,7 @@
             android:padding="16dp"
             android:text="智能模式"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp18" />
+            android:textSize="@dimen/x14" />
 
 
         <TextView
@@ -76,7 +76,7 @@
             android:padding="16dp"
             android:text="删除"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp18" />
+            android:textSize="@dimen/x14" />
 
     </LinearLayout>
 
@@ -94,6 +94,6 @@
             android:padding="16dp"
             android:text="取消"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp18" />
+            android:textSize="@dimen/x14" />
     </LinearLayout>
 </LinearLayout>

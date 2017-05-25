@@ -9,16 +9,16 @@
         android:id="@+id/title_bar"
         layout="@layout/title_top_view"
         android:layout_width="fill_parent"
-        android:layout_height="50dp" />
+        android:layout_height="@dimen/x40" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="@dimen/x30"
         android:text="请确保当前WI-FI网络条件良好"
         android:textColor="@android:color/black"
-        android:textSize="18sp" />
+        android:textSize="@dimen/x16" />
 
     <ImageView
         android:layout_width="wrap_content"
@@ -33,29 +33,29 @@
         android:layout_gravity="center_horizontal"
         android:text="name"
         android:textColor="@android:color/black"
-        android:textSize="18sp" />
+        android:textSize="@dimen/x18" />
 
     <EditText
         android:id="@+id/et_wifi_pass"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="20dp"
+        android:layout_margin="@dimen/x20"
         android:background="@drawable/edittext_bg"
         android:hint="请输入Wi-Fi密码"
-        android:paddingBottom="10dp"
-        android:paddingLeft="15dp"
-        android:paddingTop="10dp"
+        android:paddingBottom="@dimen/x10"
+        android:paddingLeft="@dimen/x15"
+        android:paddingTop="@dimen/x10"
         android:textColorHint="@android:color/darker_gray" />
 
     <Button
         android:id="@+id/btn_next"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginLeft="@dimen/x20"
+        android:layout_marginRight="@dimen/x20"
+        android:layout_marginTop="@dimen/x10"
         android:background="@drawable/loding_bg_sel"
-        android:padding="15dp"
+        android:padding="@dimen/x10"
         android:text="下一步"
         android:textColor="@color/white" />
 </LinearLayout>

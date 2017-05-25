@@ -10,7 +10,7 @@
         android:id="@+id/title_bar"
         layout="@layout/title_top_view"
         android:layout_width="fill_parent"
-        android:layout_height="50dp" />
+        android:layout_height="@dimen/x40" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -22,8 +22,8 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_marginBottom="@dimen/dp80"
-            android:layout_marginTop="@dimen/dp60"
+            android:layout_marginBottom="@dimen/x80"
+            android:layout_marginTop="@dimen/x60"
             android:layout_weight="10"
             android:background="@color/bar_gray"
             android:orientation="vertical">
@@ -40,14 +40,14 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp50"
+                android:layout_height="@dimen/x40"
                 android:background="@color/white"
                 android:orientation="horizontal">
 
                 <com.facebook.drawee.view.SimpleDraweeView
                     android:id="@+id/image_herd"
-                    android:layout_width="@dimen/dp50"
-                    android:layout_height="@dimen/dp50"
+                    android:layout_width="@dimen/x40"
+                    android:layout_height="@dimen/x40"
                     android:layout_gravity="center_horizontal"
                     android:contentDescription="@null"
                     android:scaleType="centerCrop"
@@ -63,8 +63,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
-                    android:paddingLeft="@dimen/dp10"
-                    android:paddingRight="@dimen/dp10">
+                    android:paddingLeft="@dimen/x10"
+                    android:paddingRight="@dimen/x10">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -76,18 +76,18 @@
                             android:id="@+id/tv_sharing_name"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/dp5"
+                            android:layout_marginTop="@dimen/x5"
                             android:layout_weight="1"
                             android:lines="1"
                             android:text="共享名："
-                            android:textSize="@dimen/sp14" />
+                            android:textSize="@dimen/x12" />
 
                         <ImageView
                             android:id="@+id/btn_revise_name"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:background="@drawable/edit_share_name"
-                            android:padding="@dimen/dp5"
+                            android:padding="@dimen/x5"
                             android:textColor="@color/white" />
                     </LinearLayout>
 
@@ -97,7 +97,7 @@
                         android:layout_gravity="bottom"
                         android:lines="1"
                         android:text="扫描二维码,获取我的设备"
-                        android:textSize="@dimen/sp14" />
+                        android:textSize="@dimen/x12" />
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>

@@ -27,10 +27,10 @@
             android:layout_height="wrap_content"
             android:background="@color/white"
             android:gravity="center"
-            android:padding="16dp"
+            android:padding="@dimen/x16"
             android:text="销售：0731-88797508"
             android:textColor="@color/black"
-            android:textSize="18sp" />
+            android:textSize="@dimen/x14" />
 
         <TextView
             android:id="@+id/tv_service_phone"
@@ -38,10 +38,10 @@
             android:layout_height="wrap_content"
             android:background="@color/white"
             android:gravity="center"
-            android:padding="16dp"
+            android:padding="@dimen/x16"
             android:text="服务：400-990-4018"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp18" />
+            android:textSize="@dimen/x14" />
 
 
     </LinearLayout>
@@ -58,9 +58,9 @@
             android:layout_height="wrap_content"
             android:background="@color/white"
             android:gravity="center"
-            android:padding="16dp"
+            android:padding="@dimen/x16"
             android:text="取消"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp18" />
+            android:textSize="@dimen/x14" />
     </LinearLayout>
 </LinearLayout>

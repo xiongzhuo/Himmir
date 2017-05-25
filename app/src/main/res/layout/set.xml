@@ -77,7 +77,7 @@
             android:padding="15dp"
             android:text="name"
             android:textColor="@android:color/black"
-            android:textSize="16sp" />
+            android:textSize="@dimen/x14" />
     </LinearLayout>
 
     <ScrollView
@@ -103,17 +103,17 @@
                     android:id="@+id/tv_equip"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginRight="@dimen/x10"
                     android:layout_weight="1"
                     android:background="#00000000"
                     android:drawableLeft="@drawable/equip_manage"
-                    android:drawablePadding="10dp"
+                    android:drawablePadding="@dimen/x10"
                     android:gravity="center_vertical"
                     android:orientation="vertical"
-                    android:padding="5dp"
+                    android:padding="@dimen/x5"
                     android:text="设备管理"
                     android:textColor="@android:color/black"
-                    android:textSize="16sp" />
+                    android:textSize="@dimen/x14" />
 
                 <ImageView
                     android:layout_width="9dp"
@@ -145,7 +145,7 @@
                     android:padding="5dp"
                     android:text="我的消息"
                     android:textColor="@android:color/black"
-                    android:textSize="16sp" />
+                    android:textSize="@dimen/x14" />
 
                 <ImageView
                     android:layout_width="9dp"
@@ -177,7 +177,7 @@
                     android:padding="5dp"
                     android:text="质量反馈"
                     android:textColor="@android:color/black"
-                    android:textSize="16sp" />
+                    android:textSize="@dimen/x14" />
 
                 <ImageView
                     android:layout_width="9dp"
@@ -198,17 +198,17 @@
                     android:id="@+id/tv_phone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginRight="@dimen/x10"
                     android:layout_weight="1"
                     android:background="#00000000"
                     android:drawableLeft="@drawable/phone"
-                    android:drawablePadding="10dp"
+                    android:drawablePadding="@dimen/x10"
                     android:gravity="center_vertical"
                     android:orientation="vertical"
-                    android:padding="5dp"
+                    android:padding="@dimen/x5"
                     android:text="联系客服"
                     android:textColor="@android:color/black"
-                    android:textSize="16sp" />
+                    android:textSize="@dimen/x14" />
 
                 <ImageView
                     android:layout_width="9dp"
@@ -229,17 +229,17 @@
                     android:id="@+id/tv_help"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginRight="@dimen/x10"
                     android:layout_weight="1"
                     android:background="#00000000"
                     android:drawableLeft="@drawable/help"
-                    android:drawablePadding="10dp"
+                    android:drawablePadding="@dimen/x10"
                     android:gravity="center_vertical"
                     android:orientation="vertical"
-                    android:padding="5dp"
+                    android:padding="@dimen/x5"
                     android:text="使用帮助"
                     android:textColor="@android:color/black"
-                    android:textSize="16sp" />
+                    android:textSize="@dimen/x14" />
 
                 <ImageView
                     android:layout_width="9dp"
@@ -260,17 +260,17 @@
                     android:id="@+id/tv_chanage_pass"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginRight="@dimen/x10"
                     android:layout_weight="1"
                     android:background="#00000000"
                     android:drawableLeft="@drawable/change_pw"
-                    android:drawablePadding="10dp"
+                    android:drawablePadding="@dimen/x10"
                     android:gravity="center_vertical"
                     android:orientation="vertical"
-                    android:padding="5dp"
+                    android:padding="@dimen/x5"
                     android:text="修改密码"
                     android:textColor="@android:color/black"
-                    android:textSize="16sp" />
+                    android:textSize="@dimen/x14" />
 
                 <ImageView
                     android:layout_width="9dp"
@@ -291,22 +291,22 @@
                     android:id="@+id/tv_version"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp10"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginLeft="@dimen/x10"
+                    android:layout_marginRight="@dimen/x10"
                     android:layout_weight="1"
                     android:background="#00000000"
                     android:drawableLeft="@drawable/versoin"
-                    android:drawablePadding="20dp"
+                    android:drawablePadding="@dimen/x15"
                     android:gravity="center_vertical"
                     android:orientation="vertical"
-                    android:padding="5dp"
+                    android:padding="@dimen/x5"
                     android:text="版本信息"
                     android:textColor="@android:color/black"
-                    android:textSize="16sp" />
+                    android:textSize="@dimen/x14" />
 
                 <ImageView
-                    android:layout_width="9dp"
-                    android:layout_height="17dp"
+                    android:layout_width="@dimen/x9"
+                    android:layout_height="@dimen/x17"
                     android:layout_gravity="center_vertical"
                     android:scaleType="fitXY"
                     android:visibility="gone" />
@@ -323,17 +323,17 @@
                     android:id="@+id/tv_exit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginRight="@dimen/x10"
                     android:layout_weight="1"
                     android:background="#00000000"
                     android:drawableLeft="@drawable/exit"
-                    android:drawablePadding="10dp"
+                    android:drawablePadding="@dimen/x12"
                     android:gravity="center_vertical"
                     android:orientation="vertical"
-                    android:padding="5dp"
+                    android:padding="@dimen/x5"
                     android:text="注销登陆"
                     android:textColor="@android:color/black"
-                    android:textSize="16sp" />
+                    android:textSize="@dimen/x14" />
 
                 <ImageView
                     android:layout_width="9dp"
