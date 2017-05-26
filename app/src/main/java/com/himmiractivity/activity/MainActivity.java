@@ -364,8 +364,9 @@ public class MainActivity extends BaseBusNoSocllowActivity {
                         public void onDownItemClick(int position) {
                             mac = userData.getUserDevs().get(position).getDevice_mac();
                             textViews.get(1).setText(list.get(position).trim());
-                            stopTimer();
-                            startTimer();
+                            handler.sendEmptyMessage(StatisConstans.MSG_CYCLIC_TRANSMISSION);
+//                            stopTimer();
+//                            startTimer();
                         }
                     });
                 } else {

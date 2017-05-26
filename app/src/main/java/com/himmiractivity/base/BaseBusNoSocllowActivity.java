@@ -25,6 +25,7 @@ import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.appindexing.Thing;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.himmiractivity.Utils.AppManager;
+import com.himmiractivity.Utils.FontsManager;
 import com.himmiractivity.Utils.SharedPreferencesDB;
 import com.himmiractivity.Utils.ToastUtils;
 import com.himmiractivity.interfaces.OnBooleanListener;
@@ -57,6 +58,8 @@ public abstract class BaseBusNoSocllowActivity extends AutoLayoutActivity implem
         sharedPreferencesDB = SharedPreferencesDB.getInstance(this);
         x.view().inject(this);
         setContentView(this.getContentLayoutId());
+        FontsManager.initFormAssets(this, "fonts/arial.ttf"); //初始化
+        FontsManager.changeFonts(this);                     //进行替换
         permissionRequests(Manifest.permission.READ_PHONE_STATE, new OnBooleanListener() {
             @Override
             public void onResulepermiss(boolean bln) {

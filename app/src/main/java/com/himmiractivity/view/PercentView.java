@@ -15,6 +15,7 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
 import android.graphics.SweepGradient;
+import android.graphics.Typeface;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.content.ContextCompat;
@@ -178,7 +179,8 @@ public class PercentView extends View {
     private Handler mAnimatorHandler;
     // 默认的动效周期 2s
     private int defaultDuration = 0;
-
+    //    Typeface tf;
+//    String fontPath = "fonts/arial.ttf";
 
     public PercentView(Context context) {
         super(context);
@@ -199,6 +201,7 @@ public class PercentView extends View {
     }
 
     private void initView(Context context) {
+//        tf = Typeface.createFromAsset(context.getAssets(), fontPath);
         shaderPaint = new Paint();
         textPaint = new Paint();
 
@@ -216,9 +219,9 @@ public class PercentView extends View {
         spaceWidth = context.getResources().getDimensionPixelOffset(R.dimen.x12);
         scrollCircleRadius = context.getResources().getDimensionPixelOffset(R.dimen.x4);
         percentTextSize = context.getResources().getDimensionPixelOffset(R.dimen.x8);
-        textSizeAim = context.getResources().getDimensionPixelOffset(R.dimen.x40);
+        textSizeAim = context.getResources().getDimensionPixelOffset(R.dimen.x50);
         textSizeTag = context.getResources().getDimensionPixelOffset(R.dimen.x14);
-        textSizeButtom = context.getResources().getDimensionPixelOffset(R.dimen.x12);
+        textSizeButtom = context.getResources().getDimensionPixelOffset(R.dimen.x14);
         pinkColor = ContextCompat.getColor(context, R.color.bar_gray);
         greenColor = ContextCompat.getColor(context, R.color.percent_green);
         greenColortwo = ContextCompat.getColor(context, R.color.percent_green_two);
@@ -490,6 +493,7 @@ public class PercentView extends View {
             canvas.drawText(tag, width / 2, radius / 2 + 8, textPaint);
             textPaint.setColor(Color.parseColor("#019E97"));
             textPaint.setTextSize(textSizeButtom);
+//            textPaint.setTypeface(tf);
             textPaint.setStrokeWidth(1);
 //            float leftLength = textPaint.measureText("你击败了");
 //            float rightLength = textPaint.measureText("ug / m2");

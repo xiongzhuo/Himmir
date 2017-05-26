@@ -22,6 +22,7 @@ import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.appindexing.Thing;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.himmiractivity.Utils.AppManager;
+import com.himmiractivity.Utils.FontsManager;
 import com.himmiractivity.Utils.SharedPreferencesDB;
 import com.himmiractivity.Utils.ToastUtils;
 import com.himmiractivity.interfaces.OnBooleanListener;
@@ -57,6 +58,8 @@ public abstract class BaseBusActivity extends AutoLayoutActivity implements View
                 R.layout.base, null);
         layout.attachToActivity(this);
         setContentView(this.getContentLayoutId());
+        FontsManager.initFormAssets(this, "fonts/arial.ttf"); //初始化
+        FontsManager.changeFonts(this);                     //进行替换
 //        if (ContextCompat.checkSelfPermission(this,
 //                Manifest.permission.READ_PHONE_STATE)
 //                != PackageManager.PERMISSION_GRANTED) {
