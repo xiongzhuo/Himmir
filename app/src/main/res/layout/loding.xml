@@ -88,7 +88,7 @@
                 android:layout_weight="1"
                 android:paddingBottom="10dp"
                 android:text="注册"
-                android:textColor="@color/green"
+                android:textColor="@drawable/textview_sel_bg"
                 android:textSize="16sp" />
 
             <TextView
@@ -100,7 +100,7 @@
                 android:gravity="right"
                 android:paddingBottom="10dp"
                 android:text="忘记密码"
-                android:textColor="@color/green"
+                android:textColor="@drawable/textview_sel_bg"
                 android:textSize="16sp" />
         </LinearLayout>
     </LinearLayout>

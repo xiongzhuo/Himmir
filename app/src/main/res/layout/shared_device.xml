@@ -15,22 +15,23 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:paddingBottom="@dimen/x20"
-        android:paddingLeft="@dimen/x15"
-        android:paddingRight="@dimen/x15"
-        android:paddingTop="@dimen/x20">
+        android:paddingTop="@dimen/x10">
 
         <LinearLayout
             android:id="@+id/ll_my_qrcode"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:background="@drawable/item_bg"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/x5"
+            android:paddingLeft="@dimen/x10"
+            android:paddingRight="@dimen/x10"
+            android:paddingTop="@dimen/x5">
 
             <TextView
                 android:id="@+id/tv_my_qrcode"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/x10"
                 android:layout_weight="1"
                 android:background="#00000000"
                 android:drawableLeft="@drawable/my_qrcode"
@@ -55,8 +56,12 @@
             android:id="@+id/ll_projection_screen"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/x10"
-            android:orientation="horizontal">
+            android:background="@drawable/item_bg"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/x5"
+            android:paddingLeft="@dimen/x10"
+            android:paddingRight="@dimen/x10"
+            android:paddingTop="@dimen/x5">
 
             <TextView
                 android:id="@+id/tv_screen"
@@ -86,8 +91,12 @@
             android:id="@+id/ll_add_shared"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/x10"
-            android:orientation="horizontal">
+            android:background="@drawable/item_bg"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/x5"
+            android:paddingLeft="@dimen/x10"
+            android:paddingRight="@dimen/x10"
+            android:paddingTop="@dimen/x5">
 
             <TextView
                 android:id="@+id/tv_add_shared"
@@ -117,8 +126,12 @@
             android:id="@+id/ll_manager_shared"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/x10"
-            android:orientation="horizontal">
+            android:background="@drawable/item_bg"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/x5"
+            android:paddingLeft="@dimen/x10"
+            android:paddingRight="@dimen/x10"
+            android:paddingTop="@dimen/x5">
 
             <TextView
                 android:id="@+id/tv_manager_shared"
@@ -148,8 +161,12 @@
             android:id="@+id/ll_added_shared"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/x10"
-            android:orientation="horizontal">
+            android:background="@drawable/item_bg"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/x5"
+            android:paddingLeft="@dimen/x10"
+            android:paddingRight="@dimen/x10"
+            android:paddingTop="@dimen/x5">
 
             <TextView
                 android:id="@+id/tv_added_shared"

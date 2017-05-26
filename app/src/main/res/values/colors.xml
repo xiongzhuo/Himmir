@@ -181,6 +181,7 @@
     <color name="no_transparent">#44000000</color><!--半透明  -->
 
     <color name="green">#009E96</color>
+    <color name="green_sel">#7f009E96</color>
 
 
     <color name="heise_color">#333333</color>
@@ -278,6 +279,7 @@
     <color name="transparent">#00000000</color>
     <color name="gold">#b89766</color>
     <color name="black">#000000</color>
+    <color name="black_sel">#7f000000</color>
     <color name="cz1">#FF476BA1</color>
     <color name="cz2">#FF49AB47</color>
     <!-- 列表点击颜色 -->

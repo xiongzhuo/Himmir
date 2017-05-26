@@ -27,7 +27,7 @@
         android:id="@+id/btn_add_aqu"
         android:layout_width="match_parent"
         android:layout_height="@dimen/x40"
-        android:background="@color/green"
+        android:background="@drawable/loding_bg_sel"
         android:text="添加设备"
         android:textColor="@color/white" />
 </LinearLayout>
