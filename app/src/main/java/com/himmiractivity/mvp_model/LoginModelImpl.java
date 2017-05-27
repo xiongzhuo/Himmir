@@ -1,4 +1,4 @@
-package com.himmiractivity.request;
+package com.himmiractivity.mvp_model;
 
 import android.content.Context;
 import android.os.Handler;
@@ -15,42 +15,21 @@ import com.himmiractivity.activity.LodingActivity;
 import com.himmiractivity.entity.JsonResult;
 import com.himmiractivity.entity.UserData;
 import com.himmiractivity.interfaces.StatisConstans;
-import com.himmiractivity.view.HomeDialog;
+import com.himmiractivity.request.LodingRequest;
 
 import org.xutils.common.Callback;
 import org.xutils.http.RequestParams;
 import org.xutils.x;
 
+import java.util.List;
+
 /**
- * Created by Administrator on 2017/3/15.
+ * Created by Administrator on 2017/5/27.
  */
 
-public class LodingRequest {
-    private Context context;
-    private String pwd;
-    private String mobile;
-    private Handler handler;
-    private HomeDialog.DialogView dialogView;
-    SharedPreferencesDB sharedPreferencesDB;
-    boolean isDialog;
-
-    public LodingRequest(SharedPreferencesDB sharedPreferencesDB, Context context, String pwd, String mobile, Handler handler, boolean isDialog) {
-        this.context = context;
-        this.pwd = pwd;
-        this.isDialog = isDialog;
-        this.mobile = mobile;
-        this.sharedPreferencesDB = sharedPreferencesDB;
-        this.handler = handler;
-    }
-
-    public void requestCode() throws Exception {
-        if (isDialog) {
-            if (null == dialogView) {
-                dialogView = new HomeDialog.DialogView(context);
-                dialogView.show();
-                dialogView.setMessage("登陆中");
-            }
-        }
+public class LoginModelImpl implements LoginModel {
+    @Override
+    public void loadData(SharedPreferencesDB sharedPreferencesDB, String pwd, String mobile, final OnLoginDataListener listener) {
         RequestParams params = new RequestParams(Configuration.URL_LOGIN);
         params.addBodyParameter("pwd", MD5.MD5(pwd));
         params.addBodyParameter("mobile", mobile);
@@ -60,9 +39,6 @@ public class LodingRequest {
             public void onSuccess(String json) {
                 JsonResult<UserData> result = new JsonResult<UserData>();
                 try {
-                    if (null != dialogView) {
-                        dialogView.cancel();
-                    }
                     Log.i("首页返回", json);
                     if (TextUtils.isEmpty(json)) {
                         return;
@@ -70,13 +46,13 @@ public class LodingRequest {
                     result = JsonUtils.parseJson(json,
                             new TypeToken<UserData>() {
                             }.getType());
-                    //手机号码已经被其它账号绑定
+                    //success为false
                     if (!result.isFlag()) {
-                        ToastUtil.show(context, result.getMsg());
+                        listener.onToast(result.getMsg());
                     }
-                    //手机号码正常
+                    //success为true
                     else {
-                        handler.sendMessage(handler.obtainMessage(StatisConstans.MSG_RECEIVED_REGULAR, result.getData()));
+                        listener.onSuccess(result.getData());
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -85,11 +61,9 @@ public class LodingRequest {
 
             @Override
             public void onError(Throwable ex, boolean isOnCallback) {
-                ToastUtil.show(context, "网络请求失败");
+                //请求失败
+                listener.onToast("网络请求失败");
                 Log.i("logTest_xz", "onError");
-                if (null != dialogView) {
-                    dialogView.cancel();
-                }
             }
 
             @Override
@@ -108,5 +82,11 @@ public class LodingRequest {
                 return false;
             }
         });
+    }
+
+    public interface OnLoginDataListener {
+        void onSuccess(UserData userData);
+
+        void onToast(String string);
     }
 }

@@ -67,7 +67,12 @@ public class ResetNameDialog extends Dialog {
 
     public void setListener() {
         btnComit.setOnClickListener((View.OnClickListener) context);
-        btnCanel.setOnClickListener((View.OnClickListener) context);
+        btnCanel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                close();
+            }
+        });
     }
 
     public void close() {

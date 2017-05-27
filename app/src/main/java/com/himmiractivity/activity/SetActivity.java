@@ -43,6 +43,7 @@ import com.himmiractivity.interfaces.OnBooleanListener;
 import com.himmiractivity.interfaces.StatisConstans;
 import com.himmiractivity.request.ModifyNameRequest;
 import com.himmiractivity.request.TaskDetailImageUploadTask;
+import com.himmiractivity.view.PhoneDialog;
 import com.himmiractivity.view.ResetNameDialog;
 
 import java.io.ByteArrayOutputStream;
@@ -53,6 +54,7 @@ import java.util.List;
 import activity.hamir.com.himmir.R;
 import butterknife.BindView;
 import butterknife.BindViews;
+import butterknife.OnClick;
 
 /**
  * 设置页面
@@ -71,7 +73,7 @@ public class SetActivity extends BaseBusActivity {
     List<ImageView> imageViews;
     @BindViews({R.id.ll_equip, R.id.ll_message, R.id.ll_feedback, R.id.ll_phone, R.id.ll_help, R.id.ll_chanage_pass, R.id.ll_exit, R.id.ll_version})
     List<LinearLayout> linearLayouts;
-    AlertDialog alertDialog;
+    PhoneDialog phoneDialog;
     @BindView(R.id.tv_title)
     TextView tvTitle;
     @BindView(R.id.cir_image)
@@ -83,8 +85,6 @@ public class SetActivity extends BaseBusActivity {
     ResetNameDialog dialog;
     ImageBean imageBean;
     private boolean isResult = false;
-    //电话号码
-    String phone = "";
 
     private Handler handler = new Handler(new Handler.Callback() {
         @Override
@@ -148,32 +148,18 @@ public class SetActivity extends BaseBusActivity {
             }
         }
         files = new ArrayList<>();
-        linearLayouts.get(0).setOnClickListener(this);
-        linearLayouts.get(1).setOnClickListener(this);
-        linearLayouts.get(2).setOnClickListener(this);
-        linearLayouts.get(3).setOnClickListener(this);
-        linearLayouts.get(4).setOnClickListener(this);
-        linearLayouts.get(5).setOnClickListener(this);
-        linearLayouts.get(6).setOnClickListener(this);
-        linearLayouts.get(7).setOnClickListener(this);
-        imageViews.get(0).setOnClickListener(this);
-        imageViews.get(1).setOnClickListener(this);
-        tvTitle.setOnClickListener(this);
-        simImage.setOnClickListener(this);
-
     }
 
     @Override
     protected void initData() {
-
     }
 
-    public void testCall(View view) {
+    public void testCall(View view, final String phone) {
         permissionRequests(Manifest.permission.CALL_PHONE, new OnBooleanListener() {
             @Override
             public void onResulepermiss(boolean bln) {
                 if (bln) {
-                    callPhone();
+                    callPhone(phone);
                 } else {
                     ToastUtil.show(SetActivity.this, "请允许电话权限！");
                 }
@@ -217,59 +203,98 @@ public class SetActivity extends BaseBusActivity {
         });
     }
 
-    public void callPhone() {
+    public void callPhone(String phone) {
         IntentUtilsTwo.intentToCall(this, phone);
-        alertDialog.dismiss();
+        phoneDialog.dismiss();
     }
+
+    @OnClick(R.id.ll_equip)
+    public void startQquip() {
+        Intent intentEq = new Intent();
+        intentEq.setClass(this, QquipManager.class);
+        startActivityForResult(intentEq, StatisConstans.MSG_SUCCCE_TURS);
+    }
+
+    @OnClick(R.id.ll_phone)
+    public void contactPhone() {
+        openPopupWindow();
+    }
+
+    @OnClick(R.id.cir_image)
+    public void cirPhoto() {
+        getPhoto();
+    }
+
+    @OnClick(R.id.iv_shared_device)
+    public void startDeviceShared() {
+        Intent intentShared = new Intent(SetActivity.this, SharedDeviceActivity.class);
+        startActivity(intentShared);
+    }
+
+    @OnClick(R.id.ll_version)
+    public void startUpdataVersion() {
+        Intent intentVer = new Intent(SetActivity.this, VersionUpdataActivity.class);
+        startActivity(intentVer);
+    }
+
+    @OnClick(R.id.tv_title)
+    public void titleResetName() {
+        //防止重复按按钮
+        if (dialog != null && dialog.isShowing()) {
+            return;
+        }
+        dialog = new ResetNameDialog(SetActivity.this);
+        Window w = dialog.getWindow();
+        if (w != null) {
+            w.setWindowAnimations(R.style.mystyle1);
+        }
+        dialog.show();
+        dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+        int width = getWindowManager().getDefaultDisplay().getWidth();
+        dialog.getWindow().setLayout((int) (width * 0.8),
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        dialog.setListener();
+        dialog.init("请输入新的名称", "", "取消", "确定", "rename");
+    }
+
+    @OnClick(R.id.ll_help)
+    public void llHelp() {
+        startActivity(new Intent(this, HelpActivity.class));
+    }
+
+    @OnClick(R.id.ll_chanage_pass)
+    public void chanagePass() {
+        Intent intentRevice = new Intent();
+        intentRevice.setClass(this, RevicePassActivity.class);
+        startActivity(intentRevice);
+    }
+
+    @OnClick(R.id.ll_exit)
+    public void llExit() {
+        sharedPreferencesDB.setString(StatisConstans.USERPWD, "");
+        Intent intent = new Intent();
+        intent.setClass(this, LodingActivity.class);
+        startActivity(intent);
+        finish();
+        if (MainActivity.instans != null) {
+            MainActivity.instans.finish();
+        }
+    }
+
+    @OnClick(R.id.btn_back)
+    public void btnBack() {
+        if (isResult) {
+            setResult(Activity.RESULT_OK);
+            finish();
+        } else {
+            finish();
+        }
+    }
+
 
     @Override
     public void onMultiClick(View v) {
         switch (v.getId()) {
-            //设备管理
-            case R.id.ll_equip:
-                Intent intentEq = new Intent();
-                intentEq.setClass(this, QquipManager.class);
-                startActivityForResult(intentEq, StatisConstans.MSG_SUCCCE_TURS);
-                break;
-            case R.id.cir_image:
-                getPhoto();
-                break;
-            case R.id.iv_shared_device:
-                Intent intentShared = new Intent(SetActivity.this, SharedDeviceActivity.class);
-                startActivity(intentShared);
-                break;
-            case R.id.ll_version:
-                Intent intentVer = new Intent(SetActivity.this, VersionUpdataActivity.class);
-                startActivity(intentVer);
-                break;
-            //我的消息
-            case R.id.ll_message:
-                break;
-            //质量反馈
-            case R.id.ll_feedback:
-                break;
-            //联系客服
-            case R.id.ll_phone:
-                openPopupWindow();
-                break;
-            case R.id.tv_title:
-                //防止重复按按钮
-                if (dialog != null && dialog.isShowing()) {
-                    return;
-                }
-                dialog = new ResetNameDialog(SetActivity.this);
-                Window w = dialog.getWindow();
-                if (w != null) {
-                    w.setWindowAnimations(R.style.mystyle1);
-                }
-                dialog.show();
-                dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
-                int width = getWindowManager().getDefaultDisplay().getWidth();
-                dialog.getWindow().setLayout((int) (width * 0.8),
-                        ViewGroup.LayoutParams.WRAP_CONTENT);
-                dialog.setListener();
-                dialog.init("请输入新的名称", "", "取消", "确定", "rename");
-                break;
             case R.id.btn_comit:
                 if (TextUtils.isEmpty(dialog.getName())) {
                     ToastUtils.show(SetActivity.this, "新的名称不能为空", Toast.LENGTH_SHORT);
@@ -283,50 +308,11 @@ public class SetActivity extends BaseBusActivity {
                 }
                 dialog.close();
                 break;
-            case R.id.btn_canel:
-                dialog.close();
-                break;
-            //使用帮助
-            case R.id.ll_help:
-                startActivity(new Intent(this, HelpActivity.class));
-                break;
-            //修改密码
-            case R.id.ll_chanage_pass:
-                Intent intentRevice = new Intent();
-                intentRevice.setClass(this, RevicePassActivity.class);
-                startActivity(intentRevice);
-                break;
-            //退出登陆
-            case R.id.ll_exit:
-//                sharedPreferencesDB.setString("username", "");
-                sharedPreferencesDB.setString(StatisConstans.USERPWD, "");
-                Intent intent = new Intent();
-                intent.setClass(this, LodingActivity.class);
-                startActivity(intent);
-                finish();
-                if (MainActivity.instans != null) {
-                    MainActivity.instans.finish();
-                }
-                break;
-            //返回
-            case R.id.btn_back:
-                if (isResult) {
-                    setResult(Activity.RESULT_OK);
-                    finish();
-                } else {
-                    finish();
-                }
-                break;
             case R.id.tv_sell_phone:
-                phone = tv_sell_phone.getText().toString().trim();
-                testCall(tv_sell_phone);
+                testCall(tv_sell_phone, phoneDialog.getSellPhone());
                 break;
             case R.id.tv_service_phone:
-                phone = tv_service_phone.getText().toString().trim();
-                testCall(tv_service_phone);
-                break;
-            case R.id.tv_cancel:
-                alertDialog.dismiss();
+                testCall(tv_service_phone, phoneDialog.getServicePhone());
                 break;
             default:
                 break;
@@ -350,17 +336,13 @@ public class SetActivity extends BaseBusActivity {
 
     private void openPopupWindow() {
         //防止重复按按钮
-        if (alertDialog != null && alertDialog.isShowing()) {
+        if (phoneDialog != null && phoneDialog.isShowing()) {
             return;
         }
-        LayoutInflater inflater = getLayoutInflater();
-        View view = inflater.inflate(R.layout.pop_phone, null);
-        alertDialog = new AlertDialog.Builder(SetActivity.this, R.style.Theme_Light_Dialog)
-                .create();
+        phoneDialog = new PhoneDialog(SetActivity.this);
         //设置PopupWindow的View点击事件
-        setOnPopupViewClick(view);
-        alertDialog.show();
-        Window w = alertDialog.getWindow();
+        phoneDialog.show();
+        Window w = phoneDialog.getWindow();
         w.setWindowAnimations(R.style.AnimBottom);
         w.setGravity(Gravity.BOTTOM);
         w.getDecorView().setPadding(0, 0, 0, 0);
@@ -372,25 +354,8 @@ public class SetActivity extends BaseBusActivity {
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
         //将设置好的属性set回去
         w.setAttributes(lp);
-        w.setContentView(view);
-//        alertDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT,
-//                ViewGroup.LayoutParams.MATCH_PARENT);
-    }
-
-    private void setOnPopupViewClick(View view) {
-        LinearLayout ll_dimis = (LinearLayout) view.findViewById(R.id.ll_dimis);
-        tv_sell_phone = (TextView) view.findViewById(R.id.tv_sell_phone);
-        tv_service_phone = (TextView) view.findViewById(R.id.tv_service_phone);
-        TextView tv_cancel = (TextView) view.findViewById(R.id.tv_cancel);
-        tv_sell_phone.setOnClickListener(this);
-        tv_service_phone.setOnClickListener(this);
-        tv_cancel.setOnClickListener(this);
-        ll_dimis.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                alertDialog.dismiss();
-            }
-        });
+        phoneDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT);
     }
 
     /**

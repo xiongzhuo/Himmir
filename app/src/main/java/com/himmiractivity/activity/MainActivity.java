@@ -467,7 +467,7 @@ public class MainActivity extends BaseBusNoSocllowActivity {
             startActivity(new Intent(this, LodingActivity.class));
             finish();
         } else {
-            LodingRequest lodingRequest = new LodingRequest(sharedPreferencesDB, this, sharedPreferencesDB.getString(StatisConstans.USERPWD, ""), sharedPreferencesDB.getString(StatisConstans.USERNAME, ""), sharedPreferencesDB.getString(StatisConstans.USERDEVICEUUID, ""), handler, false);
+            LodingRequest lodingRequest = new LodingRequest(sharedPreferencesDB, this, sharedPreferencesDB.getString(StatisConstans.USERPWD, ""), sharedPreferencesDB.getString(StatisConstans.USERNAME, ""), handler, false);
             try {
                 lodingRequest.requestCode();
             } catch (Exception e) {

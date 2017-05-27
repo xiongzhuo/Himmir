@@ -105,7 +105,7 @@ public class SplashActivity extends BaseBusNoSocllowActivity implements OnClickL
             startActivity(new Intent(this, LodingActivity.class));
             finish();
         } else {
-            LodingRequest lodingRequest = new LodingRequest(sharedDB, this, sharedDB.getString(StatisConstans.USERPWD, ""), sharedDB.getString(StatisConstans.USERNAME, ""), sharedDB.getString(StatisConstans.USERDEVICEUUID, ""), handler, false);
+            LodingRequest lodingRequest = new LodingRequest(sharedDB, this, sharedDB.getString(StatisConstans.USERPWD, ""), sharedDB.getString(StatisConstans.USERNAME, ""), handler, false);
             try {
                 lodingRequest.requestCode();
             } catch (Exception e) {
