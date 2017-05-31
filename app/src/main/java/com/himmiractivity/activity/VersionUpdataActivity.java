@@ -59,7 +59,7 @@ public class VersionUpdataActivity extends BaseBusActivity {
                     versionBean = (VersionBean) msg.obj;
                     //获得当前版本号
                     versionCode = AppUtils.getAppVersionCode(VersionUpdataActivity.this);
-                    versionName = VersionUpdataActivity.this.getResources().getString(R.string.app_version);
+                    versionName = AppUtils.getAppVersionName(VersionUpdataActivity.this);
                     //假设我们在子线程联网后获取服务器版本号和版本名称(真是项目中都是从服务器获取的)
                     //然后判断服务器版本号是否和当前版本号一样
                     if (versionBean.getAppVerInfo().getVersion_code() > versionCode) {//发送一个handler进入主页面
