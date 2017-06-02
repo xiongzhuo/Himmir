@@ -20,6 +20,7 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 
+import java.lang.ref.SoftReference;
 import java.lang.reflect.Method;
 import java.util.Hashtable;
 
@@ -266,8 +267,10 @@ public class Utils {
         //logo大小为二维码整体大小的1/5
         float scaleFactor = srcWidth * 1.0f / 8 / logoWidth;
         Bitmap bitmap = Bitmap.createBitmap(srcWidth, srcHeight, Bitmap.Config.ARGB_8888);
+        // 软引用的Bitmap对象
+        SoftReference<Bitmap> softBitmap = new SoftReference<Bitmap>(bitmap);
         try {
-            Canvas canvas = new Canvas(bitmap);
+            Canvas canvas = new Canvas(softBitmap.get());
             canvas.drawBitmap(src, 0, 0, null);
             canvas.scale(scaleFactor, scaleFactor, srcWidth / 2, srcHeight / 2);
             canvas.drawBitmap(logo, (srcWidth - logoWidth) / 2, (srcHeight - logoHeight) / 2, null);

@@ -55,7 +55,7 @@
             android:background="@null"
             android:button="@null"
             android:padding="10dp"
-            android:text="取消"
+            android:text="@android:string/no"
             android:textColor="@color/royalblue"
             android:textSize="@dimen/x18" />
 
@@ -72,7 +72,7 @@
             android:background="@null"
             android:button="@null"
             android:padding="10dp"
-            android:text="确定"
+            android:text="@android:string/yes"
             android:textColor="@color/royalblue"
             android:textSize="@dimen/x18" />
 

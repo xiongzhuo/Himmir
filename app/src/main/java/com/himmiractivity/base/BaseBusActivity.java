@@ -33,6 +33,7 @@ import org.xutils.x;
 
 import activity.hamir.com.himmir.R;
 import butterknife.ButterKnife;
+import de.greenrobot.event.EventBus;
 
 public abstract class BaseBusActivity extends AutoLayoutActivity implements View.OnClickListener {
     private OnBooleanListener onPermissionListener;

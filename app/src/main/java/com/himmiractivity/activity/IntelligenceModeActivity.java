@@ -1,10 +1,6 @@
 package com.himmiractivity.activity;
 
 import android.app.AlertDialog;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -28,6 +24,7 @@ import com.himmiractivity.Utils.ToastUtil;
 import com.himmiractivity.Utils.ToastUtils;
 import com.himmiractivity.base.BaseBusActivity;
 import com.himmiractivity.circular_progress_bar.CircularProgressBar;
+import com.himmiractivity.entity.FirstEvent;
 import com.himmiractivity.entity.PmAllData;
 import com.himmiractivity.interfaces.StatisConstans;
 import com.himmiractivity.mining.app.zxing.ScoketOFFeON;
@@ -40,6 +37,8 @@ import java.util.List;
 import activity.hamir.com.himmir.R;
 import butterknife.BindView;
 import butterknife.BindViews;
+import de.greenrobot.event.EventBus;
+import de.greenrobot.event.Subscribe;
 
 public class IntelligenceModeActivity extends BaseBusActivity {
     @BindView(R.id.progress)
@@ -55,7 +54,7 @@ public class IntelligenceModeActivity extends BaseBusActivity {
     Socket socket;
     String mac;
     Protocal protocal;
-    PmAllData pmAllData;
+    PmAllData mPmAllData;
     AlertDialog dialog;
     private boolean isFirst = true;//只有一次
     boolean muteMode;
@@ -74,12 +73,13 @@ public class IntelligenceModeActivity extends BaseBusActivity {
                 case StatisConstans.MSG_ENABLED_SUCCESSFUL:
                     linearLayout.setVisibility(View.VISIBLE);
                     progressBar.setVisibility(View.GONE);
-                    if (pmAllData != null) {
-                        checkBoxs.get(0).setChecked(pmAllData.isMuteMode());
-                        checkBoxs.get(1).setChecked(pmAllData.isCoMode());
-                        checkBoxs.get(2).setChecked(pmAllData.isPmMode());
-                        coNumber = pmAllData.getCo2Adj();
-                        pmNumber = pmAllData.getPmAdj();
+                    mPmAllData = (PmAllData) msg.obj;
+                    if (mPmAllData != null) {
+                        checkBoxs.get(0).setChecked(mPmAllData.isMuteMode());
+                        checkBoxs.get(1).setChecked(mPmAllData.isCoMode());
+                        checkBoxs.get(2).setChecked(mPmAllData.isPmMode());
+                        coNumber = mPmAllData.getCo2Adj();
+                        pmNumber = mPmAllData.getPmAdj();
                         textViews.get(0).setText(coNumber + " ppm");
                         textViews.get(1).setText(pmNumber + " ug/m³");
                         isFirst = false;
@@ -242,41 +242,66 @@ public class IntelligenceModeActivity extends BaseBusActivity {
     }
 
     private void registerBoradcastReceiver() {
-        IntentFilter filter = new IntentFilter(
-                StatisConstans.BROADCAST_HONGREN_SUCC);
-        filter.addAction(StatisConstans.BROADCAST_HONGREN_KILL);
-        filter.addAction(StatisConstans.BROADCAST_HONGREN_DATA);
-        IntelligenceModeActivity.this.registerReceiver(mBroadcastReceiver, filter);
+//        IntentFilter filter = new IntentFilter(
+//                StatisConstans.BROADCAST_HONGREN_SUCC);
+//        filter.addAction(StatisConstans.BROADCAST_HONGREN_KILL);
+//        filter.addAction(StatisConstans.BROADCAST_HONGREN_DATA);
+//        IntelligenceModeActivity.this.registerReceiver(mBroadcastReceiver, filter);
+        EventBus.getDefault().register(this);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        IntelligenceModeActivity.this.unregisterReceiver(mBroadcastReceiver);
+//        IntelligenceModeActivity.this.unregisterReceiver(mBroadcastReceiver);
+        EventBus.getDefault().unregister(this);
     }
 
-    private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (action.equalsIgnoreCase(StatisConstans.BROADCAST_HONGREN_SUCC)) {
-                finish();
-            } else if (action.equalsIgnoreCase(StatisConstans.BROADCAST_HONGREN_KILL)) {
-                //失败
-            } else if (action.equalsIgnoreCase(StatisConstans.BROADCAST_HONGREN_DATA)) {
-                if (isFirst) {
-                    //得到数据
-                    pmAllData = (PmAllData) intent.getExtras().getSerializable(StatisConstans.PM_ALL_DATA);
-                    if (pmAllData.getFanFreq() > 9) {
-                        handler.sendEmptyMessage(StatisConstans.MSG_ENABLED_SUCCESSFUL);
-                    } else {
-                        progressBar.setVisibility(View.GONE);
-                        ToastUtil.show(IntelligenceModeActivity.this, "设备网络断开");
-                    }
-                }
+//    private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+//        @Override
+//        public void onReceive(Context context, Intent intent) {
+//            String action = intent.getAction();
+//            if (action.equalsIgnoreCase(StatisConstans.BROADCAST_HONGREN_SUCC)) {
+//                finish();
+//            } else if (action.equalsIgnoreCase(StatisConstans.BROADCAST_HONGREN_KILL)) {
+//                //失败
+//            } else if (action.equalsIgnoreCase(StatisConstans.BROADCAST_HONGREN_DATA)) {
+//                if (isFirst) {
+//                    //得到数据
+//                    pmAllData = (PmAllData) intent.getExtras().getSerializable(StatisConstans.PM_ALL_DATA);
+//                    if (pmAllData.getFanFreq() > 9) {
+//                        handler.sendEmptyMessage(StatisConstans.MSG_ENABLED_SUCCESSFUL);
+//                    } else {
+//                        progressBar.setVisibility(View.GONE);
+//                        ToastUtil.show(IntelligenceModeActivity.this, "设备网络断开");
+//                    }
+//                }
+//            }
+//        }
+//    };
+
+    @Subscribe
+    public void onEventMainThread(FirstEvent event) {
+        String msg = event.getMsg();
+        if (msg.contains("成功")) {
+            finish();
+        }
+//        Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+    }
+
+    @Subscribe
+    public void onEventMainThread(PmAllData pmAllData) {
+        if (isFirst) {
+            //得到数据
+            if (pmAllData.getFanFreq() > 9) {
+//                handler.sendEmptyMessage(StatisConstans.MSG_ENABLED_SUCCESSFUL);
+                handler.sendMessage(handler.obtainMessage(StatisConstans.MSG_ENABLED_SUCCESSFUL, pmAllData));
+            } else {
+                progressBar.setVisibility(View.GONE);
+                ToastUtil.show(IntelligenceModeActivity.this, "设备网络断开");
             }
         }
-    };
+    }
 
     public void request(String host, int location) {
         try {

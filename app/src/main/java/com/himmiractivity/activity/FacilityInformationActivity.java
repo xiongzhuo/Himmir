@@ -1,9 +1,6 @@
 package com.himmiractivity.activity;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -39,6 +36,8 @@ import java.util.List;
 import activity.hamir.com.himmir.R;
 import butterknife.BindView;
 import butterknife.BindViews;
+import de.greenrobot.event.EventBus;
+import de.greenrobot.event.Subscribe;
 
 
 public class FacilityInformationActivity extends BaseBusActivity implements SuperSwipeRefreshLayout.OnPullRefreshListener {
@@ -68,13 +67,14 @@ public class FacilityInformationActivity extends BaseBusActivity implements Supe
             switch (msg.what) {
                 case StatisConstans.MSG_QUEST_SERVER:
                     PmAllData pmAllData = (PmAllData) msg.obj;
-                    Intent intentData = new Intent();
-                    intentData.setAction(StatisConstans.BROADCAST_HONGREN_DATA);
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable(StatisConstans.PM_ALL_DATA, pmAllData);
-                    // 要发送的内容
-                    intentData.putExtras(bundle);
-                    FacilityInformationActivity.this.sendBroadcast(intentData);
+//                    Intent intentData = new Intent();
+//                    intentData.setAction(StatisConstans.BROADCAST_HONGREN_DATA);
+//                    Bundle bundle = new Bundle();
+//                    bundle.putSerializable(StatisConstans.PM_ALL_DATA, pmAllData);
+//                    // 要发送的内容
+//                    intentData.putExtras(bundle);
+//                    FacilityInformationActivity.this.sendBroadcast(intentData);
+                    EventBus.getDefault().post(pmAllData);
                     break;
                 case StatisConstans.MSG_OUTDOOR_PM:
                     PmBean pmBean = (PmBean) msg.obj;
@@ -209,7 +209,8 @@ public class FacilityInformationActivity extends BaseBusActivity implements Supe
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        FacilityInformationActivity.this.unregisterReceiver(mBroadcastReceiver);
+//        FacilityInformationActivity.this.unregisterReceiver(mBroadcastReceiver);
+        EventBus.getDefault().unregister(this);
     }
 
     public void request(String host, int location) {
@@ -264,20 +265,29 @@ public class FacilityInformationActivity extends BaseBusActivity implements Supe
         //myAdapter.updateHeaderHeight(distance);
     }
 
-    private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (action.equalsIgnoreCase(StatisConstans.BROADCAST_HONGREN_DATA)) {
-                PmAllData pmAllData = (PmAllData) intent.getExtras().getSerializable(StatisConstans.PM_ALL_DATA);
-                if (pmAllData.getFanFreq() > 9) {
-                    upData(pmAllData);
-                } else {
-                    restoreData();
-                }
-            }
+//    private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+//        @Override
+//        public void onReceive(Context context, Intent intent) {
+//            String action = intent.getAction();
+//            if (action.equalsIgnoreCase(StatisConstans.BROADCAST_HONGREN_DATA)) {
+//                PmAllData pmAllData = (PmAllData) intent.getExtras().getSerializable(StatisConstans.PM_ALL_DATA);
+//                if (pmAllData.getFanFreq() > 9) {
+//                    upData(pmAllData);
+//                } else {
+//                    restoreData();
+//                }
+//            }
+//        }
+//    };
+
+    @Subscribe
+    public void onEventMainThread(PmAllData pmAllData) {
+        if (pmAllData.getFanFreq() > 9) {
+            upData(pmAllData);
+        } else {
+            restoreData();
         }
-    };
+    }
 
     public void upData(PmAllData pmAllData) {
         double aimPercent = ((double) pmAllData.getIndoorPmThickness() / 225d) * 100d;
@@ -311,10 +321,11 @@ public class FacilityInformationActivity extends BaseBusActivity implements Supe
     }
 
     private void registerBoradcastReceiver() {
-        IntentFilter filter = new IntentFilter(
-                StatisConstans.BROADCAST_HONGREN_SUCC);
-        filter.addAction(StatisConstans.BROADCAST_HONGREN_DATA);
-        FacilityInformationActivity.this.registerReceiver(mBroadcastReceiver, filter);
+//        IntentFilter filter = new IntentFilter(
+//                StatisConstans.BROADCAST_HONGREN_SUCC);
+//        filter.addAction(StatisConstans.BROADCAST_HONGREN_DATA);
+//        FacilityInformationActivity.this.registerReceiver(mBroadcastReceiver, filter);
+        EventBus.getDefault().register(this);
     }
 
     @Override

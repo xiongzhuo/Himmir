@@ -215,7 +215,6 @@
         <activity
             android:name="com.himmiractivity.activity.LodingActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:launchMode="singleInstance"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.himmiractivity.activity.RegisterActivity"

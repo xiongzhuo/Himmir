@@ -33,7 +33,7 @@
                 android:layout_width="120dp"
                 android:layout_height="fill_parent"
                 android:background="@drawable/dialog_btn_right_selector"
-                android:text="取消"
+                android:text="@android:string/no"
                 android:textColor="#5C5D5C" />
 
             <Button
@@ -42,7 +42,7 @@
                 android:layout_height="fill_parent"
                 android:layout_alignParentRight="true"
                 android:background="@drawable/dialog_btn_left_selector"
-                android:text="确定"
+                android:text="@android:string/yes"
                 android:textColor="#5C5D5C" />
         </RelativeLayout>
 

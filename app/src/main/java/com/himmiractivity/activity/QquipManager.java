@@ -2,10 +2,7 @@ package com.himmiractivity.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -33,6 +30,7 @@ import com.himmiractivity.Utils.ToastUtils;
 import com.himmiractivity.Utils.Utils;
 import com.himmiractivity.base.BaseBusActivity;
 import com.himmiractivity.entity.AllUserDerviceBaen;
+import com.himmiractivity.entity.FirstEvent;
 import com.himmiractivity.entity.ImageBean;
 import com.himmiractivity.entity.PmAllData;
 import com.himmiractivity.interfaces.StatisConstans;
@@ -48,6 +46,8 @@ import java.net.Socket;
 
 import activity.hamir.com.himmir.R;
 import butterknife.BindView;
+import de.greenrobot.event.EventBus;
+import de.greenrobot.event.Subscribe;
 
 /**
  * 设备管理
@@ -88,22 +88,25 @@ public class QquipManager extends BaseBusActivity implements AlxRefreshLoadMoreR
                     }
                     break;
                 case StatisConstans.MSG_ENABLED_SUCCESSFUL:
+                    EventBus.getDefault().post(new FirstEvent("操作成功"));
                     // 发送 一个无序广播
-                    QquipManager.this.sendBroadcast(new Intent(StatisConstans.BROADCAST_HONGREN_SUCC));
+//                    QquipManager.this.sendBroadcast(new Intent(StatisConstans.BROADCAST_HONGREN_SUCC));
                     break;
                 case StatisConstans.MSG_ENABLED_FAILING:
+                    EventBus.getDefault().post(new FirstEvent("操作失败"));
                     // 发送 一个无序广播
-                    QquipManager.this.sendBroadcast(new Intent(StatisConstans.BROADCAST_HONGREN_KILL));
+//                    QquipManager.this.sendBroadcast(new Intent(StatisConstans.BROADCAST_HONGREN_KILL));
                     break;
                 case StatisConstans.MSG_QUEST_SERVER:
                     PmAllData pmAllData = (PmAllData) msg.obj;
-                    Intent intentData = new Intent();
-                    intentData.setAction(StatisConstans.BROADCAST_HONGREN_DATA);
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable(StatisConstans.PM_ALL_DATA, pmAllData);
-                    // 要发送的内容
-                    intentData.putExtras(bundle);
-                    QquipManager.this.sendBroadcast(intentData);
+//                    Intent intentData = new Intent();
+//                    intentData.setAction(StatisConstans.BROADCAST_HONGREN_DATA);
+//                    Bundle bundle = new Bundle();
+//                    bundle.putSerializable(StatisConstans.PM_ALL_DATA, pmAllData);
+//                    // 要发送的内容
+//                    intentData.putExtras(bundle);
+//                    QquipManager.this.sendBroadcast(intentData);
+                    EventBus.getDefault().post(pmAllData);
                     break;
                 case StatisConstans.MSG_MODIFY_NAME:
                     ImageBean mostr = (ImageBean) msg.obj;
@@ -150,10 +153,13 @@ public class QquipManager extends BaseBusActivity implements AlxRefreshLoadMoreR
     }
 
     @Override
+    @Subscribe
     protected void initView(Bundle savedInstanceState) {
         setMidTxt("设备管理");
         initTitleBar();
-        registerBoradcastReceiver();
+//        registerBoradcastReceiver();
+        //注册
+        EventBus.getDefault().register(this);
         ip = sharedPreferencesDB.getString("ip", "");
         port = sharedPreferencesDB.getString("port", "");
         threadPoolUtils = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 10);
@@ -170,48 +176,86 @@ public class QquipManager extends BaseBusActivity implements AlxRefreshLoadMoreR
         btnAddAqu.setOnClickListener(this);
     }
 
-    private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (action.equalsIgnoreCase(StatisConstans.BROADCAST_HONGREN_SUCC)) {
-                ToastUtil.show(QquipManager.this, "操作成功");
-            } else if (action.equalsIgnoreCase(StatisConstans.BROADCAST_HONGREN_KILL)) {
-                ToastUtil.show(QquipManager.this, "操作失败");
-            } else if (action.equalsIgnoreCase(StatisConstans.BROADCAST_HONGREN_DATA)) {
-                if (allUserDerviceBaen.getSpace() != null) {
-                    //在线，反之为离线
-                    if (onLinePos >= allUserDerviceBaen.getSpace().size())
-                        return;
-                    PmAllData pmAllData = (PmAllData) intent.getExtras().getSerializable(StatisConstans.PM_ALL_DATA);
-                    Log.d("device_mac", "pmAllData.getFanFreq()" + pmAllData.getFanFreq());
-                    if (pmAllData.getFanFreq() > 9) {
-                        allUserDerviceBaen.getSpace().get(onLinePos).setOnLine(true);
-                        rvcAdapter.setmDatas(allUserDerviceBaen.getSpace());
-                    }
-                    onLinePos++;
-                    if (onLinePos >= allUserDerviceBaen.getSpace().size())
-                        return;
-                    Log.d("device_mac", allUserDerviceBaen.getSpace().get(onLinePos).getDevice().getDevice_mac() + "onLinePos:" + onLinePos);
-                    threadPoolUtils.execute(new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                ScoketOFFeON.sendMessage(socket, protocal, allUserDerviceBaen.getSpace().get(onLinePos).getDevice().getDevice_mac());
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }));
-                }
+//    private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+//        @Override
+//        public void onReceive(Context context, Intent intent) {
+//            String action = intent.getAction();
+//            if (action.equalsIgnoreCase(StatisConstans.BROADCAST_HONGREN_SUCC)) {
+//                ToastUtil.show(QquipManager.this, "操作成功");
+//            } else if (action.equalsIgnoreCase(StatisConstans.BROADCAST_HONGREN_KILL)) {
+//                ToastUtil.show(QquipManager.this, "操作失败");
+//            }
+//            else if (action.equalsIgnoreCase(StatisConstans.BROADCAST_HONGREN_DATA)) {
+//                if (allUserDerviceBaen.getSpace() != null) {
+//                    //在线，反之为离线
+//                    if (onLinePos >= allUserDerviceBaen.getSpace().size())
+//                        return;
+//                    PmAllData pmAllData = (PmAllData) intent.getExtras().getSerializable(StatisConstans.PM_ALL_DATA);
+//                    Log.d("device_mac", "pmAllData.getFanFreq()" + pmAllData.getFanFreq());
+//                    if (pmAllData.getFanFreq() > 9) {
+//                        allUserDerviceBaen.getSpace().get(onLinePos).setOnLine(true);
+//                        rvcAdapter.setmDatas(allUserDerviceBaen.getSpace());
+//                    }
+//                    onLinePos++;
+//                    if (onLinePos >= allUserDerviceBaen.getSpace().size())
+//                        return;
+//                    Log.d("device_mac", allUserDerviceBaen.getSpace().get(onLinePos).getDevice().getDevice_mac() + "onLinePos:" + onLinePos);
+//                    threadPoolUtils.execute(new Thread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            try {
+//                                ScoketOFFeON.sendMessage(socket, protocal, allUserDerviceBaen.getSpace().get(onLinePos).getDevice().getDevice_mac());
+//                            } catch (Exception e) {
+//                                e.printStackTrace();
+//                            }
+//                        }
+//                    }));
+//                }
+//            }
+//}
+//    };
+
+    @Subscribe
+    public void onEventMainThread(FirstEvent event) {
+        String msg = event.getMsg();
+        Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+    }
+
+    @Subscribe
+    public void onEventMainThread(PmAllData pmAllData) {
+        if (allUserDerviceBaen.getSpace() != null) {
+            //在线，反之为离线
+            if (onLinePos >= allUserDerviceBaen.getSpace().size())
+                return;
+//            PmAllData pmAllData = (PmAllData) intent.getExtras().getSerializable(StatisConstans.PM_ALL_DATA);
+            Log.d("device_mac", "pmAllData.getFanFreq()" + pmAllData.getFanFreq());
+            if (pmAllData.getFanFreq() > 9) {
+                allUserDerviceBaen.getSpace().get(onLinePos).setOnLine(true);
+                rvcAdapter.setmDatas(allUserDerviceBaen.getSpace());
             }
+            onLinePos++;
+            if (onLinePos >= allUserDerviceBaen.getSpace().size())
+                return;
+            Log.d("device_mac", allUserDerviceBaen.getSpace().get(onLinePos).getDevice().getDevice_mac() + "onLinePos:" + onLinePos);
+            threadPoolUtils.execute(new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        ScoketOFFeON.sendMessage(socket, protocal, allUserDerviceBaen.getSpace().get(onLinePos).getDevice().getDevice_mac());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }));
         }
-    };
+    }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        QquipManager.this.unregisterReceiver(mBroadcastReceiver);
+//        QquipManager.this.unregisterReceiver(mBroadcastReceiver);
+        //注册
+        EventBus.getDefault().unregister(this);
     }
 
     @Override
@@ -221,13 +265,13 @@ public class QquipManager extends BaseBusActivity implements AlxRefreshLoadMoreR
         initRechclerView();
     }
 
-    private void registerBoradcastReceiver() {
-        IntentFilter filter = new IntentFilter(
-                StatisConstans.BROADCAST_HONGREN_SUCC);
-        filter.addAction(StatisConstans.BROADCAST_HONGREN_KILL);
-        filter.addAction(StatisConstans.BROADCAST_HONGREN_DATA);
-        QquipManager.this.registerReceiver(mBroadcastReceiver, filter);
-    }
+//    private void registerBoradcastReceiver() {
+//        IntentFilter filter = new IntentFilter(
+//                StatisConstans.BROADCAST_HONGREN_SUCC);
+//        filter.addAction(StatisConstans.BROADCAST_HONGREN_KILL);
+//        filter.addAction(StatisConstans.BROADCAST_HONGREN_DATA);
+//        QquipManager.this.registerReceiver(mBroadcastReceiver, filter);
+//    }
 
     @Override
     protected void initData() {

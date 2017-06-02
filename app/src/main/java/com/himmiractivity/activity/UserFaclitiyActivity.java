@@ -1,9 +1,6 @@
 package com.himmiractivity.activity;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -31,6 +28,8 @@ import java.net.Socket;
 
 import activity.hamir.com.himmir.R;
 import butterknife.BindView;
+import de.greenrobot.event.EventBus;
+import de.greenrobot.event.Subscribe;
 
 
 public class UserFaclitiyActivity extends BaseBusActivity implements AlxRefreshLoadMoreRecyclerView.LoadMoreListener, AlxRefreshLoadMoreRecyclerView.OnRefreshListener, UserDerviceRvcAdapter.OnItemClickLitener {
@@ -54,13 +53,14 @@ public class UserFaclitiyActivity extends BaseBusActivity implements AlxRefreshL
                 case StatisConstans.MSG_QUEST_SERVER:
                     //在线，反之为离线
                     PmAllData pmAllData = (PmAllData) msg.obj;
-                    Intent intentData = new Intent();
-                    intentData.setAction(StatisConstans.BROADCAST_HONGREN_DATA);
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable(StatisConstans.PM_ALL_DATA, pmAllData);
-                    // 要发送的内容
-                    intentData.putExtras(bundle);
-                    UserFaclitiyActivity.this.sendBroadcast(intentData);
+//                    Intent intentData = new Intent();
+//                    intentData.setAction(StatisConstans.BROADCAST_HONGREN_DATA);
+//                    Bundle bundle = new Bundle();
+//                    bundle.putSerializable(StatisConstans.PM_ALL_DATA, pmAllData);
+//                    // 要发送的内容
+//                    intentData.putExtras(bundle);
+//                    UserFaclitiyActivity.this.sendBroadcast(intentData);
+                    EventBus.getDefault().post(pmAllData);
                     break;
                 //成功
                 case StatisConstans.MSG_RECEIVED_REGULAR:
@@ -144,43 +144,71 @@ public class UserFaclitiyActivity extends BaseBusActivity implements AlxRefreshL
         }
     }
 
-    private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (action.equalsIgnoreCase(StatisConstans.BROADCAST_HONGREN_DATA)) {
-                if (userDerviceBean.getShareUserDevList() != null) {
-                    //在线，反之为离线
-                    if (onLinePos >= userDerviceBean.getShareUserDevList().size())
-                        return;
-                    PmAllData pmAllData = (PmAllData) intent.getExtras().getSerializable(StatisConstans.PM_ALL_DATA);
-                    Log.d("device_mac", "pmAllData.getFanFreq()" + pmAllData.getFanFreq());
-                    if (pmAllData.getFanFreq() > 9) {
-                        userDerviceBean.getShareUserDevList().get(onLinePos).setOnLine(true);
-                        rvcAdapter.setmDatas(userDerviceBean.getShareUserDevList());
-                    }
-                    onLinePos++;
-                    if (onLinePos >= userDerviceBean.getShareUserDevList().size())
-                        return;
-                    threadPoolUtils.execute(new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                ScoketOFFeON.sendMessage(socket, protocal, userDerviceBean.getShareUserDevList().get(onLinePos).getDevice_mac());
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }));
-                }
+//    private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+//        @Override
+//        public void onReceive(Context context, Intent intent) {
+//            String action = intent.getAction();
+//            if (action.equalsIgnoreCase(StatisConstans.BROADCAST_HONGREN_DATA)) {
+//                if (userDerviceBean.getShareUserDevList() != null) {
+//                    //在线，反之为离线
+//                    if (onLinePos >= userDerviceBean.getShareUserDevList().size())
+//                        return;
+//                    PmAllData pmAllData = (PmAllData) intent.getExtras().getSerializable(StatisConstans.PM_ALL_DATA);
+//                    Log.d("device_mac", "pmAllData.getFanFreq()" + pmAllData.getFanFreq());
+//                    if (pmAllData.getFanFreq() > 9) {
+//                        userDerviceBean.getShareUserDevList().get(onLinePos).setOnLine(true);
+//                        rvcAdapter.setmDatas(userDerviceBean.getShareUserDevList());
+//                    }
+//                    onLinePos++;
+//                    if (onLinePos >= userDerviceBean.getShareUserDevList().size())
+//                        return;
+//                    threadPoolUtils.execute(new Thread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            try {
+//                                ScoketOFFeON.sendMessage(socket, protocal, userDerviceBean.getShareUserDevList().get(onLinePos).getDevice_mac());
+//                            } catch (Exception e) {
+//                                e.printStackTrace();
+//                            }
+//                        }
+//                    }));
+//                }
+//            }
+//        }
+//    };
+
+    @Subscribe
+    public void onEventMainThread(PmAllData pmAllData) {
+        if (userDerviceBean.getShareUserDevList() != null) {
+            //在线，反之为离线
+            if (onLinePos >= userDerviceBean.getShareUserDevList().size())
+                return;
+            Log.d("device_mac", "pmAllData.getFanFreq()" + pmAllData.getFanFreq());
+            if (pmAllData.getFanFreq() > 9) {
+                userDerviceBean.getShareUserDevList().get(onLinePos).setOnLine(true);
+                rvcAdapter.setmDatas(userDerviceBean.getShareUserDevList());
             }
+            onLinePos++;
+            if (onLinePos >= userDerviceBean.getShareUserDevList().size())
+                return;
+            threadPoolUtils.execute(new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        ScoketOFFeON.sendMessage(socket, protocal, userDerviceBean.getShareUserDevList().get(onLinePos).getDevice_mac());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }));
         }
-    };
+    }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        UserFaclitiyActivity.this.unregisterReceiver(mBroadcastReceiver);
+//        UserFaclitiyActivity.this.unregisterReceiver(mBroadcastReceiver);
+        EventBus.getDefault().unregister(this);
     }
 
     @Override
@@ -191,10 +219,11 @@ public class UserFaclitiyActivity extends BaseBusActivity implements AlxRefreshL
     }
 
     private void registerBoradcastReceiver() {
-        IntentFilter filter = new IntentFilter(
-                StatisConstans.BROADCAST_HONGREN_SUCC);
-        filter.addAction(StatisConstans.BROADCAST_HONGREN_DATA);
-        UserFaclitiyActivity.this.registerReceiver(mBroadcastReceiver, filter);
+//        IntentFilter filter = new IntentFilter(
+//                StatisConstans.BROADCAST_HONGREN_SUCC);
+//        filter.addAction(StatisConstans.BROADCAST_HONGREN_DATA);
+//        UserFaclitiyActivity.this.registerReceiver(mBroadcastReceiver, filter);
+        EventBus.getDefault().register(this);
     }
 
     @Override

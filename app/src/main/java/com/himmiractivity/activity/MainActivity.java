@@ -40,6 +40,7 @@ import com.himmiractivity.Utils.WifiUtils;
 import com.himmiractivity.base.BaseBusNoSocllowActivity;
 import com.himmiractivity.circular_progress_bar.CircularProgressBar;
 import com.himmiractivity.entity.DataServerBean;
+import com.himmiractivity.entity.FirstEvent;
 import com.himmiractivity.entity.PmAllData;
 import com.himmiractivity.entity.PmBean;
 import com.himmiractivity.entity.UserData;
@@ -56,6 +57,7 @@ import com.himmiractivity.view.PercentView;
 import com.himmiractivity.view.SelectorImageView;
 
 import java.io.IOException;
+import java.lang.ref.SoftReference;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
@@ -66,6 +68,7 @@ import java.util.TimerTask;
 import activity.hamir.com.himmir.R;
 import butterknife.BindView;
 import butterknife.BindViews;
+import de.greenrobot.event.EventBus;
 
 public class MainActivity extends BaseBusNoSocllowActivity {
     private long exitTime = 0;
@@ -88,9 +91,9 @@ public class MainActivity extends BaseBusNoSocllowActivity {
     ListPopupWindow popupWindow = null;
     UserData userData;
     //获取设备
-    private List<String> list;
+//    private List<String> list;
+    private SoftReference<List<String>> mList;
     private List<UserData.UserRoom> space;
-    public static MainActivity instans;
     Socket socket;
     Protocal protocal;
     DataServerBean dataServerBean;
@@ -150,12 +153,14 @@ public class MainActivity extends BaseBusNoSocllowActivity {
                     textViews.get(2).setText(pmBean.getPm25());
                     break;
                 case StatisConstans.MSG_ENABLED_SUCCESSFUL:
+                    EventBus.getDefault().post(new FirstEvent("操作成功"));
                     // 发送 一个无序广播
-                    MainActivity.this.sendBroadcast(new Intent(StatisConstans.BROADCAST_HONGREN_SUCC));
+//                    MainActivity.this.sendBroadcast(new Intent(StatisConstans.BROADCAST_HONGREN_SUCC));
                     break;
                 case StatisConstans.MSG_ENABLED_FAILING:
+                    EventBus.getDefault().post(new FirstEvent("操作失败"));
                     // 发送 一个无序广播
-                    MainActivity.this.sendBroadcast(new Intent(StatisConstans.BROADCAST_HONGREN_KILL));
+//                    MainActivity.this.sendBroadcast(new Intent(StatisConstans.BROADCAST_HONGREN_KILL));
                     break;
                 case StatisConstans.MSG_QUEST_SERVER:
                     pmAllData = (PmAllData) msg.obj;
@@ -164,13 +169,14 @@ public class MainActivity extends BaseBusNoSocllowActivity {
                     } else {
                         restoreData();
                     }
-                    Intent intentData = new Intent();
-                    intentData.setAction(StatisConstans.BROADCAST_HONGREN_DATA);
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable(StatisConstans.PM_ALL_DATA, pmAllData);
-                    // 要发送的内容
-                    intentData.putExtras(bundle);
-                    MainActivity.this.sendBroadcast(intentData);
+                    EventBus.getDefault().post(pmAllData);
+//                    Intent intentData = new Intent();
+//                    intentData.setAction(StatisConstans.BROADCAST_HONGREN_DATA);
+//                    Bundle bundle = new Bundle();
+//                    bundle.putSerializable(StatisConstans.PM_ALL_DATA, pmAllData);
+//                    // 要发送的内容
+//                    intentData.putExtras(bundle);
+//                    MainActivity.this.sendBroadcast(intentData);
                     break;
                 //成功
                 case StatisConstans.MSG_RECEIVED_REGULAR:
@@ -216,9 +222,8 @@ public class MainActivity extends BaseBusNoSocllowActivity {
 
     @Override
     protected void initView(Bundle savedInstanceState) {
-        instans = this;
         App.getInstance().addActivity(this);
-        list = new ArrayList<>();
+        mList = new SoftReference<List<String>>(new ArrayList<String>());
         threadPoolUtils = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 10);
         if (getIntent().getExtras() != null) {
             bundle = getIntent().getExtras();
@@ -322,19 +327,19 @@ public class MainActivity extends BaseBusNoSocllowActivity {
     }
 
     private void initialization() {
-        list.clear();
+        mList.get().clear();
         if (userData.getUserDevs() != null && userData.getUserDevs().size() > 0) {
             space = userData.getUserDevs();
             for (int i = 0; i < space.size(); i++) {
                 if (!TextUtils.isEmpty(space.get(i).getDevice_nickname())) {
-                    list.add(space.get(i).getDevice_nickname());
+                    mList.get().add(space.get(i).getDevice_nickname());
                 } else {
-                    list.add("无名");
+                    mList.get().add("无名");
                 }
             }
-            if (list.size() > 0) {
+            if (mList.get().size() > 0) {
                 mac = userData.getUserDevs().get(0).getDevice_mac();
-                textViews.get(1).setText(list.get(0).trim());
+                textViews.get(1).setText(mList.get().get(0).trim());
             }
         } else {
             mac = "";
@@ -354,16 +359,16 @@ public class MainActivity extends BaseBusNoSocllowActivity {
     public void onMultiClick(View v) {
         switch (v.getId()) {
             case R.id.tv_room:
-                if (list != null && list.size() > 0) {
+                if (mList != null && mList.get().size() > 0) {
                     //防止重复按按钮
                     if (popupWindow != null && popupWindow.isShowing()) {
                         return;
                     }
-                    popupWindow = new ListPopupWindow(MainActivity.this, textViews.get(1), list, new ListPopupWindow.downOnclick() {
+                    popupWindow = new ListPopupWindow(MainActivity.this, textViews.get(1), mList.get(), new ListPopupWindow.downOnclick() {
                         @Override
                         public void onDownItemClick(int position) {
                             mac = userData.getUserDevs().get(position).getDevice_mac();
-                            textViews.get(1).setText(list.get(position).trim());
+                            textViews.get(1).setText(mList.get().get(position).trim());
                             handler.sendEmptyMessage(StatisConstans.MSG_CYCLIC_TRANSMISSION);
 //                            stopTimer();
 //                            startTimer();

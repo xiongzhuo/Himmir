@@ -95,7 +95,7 @@
             android:layout_marginTop="60dp"
             android:background="@drawable/loding_bg_sel"
             android:padding="@dimen/x10"
-            android:text="确定"
+            android:text="@android:string/yes"
             android:textColor="@color/white" />
     </LinearLayout>
 </LinearLayout>

@@ -37,6 +37,7 @@ import org.xutils.x;
 
 import activity.hamir.com.himmir.R;
 import butterknife.ButterKnife;
+import de.greenrobot.event.EventBus;
 
 public abstract class BaseBusNoSocllowActivity extends AutoLayoutActivity implements View.OnClickListener {
     private OnBooleanListener onPermissionListener;
@@ -147,6 +148,7 @@ public abstract class BaseBusNoSocllowActivity extends AutoLayoutActivity implem
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 
     /**

@@ -22,7 +22,7 @@ import activity.hamir.com.himmir.R;
 public class SplashActivity extends BaseBusNoSocllowActivity implements OnClickListener {
     private SharedPreferencesDB sharedDB;
     int time = 1000;    //设置等待时间，单位为毫秒
-    private MyHandler handler;
+    //    private MyHandler handler;
     UserData userData;
 
     @Override
@@ -34,31 +34,31 @@ public class SplashActivity extends BaseBusNoSocllowActivity implements OnClickL
     public void onClick(View v) {
 
     }
-
-    class MyHandler extends Handler {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                //成功
-                case StatisConstans.MSG_RECEIVED_REGULAR:
-                    userData = (UserData) msg.obj;
-                    Intent intent = new Intent();
-                    intent.setClass(SplashActivity.this, MainActivity.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable(StatisConstans.USERDATA, userData);
-                    intent.putExtras(bundle);
-                    startActivity(intent);
-                    finish();
-                    break;
-                case StatisConstans.MSG_RECEIVED_BOUND:
-                    startActivity(new Intent(SplashActivity.this, LodingActivity.class));
-                    finish();
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
+//
+//    class MyHandler extends Handler {
+//        @Override
+//        public void handleMessage(Message msg) {
+//            switch (msg.what) {
+//                //成功
+//                case StatisConstans.MSG_RECEIVED_REGULAR:
+//                    userData = (UserData) msg.obj;
+//                    Intent intent = new Intent();
+//                    intent.setClass(SplashActivity.this, MainActivity.class);
+//                    Bundle bundle = new Bundle();
+//                    bundle.putSerializable(StatisConstans.USERDATA, userData);
+//                    intent.putExtras(bundle);
+//                    startActivity(intent);
+//                    finish();
+//                    break;
+//                case StatisConstans.MSG_RECEIVED_BOUND:
+//                    startActivity(new Intent(SplashActivity.this, LodingActivity.class));
+//                    finish();
+//                    break;
+//                default:
+//                    break;
+//            }
+//        }
+//    }
 
     @Override
     protected void onDestroy() {
@@ -77,7 +77,7 @@ public class SplashActivity extends BaseBusNoSocllowActivity implements OnClickL
 
     @Override
     protected void initView(Bundle savedInstanceState) {
-        handler = new MyHandler();
+//        handler = new MyHandler();
         sharedDB = SharedPreferencesDB.getInstance(this);
         //当计时结束时，跳转至主界面
         new Handler().postDelayed(new Runnable() {
@@ -105,12 +105,19 @@ public class SplashActivity extends BaseBusNoSocllowActivity implements OnClickL
             startActivity(new Intent(this, LodingActivity.class));
             finish();
         } else {
-            LodingRequest lodingRequest = new LodingRequest(sharedDB, this, sharedDB.getString(StatisConstans.USERPWD, ""), sharedDB.getString(StatisConstans.USERNAME, ""), handler, false);
-            try {
-                lodingRequest.requestCode();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            Intent intent = new Intent();
+            intent.setClass(SplashActivity.this, MainActivity.class);
+//            Bundle bundle = new Bundle();
+//            bundle.putSerializable(StatisConstans.USERDATA, userData);
+//            intent.putExtras(bundle);
+            startActivity(intent);
+            finish();
+//            LodingRequest lodingRequest = new LodingRequest(sharedDB, this, sharedDB.getString(StatisConstans.USERPWD, ""), sharedDB.getString(StatisConstans.USERNAME, ""), handler, false);
+//            try {
+//                lodingRequest.requestCode();
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
         }
     }
 

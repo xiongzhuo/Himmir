@@ -29,6 +29,7 @@ import com.himmiractivity.interfaces.StatisConstans;
 import com.himmiractivity.request.ReviseSharingNameRequest;
 import com.himmiractivity.view.ResetNameDialog;
 
+import java.lang.ref.SoftReference;
 import java.util.List;
 
 import activity.hamir.com.himmir.R;
@@ -44,8 +45,6 @@ public class MyQrcodeActivity extends BaseBusActivity {
     private String userShareName, userShareCode, userShareImage;
     @BindViews({R.id.tv_sharing_name})
     List<TextView> textViews;
-    @BindViews({R.id.btn_revise_name})
-    List<ImageView> imageViews;
     //修改昵称
     ResetNameDialog dialog;
 
@@ -79,7 +78,7 @@ public class MyQrcodeActivity extends BaseBusActivity {
         userShareImage = sharedPreferencesDB.getString(StatisConstans.USER_SHARE_IMAGE, "");
         Log.i("ModifyNameRequest", userShareImage);
         textViews.get(0).setText("共享名：" + userShareName);
-        imageViews.get(0).setOnClickListener(this);
+        textViews.get(0).setOnClickListener(this);
         simpleDraweeView.setController(Fresco.newDraweeControllerBuilder()
                 .setUri(Configuration.HOST + userShareImage)
                 .setTapToRetryEnabled(true)
@@ -102,7 +101,7 @@ public class MyQrcodeActivity extends BaseBusActivity {
             case R.id.btn_left:
                 finish();
                 break;
-            case R.id.btn_revise_name:
+            case R.id.tv_sharing_name:
                 //防止重复按按钮
                 if (dialog != null && dialog.isShowing()) {
                     return;
@@ -145,12 +144,14 @@ public class MyQrcodeActivity extends BaseBusActivity {
     private void addGroupImage() {
         int width = Utils.getScreenWidth(this);
         ImageView imageView = new ImageView(this);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams((int) (width * 0.7), (int) (width * 0.7));
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(width, width);
         imageView.setLayoutParams(params);  //设置图片宽高
         imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-        Bitmap bitmap = Utils.addLogo(Utils.create2DCoderBitmap(userShareCode, width, width), BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
+        Bitmap bitmap = Utils.addLogo(new SoftReference<Bitmap>(Utils.create2DCoderBitmap(userShareCode, width, width)).get(), new SoftReference<Bitmap>(BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher)).get());
 //        Bitmap bitmap = Utils.create2DCoderBitmap(userShareCode, width, width);
-        imageView.setImageBitmap(bitmap); //图片资源
+        // 软引用的Bitmap对象
+        SoftReference<Bitmap> softBitmap = new SoftReference<Bitmap>(bitmap);
+        imageView.setImageBitmap(softBitmap.get()); //图片资源
         llMyQrcode.addView(imageView); //动态添加图片
     }
 

@@ -29,6 +29,7 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.himmiractivity.App;
 import com.himmiractivity.Constant.Configuration;
+import com.himmiractivity.Utils.AppManager;
 import com.himmiractivity.Utils.ChangePhotosUtils;
 import com.himmiractivity.Utils.FiledUtil;
 import com.himmiractivity.Utils.IntentUtilsTwo;
@@ -276,9 +277,7 @@ public class SetActivity extends BaseBusActivity {
         intent.setClass(this, LodingActivity.class);
         startActivity(intent);
         finish();
-        if (MainActivity.instans != null) {
-            MainActivity.instans.finish();
-        }
+        AppManager.getAppManager().finishActivity(MainActivity.class);
     }
 
     @OnClick(R.id.btn_back)
