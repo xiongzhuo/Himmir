@@ -219,9 +219,9 @@ public class PercentView extends View {
         spaceWidth = context.getResources().getDimensionPixelOffset(R.dimen.x12);
         scrollCircleRadius = context.getResources().getDimensionPixelOffset(R.dimen.x4);
         percentTextSize = context.getResources().getDimensionPixelOffset(R.dimen.x8);
-        textSizeAim = context.getResources().getDimensionPixelOffset(R.dimen.x50);
-        textSizeTag = context.getResources().getDimensionPixelOffset(R.dimen.x14);
-        textSizeButtom = context.getResources().getDimensionPixelOffset(R.dimen.x14);
+        textSizeAim = context.getResources().getDimensionPixelOffset(R.dimen.x60);
+        textSizeTag = context.getResources().getDimensionPixelOffset(R.dimen.x15);
+        textSizeButtom = context.getResources().getDimensionPixelOffset(R.dimen.x15);
         pinkColor = ContextCompat.getColor(context, R.color.bar_gray);
         greenColor = ContextCompat.getColor(context, R.color.percent_green);
         greenColortwo = ContextCompat.getColor(context, R.color.percent_green_two);

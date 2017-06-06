@@ -92,7 +92,7 @@ public class MainActivity extends BaseBusNoSocllowActivity {
     UserData userData;
     //获取设备
 //    private List<String> list;
-    private SoftReference<List<String>> mList;
+    private List<String> mList;
     private List<UserData.UserRoom> space;
     Socket socket;
     Protocal protocal;
@@ -223,7 +223,7 @@ public class MainActivity extends BaseBusNoSocllowActivity {
     @Override
     protected void initView(Bundle savedInstanceState) {
         App.getInstance().addActivity(this);
-        mList = new SoftReference<List<String>>(new ArrayList<String>());
+        mList = new ArrayList<String>();
         threadPoolUtils = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 10);
         if (getIntent().getExtras() != null) {
             bundle = getIntent().getExtras();
@@ -327,19 +327,19 @@ public class MainActivity extends BaseBusNoSocllowActivity {
     }
 
     private void initialization() {
-        mList.get().clear();
+        mList.clear();
         if (userData.getUserDevs() != null && userData.getUserDevs().size() > 0) {
             space = userData.getUserDevs();
             for (int i = 0; i < space.size(); i++) {
                 if (!TextUtils.isEmpty(space.get(i).getDevice_nickname())) {
-                    mList.get().add(space.get(i).getDevice_nickname());
+                    mList.add(space.get(i).getDevice_nickname());
                 } else {
-                    mList.get().add("无名");
+                    mList.add("无名");
                 }
             }
-            if (mList.get().size() > 0) {
+            if (mList.size() > 0) {
                 mac = userData.getUserDevs().get(0).getDevice_mac();
-                textViews.get(1).setText(mList.get().get(0).trim());
+                textViews.get(1).setText(mList.get(0).trim());
             }
         } else {
             mac = "";
@@ -359,16 +359,16 @@ public class MainActivity extends BaseBusNoSocllowActivity {
     public void onMultiClick(View v) {
         switch (v.getId()) {
             case R.id.tv_room:
-                if (mList != null && mList.get().size() > 0) {
+                if (mList != null && mList.size() > 0) {
                     //防止重复按按钮
                     if (popupWindow != null && popupWindow.isShowing()) {
                         return;
                     }
-                    popupWindow = new ListPopupWindow(MainActivity.this, textViews.get(1), mList.get(), new ListPopupWindow.downOnclick() {
+                    popupWindow = new ListPopupWindow(MainActivity.this, textViews.get(1), mList, new ListPopupWindow.downOnclick() {
                         @Override
                         public void onDownItemClick(int position) {
                             mac = userData.getUserDevs().get(position).getDevice_mac();
-                            textViews.get(1).setText(mList.get().get(position).trim());
+                            textViews.get(1).setText(mList.get(position).trim());
                             handler.sendEmptyMessage(StatisConstans.MSG_CYCLIC_TRANSMISSION);
 //                            stopTimer();
 //                            startTimer();
