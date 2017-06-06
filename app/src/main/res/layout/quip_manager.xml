@@ -29,5 +29,6 @@
         android:layout_height="@dimen/x40"
         android:background="@drawable/add_devices_sel"
         android:text="添加设备"
-        android:textColor="@color/white" />
+        android:textColor="@color/white"
+        android:textSize="@dimen/x14" />
 </LinearLayout>

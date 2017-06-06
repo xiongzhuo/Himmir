@@ -96,6 +96,7 @@
             android:background="@drawable/loding_bg_sel"
             android:padding="@dimen/x10"
             android:text="@android:string/yes"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"
+            android:textSize="@dimen/x14" />
     </LinearLayout>
 </LinearLayout>

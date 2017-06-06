@@ -57,7 +57,6 @@ import com.himmiractivity.view.PercentView;
 import com.himmiractivity.view.SelectorImageView;
 
 import java.io.IOException;
-import java.lang.ref.SoftReference;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
@@ -310,15 +309,24 @@ public class MainActivity extends BaseBusNoSocllowActivity {
         percentView.setAngel(aimPercent);
         percentView.setRankText("PM2.5室内", "--");
 //        if (ContextCompat.checkSelfPermission(this,
-        permissionRequests(Manifest.permission.ACCESS_COARSE_LOCATION, new OnBooleanListener() {
+        permissionRequests(Manifest.permission.ACCESS_FINE_LOCATION, new OnBooleanListener() {
             @Override
             public void onResulepermiss(boolean bln) {
                 if (bln) {
-                    try {
-                        mlocation = getLocation();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                    permissionRequests(Manifest.permission.ACCESS_COARSE_LOCATION, new OnBooleanListener() {
+                        @Override
+                        public void onResulepermiss(boolean bln) {
+                            if (bln) {
+                                try {
+                                    mlocation = getLocation();
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            } else {
+                                ToastUtil.show(MainActivity.this, "请允许获取位置权限！");
+                            }
+                        }
+                    });
                 } else {
                     ToastUtil.show(MainActivity.this, "请允许获取位置权限！");
                 }
@@ -432,7 +440,12 @@ public class MainActivity extends BaseBusNoSocllowActivity {
             mlocation = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
         }
         if (GpsUtils.isGpsEnable(this)) {
-            GPSLocation();
+            threadPoolUtils.execute(new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    GPSLocation();
+                }
+            }));
         } else {
             Intent callGPSSettingIntent = new Intent(
                     Settings.ACTION_LOCATION_SOURCE_SETTINGS);
@@ -534,7 +547,7 @@ public class MainActivity extends BaseBusNoSocllowActivity {
                 }
             }
         } catch (Exception e) {
-            Toast.makeText(this, "定位失败", Toast.LENGTH_LONG).show();
+//            Toast.makeText(this, "定位失败", Toast.LENGTH_LONG).show();
             e.printStackTrace();
         }
     }
