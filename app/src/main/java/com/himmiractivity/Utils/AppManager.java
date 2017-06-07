@@ -74,6 +74,7 @@ public class AppManager {
         for (Activity activity : activityStack) {
             if (activity.getClass().equals(cls)) {
                 finishActivity(activity);
+                return;
             }
         }
     }

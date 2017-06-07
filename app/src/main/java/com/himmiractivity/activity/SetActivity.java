@@ -276,8 +276,8 @@ public class SetActivity extends BaseBusActivity {
         Intent intent = new Intent();
         intent.setClass(this, LodingActivity.class);
         startActivity(intent);
-        finish();
         AppManager.getAppManager().finishActivity(MainActivity.class);
+        finish();
     }
 
     @OnClick(R.id.btn_back)
