@@ -60,6 +60,8 @@ public interface StatisConstans {
     int MSG_OUTDOOR_PM = 122;
     // 成功
     int MSG_FAIL_PM = 129;
+    int LOCATION = 120;
+
     /**
      * 注册成功
      */

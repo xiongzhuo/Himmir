@@ -6,6 +6,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -17,6 +18,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
@@ -111,6 +113,9 @@ public class MainActivity extends BaseBusNoSocllowActivity {
         @Override
         public boolean handleMessage(Message msg) {
             switch (msg.what) {
+                case StatisConstans.LOCATION:
+                    Toast.makeText(MainActivity.this, "定位失败", Toast.LENGTH_LONG).show();
+                    break;
                 case StatisConstans.MSG_CYCLIC_TRANSMISSION:
                     threadPoolUtils.execute(new Thread(new Runnable() {
                         @Override
@@ -169,13 +174,6 @@ public class MainActivity extends BaseBusNoSocllowActivity {
                         restoreData();
                     }
                     EventBus.getDefault().post(pmAllData);
-//                    Intent intentData = new Intent();
-//                    intentData.setAction(StatisConstans.BROADCAST_HONGREN_DATA);
-//                    Bundle bundle = new Bundle();
-//                    bundle.putSerializable(StatisConstans.PM_ALL_DATA, pmAllData);
-//                    // 要发送的内容
-//                    intentData.putExtras(bundle);
-//                    MainActivity.this.sendBroadcast(intentData);
                     break;
                 //成功
                 case StatisConstans.MSG_RECEIVED_REGULAR:
@@ -308,7 +306,6 @@ public class MainActivity extends BaseBusNoSocllowActivity {
         Log.i("aimPercent", aimPercent + "=-------");
         percentView.setAngel(aimPercent);
         percentView.setRankText("PM2.5室内", "--");
-//        if (ContextCompat.checkSelfPermission(this,
         permissionRequests(Manifest.permission.ACCESS_FINE_LOCATION, new OnBooleanListener() {
             @Override
             public void onResulepermiss(boolean bln) {
@@ -378,8 +375,6 @@ public class MainActivity extends BaseBusNoSocllowActivity {
                             mac = userData.getUserDevs().get(position).getDevice_mac();
                             textViews.get(1).setText(mList.get(position).trim());
                             handler.sendEmptyMessage(StatisConstans.MSG_CYCLIC_TRANSMISSION);
-//                            stopTimer();
-//                            startTimer();
                         }
                     });
                 } else {
@@ -435,6 +430,10 @@ public class MainActivity extends BaseBusNoSocllowActivity {
     @SuppressLint("MissingPermission")
     public Location getLocation() throws Exception {
         mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(this, "没有定位权限", Toast.LENGTH_SHORT).show();
+            return null;
+        }
         mlocation = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         if (mlocation == null) {
             mlocation = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
@@ -526,17 +525,8 @@ public class MainActivity extends BaseBusNoSocllowActivity {
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
         try {
             List<Address> addresses = geocoder.getFromLocation(mlocation.getLatitude(), mlocation.getLongitude(), 1);
-//            StringBuilder stringBuilder = new StringBuilder();
             if (addresses.size() > 0) {
                 Address address = addresses.get(0);
-//                for (int i = 0; i < address.getMaxAddressLineIndex(); i++) {
-//                    stringBuilder.append(address.getAddressLine(i)).append("\n");
-//                }
-//                stringBuilder.append(address.getLocality()).append("_");
-//                stringBuilder.append(address.getPostalCode()).append("_");
-//                stringBuilder.append(address.getCountryCode()).append("_");
-//                stringBuilder.append(address.getCountryName()).append("_");
-//                System.out.println(stringBuilder.toString());
                 if (!TextUtils.isEmpty(address.getLocality())) {
                     textViews.get(3).setText(address.getLocality().substring(0, address.getLocality().length() - 1));
                     OutdoorPMRequest outdoorPMRequest = new OutdoorPMRequest(MainActivity.this, sharedPreferencesDB, textViews.get(3).getText().toString().trim(), handler);
@@ -547,7 +537,7 @@ public class MainActivity extends BaseBusNoSocllowActivity {
                 }
             }
         } catch (Exception e) {
-//            Toast.makeText(this, "定位失败", Toast.LENGTH_LONG).show();
+            handler.sendEmptyMessage(StatisConstans.LOCATION);
             e.printStackTrace();
         }
     }

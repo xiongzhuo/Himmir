@@ -2,6 +2,9 @@ package com.himmiractivity.view;
 
 import android.content.Context;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
+import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +28,7 @@ public class ListPopupWindow extends PopupWindow {
     private Context mContext;
     private List<String> list;
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public ListPopupWindow(Context context, View parentView, List<String> list, downOnclick downOnclick) {
         /// backgroundAlpha(0.5f);
         mContext = context;
@@ -32,13 +36,17 @@ public class ListPopupWindow extends PopupWindow {
         initPopupWindow(parentView, downOnclick);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void initPopupWindow(View view, final downOnclick downOnclick) {
         WindowManager wm = (WindowManager) mContext.getApplicationContext()
                 .getSystemService(Context.WINDOW_SERVICE);
-        int height = wm.getDefaultDisplay().getHeight();
+        DisplayMetrics dm = new DisplayMetrics();
+        wm.getDefaultDisplay().getMetrics(dm);
+        int height = dm.heightPixels;
+        int width = dm.widthPixels;
         View popView = LayoutInflater.from(mContext).inflate(R.layout.popupwindow, null);
 
-        final PopupWindow mPopupWindow = new PopupWindow(popView, 300,
+        final PopupWindow mPopupWindow = new PopupWindow(popView, (int) (width / 2),
                 ViewGroup.LayoutParams.WRAP_CONTENT);
         mPopupWindow.setFocusable(true);
         mPopupWindow.setOutsideTouchable(true);
@@ -52,7 +60,7 @@ public class ListPopupWindow extends PopupWindow {
         mPopupWindow.setOutsideTouchable(true);
         mPopupWindow.setBackgroundDrawable(new BitmapDrawable());
         mPopupWindow.getContentView().measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-        mPopupWindow.showAsDropDown(view, view.getWidth() / 2 - 150, 0, Gravity.NO_GRAVITY);
+        mPopupWindow.showAsDropDown(view, view.getWidth() / 6, 0, Gravity.NO_GRAVITY);
         mPopupWindow.update();
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
