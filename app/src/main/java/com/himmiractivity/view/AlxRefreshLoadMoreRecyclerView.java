@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -145,7 +146,9 @@ public class AlxRefreshLoadMoreRecyclerView extends RecyclerView {
         layoutManager = new LinearLayoutManager(context);//自带layoutManager，请勿设置
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         WindowManager wm = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
-        int height = wm.getDefaultDisplay().getHeight();
+        DisplayMetrics dm = new DisplayMetrics();
+        wm.getDefaultDisplay().getMetrics(dm);
+        int height = dm.heightPixels;
         layoutManager.offsetChildrenVertical(height * 2);//预加载2/3的卡片
         this.setLayoutManager(layoutManager);
         Log.i("Alex", "屏幕密度为" + getContext().getResources().getDisplayMetrics().density);

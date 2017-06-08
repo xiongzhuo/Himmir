@@ -2,6 +2,7 @@ package com.himmiractivity.view;
 
 import android.content.Context;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.util.DisplayMetrics;
@@ -58,7 +59,8 @@ public class ListPopupWindow extends PopupWindow {
         listView.setAdapter(adapter);
         mPopupWindow.setFocusable(true);
         mPopupWindow.setOutsideTouchable(true);
-        mPopupWindow.setBackgroundDrawable(new BitmapDrawable());
+        mPopupWindow.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+//        mPopupWindow.setBackgroundDrawable(new BitmapDrawable());
         mPopupWindow.getContentView().measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
         mPopupWindow.showAsDropDown(view, view.getWidth() / 6, 0, Gravity.NO_GRAVITY);
         mPopupWindow.update();
