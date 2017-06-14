@@ -44,7 +44,7 @@ public class DrawHookView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        progress++;
+        progress += 5;
 
         /**
          * 绘制圆弧
@@ -77,8 +77,8 @@ public class DrawHookView extends View {
         //先等圆弧画完，才话对勾
         if (progress >= 100) {
             if (line1_x < radius / 3) {
-                line1_x++;
-                line1_y++;
+                line1_x += 5;
+                line1_y += 5;
             }
             //画第一根线
             canvas.drawLine(center1, center, center1 + line1_x, center + line1_y, paint);
@@ -86,11 +86,11 @@ public class DrawHookView extends View {
             if (line1_x == radius / 3) {
                 line2_x = line1_x;
                 line2_y = line1_y;
-                line1_x++;
-                line1_y++;
+                line1_x += 5;
+                line1_y += 5;
             }
             if (line1_x >= radius / 3 && line2_x <= radius) {
-                line2_x++;
+                line2_x += 5;
                 line2_y--;
             }
             //画第二根线

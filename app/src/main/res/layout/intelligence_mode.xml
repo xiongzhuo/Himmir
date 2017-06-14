@@ -85,7 +85,7 @@
                 android:padding="@dimen/x15"
                 android:text="CO₂调节值"
                 android:textColor="@color/black"
-                android:textSize="@dimen/x16" />
+                android:textSize="@dimen/x14" />
 
             <TextView
                 android:id="@+id/tv_co_value"
@@ -97,7 +97,7 @@
                 android:padding="@dimen/x15"
                 android:text="1200 ppm"
                 android:textColor="@color/black"
-                android:textSize="@dimen/x16" />
+                android:textSize="@dimen/x14" />
         </LinearLayout>
 
         <View
@@ -119,7 +119,7 @@
                 android:padding="@dimen/x15"
                 android:text="PM2.5调节值"
                 android:textColor="@color/black"
-                android:textSize="@dimen/x16" />
+                android:textSize="@dimen/x14" />
 
             <TextView
                 android:id="@+id/tv_pm_value"
@@ -131,7 +131,7 @@
                 android:padding="@dimen/x15"
                 android:text="600 ug/m³"
                 android:textColor="@color/black"
-                android:textSize="@dimen/x16" />
+                android:textSize="@dimen/x14" />
         </LinearLayout>
     </LinearLayout>
 

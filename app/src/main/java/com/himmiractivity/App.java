@@ -2,7 +2,9 @@ package com.himmiractivity;
 
 import android.app.Activity;
 import android.app.Application;
+import android.os.Build;
 import android.os.StrictMode;
+import android.support.annotation.RequiresApi;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.himmiractivity.db.ATDbManager;
@@ -26,6 +28,7 @@ public class App extends Application {
         return instance;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
     @Override
     public void onCreate() {
         super.onCreate();
