@@ -290,6 +290,11 @@ public class SetActivity extends BaseBusActivity {
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        handler.removeCallbacksAndMessages(null);
+        super.onDestroy();
+    }
 
     @Override
     public void onMultiClick(View v) {

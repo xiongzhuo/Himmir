@@ -87,6 +87,12 @@ public class ForgotPassActivity extends BaseBusActivity {
     }
 
     @Override
+    protected void onDestroy() {
+        handler.removeCallbacksAndMessages(null);
+        super.onDestroy();
+    }
+
+    @Override
     protected void initData() {
 
     }

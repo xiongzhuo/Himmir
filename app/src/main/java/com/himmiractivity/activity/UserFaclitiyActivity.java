@@ -208,6 +208,7 @@ public class UserFaclitiyActivity extends BaseBusActivity implements AlxRefreshL
     protected void onDestroy() {
         super.onDestroy();
 //        UserFaclitiyActivity.this.unregisterReceiver(mBroadcastReceiver);
+        mHandler.removeCallbacksAndMessages(null);
         EventBus.getDefault().unregister(this);
     }
 

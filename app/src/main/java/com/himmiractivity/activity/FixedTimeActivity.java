@@ -125,6 +125,7 @@ public class FixedTimeActivity extends BaseBusActivity {
         }));
     }
 
+
     private void setLinterens() {
         imageViews.get(0).setOnClickListener(this);
         imageViews.get(1).setOnClickListener(this);
@@ -231,9 +232,10 @@ public class FixedTimeActivity extends BaseBusActivity {
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
+        handler.removeCallbacksAndMessages(null);
 //        FixedTimeActivity.this.unregisterReceiver(mBroadcastReceiver);
         EventBus.getDefault().unregister(this);
+        super.onDestroy();
     }
 
 //    private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {

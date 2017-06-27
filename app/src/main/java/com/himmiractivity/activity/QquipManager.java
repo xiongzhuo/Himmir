@@ -42,6 +42,7 @@ import com.himmiractivity.service.Protocal;
 import com.himmiractivity.util.ThreadPoolUtils;
 import com.himmiractivity.view.AlxRefreshLoadMoreRecyclerView;
 
+import java.lang.ref.WeakReference;
 import java.net.Socket;
 
 import activity.hamir.com.himmir.R;
@@ -71,81 +72,7 @@ public class QquipManager extends BaseBusActivity implements AlxRefreshLoadMoreR
     String ip;
     String port;
     ThreadPoolUtils threadPoolUtils;
-
-    private Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case StatisConstans.FAIL:
-                    ToastUtils.show(QquipManager.this, "校时失败，请检查网络连接", Toast.LENGTH_LONG);
-                    break;
-                case StatisConstans.MSG_DELETE:
-                    ImageBean destr = (ImageBean) msg.obj;
-                    if (deletePosition != -1) {
-                        setResult(Activity.RESULT_OK);
-                        rvcAdapter.removeData(deletePosition);
-                        alertDialog.dismiss();
-                    }
-                    break;
-                case StatisConstans.MSG_ENABLED_SUCCESSFUL:
-                    EventBus.getDefault().post(new FirstEvent("操作成功"));
-                    // 发送 一个无序广播
-//                    QquipManager.this.sendBroadcast(new Intent(StatisConstans.BROADCAST_HONGREN_SUCC));
-                    break;
-                case StatisConstans.MSG_ENABLED_FAILING:
-                    EventBus.getDefault().post(new FirstEvent("操作失败"));
-                    // 发送 一个无序广播
-//                    QquipManager.this.sendBroadcast(new Intent(StatisConstans.BROADCAST_HONGREN_KILL));
-                    break;
-                case StatisConstans.MSG_QUEST_SERVER:
-                    PmAllData pmAllData = (PmAllData) msg.obj;
-//                    Intent intentData = new Intent();
-//                    intentData.setAction(StatisConstans.BROADCAST_HONGREN_DATA);
-//                    Bundle bundle = new Bundle();
-//                    bundle.putSerializable(StatisConstans.PM_ALL_DATA, pmAllData);
-//                    // 要发送的内容
-//                    intentData.putExtras(bundle);
-//                    QquipManager.this.sendBroadcast(intentData);
-                    EventBus.getDefault().post(pmAllData);
-                    break;
-                case StatisConstans.MSG_MODIFY_NAME:
-                    ImageBean mostr = (ImageBean) msg.obj;
-                    if (deletePosition != -1) {
-                        setResult(Activity.RESULT_OK);
-                        allUserDerviceBaen.getSpace().get(deletePosition).getUserdevice().setDevice_nickname(name);
-                        rvcAdapter.setmDatas(allUserDerviceBaen.getSpace());
-                    }
-                    break;
-                //成功
-                case StatisConstans.MSG_QQUIP:
-                    if (msg.obj != null) {
-                        allUserDerviceBaen = (AllUserDerviceBaen) msg.obj;
-                        if (allUserDerviceBaen.getSpace() != null && allUserDerviceBaen.getSpace().size() > 0) {
-                            if (onLinePos < allUserDerviceBaen.getSpace().size()) {
-                                Log.d("device_mac", allUserDerviceBaen.getSpace().get(onLinePos).getDevice().getDevice_mac() + "onLinePos:" + onLinePos);
-                                sendSocket();
-                            }
-//                    mRecyclerView.setLayoutManager(new LinearLayoutManager(QquipManager.this));
-                            rvcAdapter = new RvcAdapter(QquipManager.this, allUserDerviceBaen.getSpace(), R.layout.list_item, true);
-                            rvcAdapter.setPullLoadMoreEnable(false);
-                            mRecyclerView.setPullLoadEnable(false);
-                            mRecyclerView.setAdapter(rvcAdapter);
-                            //设置Item增加、移除动画
-                            mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-                            //添加分割线
-                            mRecyclerView.addItemDecoration(new DividerItemDecoration(
-                                    QquipManager.this, DividerItemDecoration.HORIZONTAL));
-                            rvcAdapter.setOnItemClickLitener(QquipManager.this);
-                            mRecyclerView.setLoadMoreListener(QquipManager.this);
-                            mRecyclerView.setOnRefreshListener(QquipManager.this);
-                        }
-                    }
-                    break;
-                default:
-                    break;
-            }
-        }
-    };
+    Myhandler mHandler;
 
     @Override
     protected int getContentLayoutId() {
@@ -155,6 +82,7 @@ public class QquipManager extends BaseBusActivity implements AlxRefreshLoadMoreR
     @Override
     @Subscribe
     protected void initView(Bundle savedInstanceState) {
+        mHandler = new Myhandler(this);
         setMidTxt("设备管理");
         initTitleBar();
 //        registerBoradcastReceiver();
@@ -555,5 +483,86 @@ public class QquipManager extends BaseBusActivity implements AlxRefreshLoadMoreR
                 }
             }
         }));
+    }
+
+    static class Myhandler extends Handler {
+        WeakReference<QquipManager> mActivityReference;
+
+        Myhandler(QquipManager activity) {
+            mActivityReference = new WeakReference<QquipManager>(activity);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case StatisConstans.FAIL:
+                    ToastUtils.show(mActivityReference.get(), "校时失败，请检查网络连接", Toast.LENGTH_LONG);
+                    break;
+                case StatisConstans.MSG_DELETE:
+                    ImageBean destr = (ImageBean) msg.obj;
+                    if (mActivityReference.get().deletePosition != -1) {
+                        mActivityReference.get().setResult(Activity.RESULT_OK);
+                        mActivityReference.get().rvcAdapter.removeData(mActivityReference.get().deletePosition);
+                        mActivityReference.get().alertDialog.dismiss();
+                    }
+                    break;
+                case StatisConstans.MSG_ENABLED_SUCCESSFUL:
+                    EventBus.getDefault().post(new FirstEvent("操作成功"));
+                    // 发送 一个无序广播
+//                    QquipManager.this.sendBroadcast(new Intent(StatisConstans.BROADCAST_HONGREN_SUCC));
+                    break;
+                case StatisConstans.MSG_ENABLED_FAILING:
+                    EventBus.getDefault().post(new FirstEvent("操作失败"));
+                    // 发送 一个无序广播
+//                    QquipManager.this.sendBroadcast(new Intent(StatisConstans.BROADCAST_HONGREN_KILL));
+                    break;
+                case StatisConstans.MSG_QUEST_SERVER:
+                    PmAllData pmAllData = (PmAllData) msg.obj;
+//                    Intent intentData = new Intent();
+//                    intentData.setAction(StatisConstans.BROADCAST_HONGREN_DATA);
+//                    Bundle bundle = new Bundle();
+//                    bundle.putSerializable(StatisConstans.PM_ALL_DATA, pmAllData);
+//                    // 要发送的内容
+//                    intentData.putExtras(bundle);
+//                    QquipManager.this.sendBroadcast(intentData);
+                    EventBus.getDefault().post(pmAllData);
+                    break;
+                case StatisConstans.MSG_MODIFY_NAME:
+                    ImageBean mostr = (ImageBean) msg.obj;
+                    if (mActivityReference.get().deletePosition != -1) {
+                        mActivityReference.get().setResult(Activity.RESULT_OK);
+                        mActivityReference.get().allUserDerviceBaen.getSpace().get(mActivityReference.get().deletePosition).getUserdevice().setDevice_nickname(mActivityReference.get().name);
+                        mActivityReference.get().rvcAdapter.setmDatas(mActivityReference.get().allUserDerviceBaen.getSpace());
+                    }
+                    break;
+                //成功
+                case StatisConstans.MSG_QQUIP:
+                    if (msg.obj != null) {
+                        mActivityReference.get().allUserDerviceBaen = (AllUserDerviceBaen) msg.obj;
+                        if (mActivityReference.get().allUserDerviceBaen.getSpace() != null && mActivityReference.get().allUserDerviceBaen.getSpace().size() > 0) {
+                            if (mActivityReference.get().onLinePos < mActivityReference.get().allUserDerviceBaen.getSpace().size()) {
+                                Log.d("device_mac", mActivityReference.get().allUserDerviceBaen.getSpace().get(mActivityReference.get().onLinePos).getDevice().getDevice_mac() + "onLinePos:" + mActivityReference.get().onLinePos);
+                                mActivityReference.get().sendSocket();
+                            }
+//                    mRecyclerView.setLayoutManager(new LinearLayoutManager(QquipManager.this));
+                            mActivityReference.get().rvcAdapter = new RvcAdapter(mActivityReference.get(), mActivityReference.get().allUserDerviceBaen.getSpace(), R.layout.list_item, true);
+                            mActivityReference.get().rvcAdapter.setPullLoadMoreEnable(false);
+                            mActivityReference.get().mRecyclerView.setPullLoadEnable(false);
+                            mActivityReference.get().mRecyclerView.setAdapter(mActivityReference.get().rvcAdapter);
+                            //设置Item增加、移除动画
+                            mActivityReference.get().mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+                            //添加分割线
+                            mActivityReference.get().mRecyclerView.addItemDecoration(new DividerItemDecoration(
+                                    mActivityReference.get(), DividerItemDecoration.HORIZONTAL));
+                            mActivityReference.get().rvcAdapter.setOnItemClickLitener(mActivityReference.get());
+                            mActivityReference.get().mRecyclerView.setLoadMoreListener(mActivityReference.get());
+                            mActivityReference.get().mRecyclerView.setOnRefreshListener(mActivityReference.get());
+                        }
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 }

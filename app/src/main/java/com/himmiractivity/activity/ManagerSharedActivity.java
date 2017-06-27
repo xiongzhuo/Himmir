@@ -112,6 +112,7 @@ public class ManagerSharedActivity extends BaseBusActivity implements AdapterVie
 
     @Override
     protected void onDestroy() {
+        mHandler.removeCallbacksAndMessages(null);
         super.onDestroy();
     }
 

@@ -116,6 +116,12 @@ public class VersionUpdataActivity extends BaseBusActivity {
     }
 
     @Override
+    protected void onDestroy() {
+        handler.removeCallbacksAndMessages(null);
+        super.onDestroy();
+    }
+
+    @Override
     protected void initView(Bundle savedInstanceState) {
         setMidTxt("版本信息");
         initTitleBar();

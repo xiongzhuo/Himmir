@@ -342,6 +342,7 @@ public class InformationComitActivity extends BaseBusActivity {
             }
         }
         stopTimer();
+        handler.removeCallbacksAndMessages(null);
         super.onDestroy();
     }
 

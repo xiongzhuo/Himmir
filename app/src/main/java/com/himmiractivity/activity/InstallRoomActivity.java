@@ -28,6 +28,7 @@ import java.util.List;
 
 import activity.hamir.com.himmir.R;
 import butterknife.BindView;
+import de.greenrobot.event.EventBus;
 
 /**
  * Created by Administrator on 2017/3/21.
@@ -92,6 +93,12 @@ public class InstallRoomActivity extends BaseBusActivity {
     @Override
     protected void initData() {
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        handler.removeCallbacksAndMessages(null);
+        super.onDestroy();
     }
 
     @Override

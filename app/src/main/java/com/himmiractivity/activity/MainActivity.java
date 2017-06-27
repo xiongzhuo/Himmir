@@ -648,6 +648,7 @@ public class MainActivity extends BaseBusNoSocllowActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        handler.removeCallbacksAndMessages(null);
         super.onDestroy();
     }
 

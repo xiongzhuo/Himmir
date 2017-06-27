@@ -169,6 +169,7 @@ public class MyQrcodeActivity extends BaseBusActivity {
     protected void onDestroy() {
         //取消屏幕最亮
         setWindowBrightness(WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE);
+        handler.removeCallbacksAndMessages(null);
         super.onDestroy();
     }
 

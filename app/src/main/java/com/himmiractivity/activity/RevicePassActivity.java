@@ -64,6 +64,12 @@ public class RevicePassActivity extends BaseBusActivity {
     }
 
     @Override
+    protected void onDestroy() {
+        handler.removeCallbacksAndMessages(null);
+        super.onDestroy();
+    }
+
+    @Override
     public void onMultiClick(View view) {
         switch (view.getId()) {
             case R.id.btn_left:

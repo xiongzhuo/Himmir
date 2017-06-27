@@ -189,6 +189,7 @@ public class SharedDeviceActivity extends BaseBusActivity {
 
     @Override
     protected void onDestroy() {
+        handler.removeCallbacksAndMessages(null);
         super.onDestroy();
     }
 }

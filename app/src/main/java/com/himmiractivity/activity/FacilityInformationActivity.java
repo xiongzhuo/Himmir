@@ -208,9 +208,10 @@ public class FacilityInformationActivity extends BaseBusActivity implements Supe
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
+        handler.removeCallbacksAndMessages(null);
 //        FacilityInformationActivity.this.unregisterReceiver(mBroadcastReceiver);
         EventBus.getDefault().unregister(this);
+        super.onDestroy();
     }
 
     public void request(String host, int location) {

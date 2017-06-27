@@ -252,9 +252,10 @@ public class IntelligenceModeActivity extends BaseBusActivity {
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
+        handler.removeCallbacksAndMessages(null);
 //        IntelligenceModeActivity.this.unregisterReceiver(mBroadcastReceiver);
         EventBus.getDefault().unregister(this);
+        super.onDestroy();
     }
 
 //    private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
@@ -314,4 +315,5 @@ public class IntelligenceModeActivity extends BaseBusActivity {
             e.printStackTrace();
         }
     }
+
 }
