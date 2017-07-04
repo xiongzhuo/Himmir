@@ -43,6 +43,12 @@ public class ModifySuccessView extends Dialog {
                 close();
             }
         });
+        progress.setmCallBack(new DrawHookView.CallBack() {
+            @Override
+            public void doSomeThing() {
+                close();
+            }
+        });
     }
 
     /**

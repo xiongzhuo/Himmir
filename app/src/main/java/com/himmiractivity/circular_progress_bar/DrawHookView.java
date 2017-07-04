@@ -25,6 +25,7 @@ public class DrawHookView extends View {
     private int line2_x = 0;
     //线2的y轴
     private int line2_y = 0;
+    CallBack mCallBack;
 
     public DrawHookView(Context context) {
         super(context);
@@ -95,10 +96,20 @@ public class DrawHookView extends View {
             }
             //画第二根线
             canvas.drawLine(center1 + line1_x - 1, center + line1_y, center1 + line2_x, center + line2_y, paint);
-
+            mCallBack.doSomeThing();
         }
 
         //每隔10毫秒界面刷新
         postInvalidateDelayed(10);
+    }
+
+    public void setmCallBack(CallBack mCallBack) {
+        this.mCallBack = mCallBack;
+    }
+
+    public interface CallBack {
+
+        void doSomeThing();
+
     }
 }

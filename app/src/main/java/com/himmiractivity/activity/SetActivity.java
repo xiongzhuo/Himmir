@@ -43,6 +43,7 @@ import com.himmiractivity.entity.UserData;
 import com.himmiractivity.interfaces.OnBooleanListener;
 import com.himmiractivity.interfaces.StatisConstans;
 import com.himmiractivity.request.ModifyNameRequest;
+import com.himmiractivity.request.OkHttpUtilsRequst;
 import com.himmiractivity.request.TaskDetailImageUploadTask;
 import com.himmiractivity.view.PhoneDialog;
 import com.himmiractivity.view.ResetNameDialog;
@@ -114,6 +115,7 @@ public class SetActivity extends BaseBusActivity {
                                 .setOldController(simImage.getController())
                                 .build());
                         isResult = true;
+                        ToastUtil.show(SetActivity.this, imageBean.getSuccess());
                     }
                     break;
             }
@@ -442,9 +444,12 @@ public class SetActivity extends BaseBusActivity {
                 try {
 //                    UploadHelper uploadHelper = new UploadHelper();
 //                    uploadHelper.upload(sharedPreferencesDB.getString("phone", ""), sharedPreferencesDB.getString("userDeviceUuid", ""), sharedPreferencesDB.getString("token", ""), f);
-                    new TaskDetailImageUploadTask(
-                            SetActivity.this, f,
-                            handler).execute();
+                    OkHttpUtilsRequst okHttpUtilsRequst = new OkHttpUtilsRequst(SetActivity.this, f,
+                            handler);
+                    okHttpUtilsRequst.requestCode();
+//                    new TaskDetailImageUploadTask(
+//                            SetActivity.this, f,
+//                            handler).execute();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
