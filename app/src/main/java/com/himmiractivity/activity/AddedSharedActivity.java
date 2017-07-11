@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.view.View;
+import android.view.ViewStub;
 import android.widget.AdapterView;
 
 import com.himmiractivity.Adapter.ListViewAdapter;
@@ -35,6 +36,8 @@ public class AddedSharedActivity extends BaseBusActivity implements AdapterView.
     CircularProgressBar progressBar;
     @BindView(R.id.lv_added)
     XListView listView;
+    @BindView(R.id.vs)
+    ViewStub vs;
     List<ManagerShardBean.ManagerShardSum> list = new ArrayList<>();
     private Set<SwipeListLayout> sets = new HashSet<>();
     ManagerShardBean managerShardBean;
@@ -50,18 +53,23 @@ public class AddedSharedActivity extends BaseBusActivity implements AdapterView.
                     adapter.setLists(list);
                     break;
                 case StatisConstans.MSG_RECEIVED_REGULAR:
-                    if (msg.obj != null) {
+                    managerShardBean = (ManagerShardBean) msg.obj;
+                    if (!managerShardBean.getShareUserList().isEmpty()) {
+                        vs.setVisibility(View.GONE);
                         progressBar.setVisibility(View.GONE);
                         listView.setVisibility(View.VISIBLE);
-                        managerShardBean = (ManagerShardBean) msg.obj;
                         list = managerShardBean.getShareUserList();
                         adapter = new ListViewAdapter(AddedSharedActivity.this, list);
                         listView.setAdapter(adapter);
                         adapter.setOnLLClick(AddedSharedActivity.this);
                         onlod();
+                    } else {
+                        progressBar.setVisibility(View.GONE);
+                        vs.inflate();
                     }
                     break;
                 case StatisConstans.MSG_RECEIVED_BOUND:
+                    vs.inflate();
                     progressBar.setVisibility(View.GONE);
                     listView.setVisibility(View.GONE);
                     break;

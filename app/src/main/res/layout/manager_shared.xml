@@ -36,6 +36,12 @@
             android:footerDividersEnabled="false"
             android:scrollbars="none"
             android:visibility="gone" />
+        <ViewStub
+            android:layout_width="wrap_content"
+            android:id="@+id/vs"
+            android:layout_centerInParent="true"
+            android:layout_height="wrap_content"
+            android:layout="@layout/ll_network_error"
+            />
     </RelativeLayout>
-
 </LinearLayout>

@@ -95,7 +95,7 @@ public class RvcAdapter extends AlxRefreshLoadMoreRecyclerView.AlxDragRecyclerVi
     }
 
 
-    class AlxRecyclerViewHolder extends RecyclerView.ViewHolder {
+    static class AlxRecyclerViewHolder extends RecyclerView.ViewHolder {
         TextView title, tvOnLine;
         View view_buttom;
 

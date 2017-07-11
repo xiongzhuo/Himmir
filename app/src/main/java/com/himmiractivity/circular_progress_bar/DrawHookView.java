@@ -98,7 +98,6 @@ public class DrawHookView extends View {
             canvas.drawLine(center1 + line1_x - 1, center + line1_y, center1 + line2_x, center + line2_y, paint);
             mCallBack.doSomeThing();
         }
-
         //每隔10毫秒界面刷新
         postInvalidateDelayed(10);
     }

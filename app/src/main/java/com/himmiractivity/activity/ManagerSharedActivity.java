@@ -6,7 +6,9 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.view.View;
+import android.view.ViewStub;
 import android.widget.AdapterView;
+import android.widget.TextView;
 
 import com.himmiractivity.Adapter.ListAdapter;
 import com.himmiractivity.App;
@@ -22,6 +24,8 @@ import com.himmiractivity.xlistview.XListView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import activity.hamir.com.himmir.R;
 import butterknife.BindView;
@@ -32,6 +36,8 @@ public class ManagerSharedActivity extends BaseBusActivity implements AdapterVie
     XListView listView;
     @BindView(R.id.progress)
     CircularProgressBar progressBar;
+    @BindView(R.id.vs)
+    ViewStub vs;
     List<ManagerShardBean.ManagerShardSum> list = new ArrayList<>();
     ManagerShardBean managerShardBean;
     ListAdapter adapter;
@@ -46,18 +52,24 @@ public class ManagerSharedActivity extends BaseBusActivity implements AdapterVie
                     adapter.setLists(list);
                     break;
                 case StatisConstans.MSG_RECEIVED_REGULAR:
-                    if (msg.obj != null) {
+                    managerShardBean = (ManagerShardBean) msg.obj;
+                    if (!managerShardBean.getShareUserList().isEmpty()) {
+                        vs.setVisibility(View.GONE);
                         progressBar.setVisibility(View.GONE);
                         listView.setVisibility(View.VISIBLE);
-                        managerShardBean = (ManagerShardBean) msg.obj;
                         list = managerShardBean.getShareUserList();
                         adapter = new ListAdapter(ManagerSharedActivity.this, list);
                         adapter.setOnLLClick(ManagerSharedActivity.this);
                         listView.setAdapter(adapter);
                         onlod();
+                    } else {
+                        progressBar.setVisibility(View.GONE);
+                        vs.inflate();
                     }
                     break;
                 case StatisConstans.MSG_RECEIVED_BOUND:
+                    vs.inflate();
+                    progressBar.setVisibility(View.GONE);
                     list.clear();
                     adapter.setLists(list);
                     break;

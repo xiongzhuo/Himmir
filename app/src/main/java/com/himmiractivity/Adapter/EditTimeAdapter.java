@@ -37,7 +37,7 @@ public class EditTimeAdapter extends RecyclerView.Adapter {
         this.mInflater = LayoutInflater.from(context);
     }
 
-    class MyViewHolder extends RecyclerView.ViewHolder {
+    static class MyViewHolder extends RecyclerView.ViewHolder {
 
         private TextView onOff, tv_time;
 
