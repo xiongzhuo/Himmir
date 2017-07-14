@@ -98,6 +98,7 @@ public class InformationComitActivity extends BaseBusActivity {
                                         }
                                         Log.d("ConnectionManager", "socket");
                                         socket = new Socket(ip, port);
+                                        Log.d("ConnectionManager", ip + "====" + port);
                                         ScoketOFFeON.receMessage(socket, protocal, handler);
                                     } catch (Exception e) {
                                         Log.d("ConnectionManager", "socketException");
@@ -113,6 +114,7 @@ public class InformationComitActivity extends BaseBusActivity {
                     threadPoolUtils.execute(new Thread(new Runnable() {
                         @Override
                         public void run() {
+                            Log.d("ConnectionManager", ip + "====" + port);
                             request(ip, port);
                         }
                     }));
@@ -355,6 +357,7 @@ public class InformationComitActivity extends BaseBusActivity {
         try {
             // 1.连接服务器
             socket = new Socket(host, location);
+            Log.d("ConnectionManager", host + "====" + location);
             Log.d("ConnectionManager", "AbsClient*****已经建立连接");
             protocal = new Protocal();
             ThreadPoolUtils threadPoolUtils = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 1);
