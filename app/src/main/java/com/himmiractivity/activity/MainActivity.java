@@ -123,7 +123,8 @@ public class MainActivity extends BaseBusNoSocllowActivity {
                         @Override
                         public void run() {
                             try {
-                                ScoketOFFeON.sendMessage(socket, protocal, mac);
+                                ScoketOFFeON.sendMessage(socket, mac);
+                                Log.d("mac", "========" + mac);
                             } catch (Exception e) {
                                 handler.sendEmptyMessage(StatisConstans.FAIL_TWO);
                                 e.printStackTrace();
@@ -144,7 +145,7 @@ public class MainActivity extends BaseBusNoSocllowActivity {
                                             socket = null;
                                         }
                                         socket = SocketSingle.getInstance(host, location, true);
-                                        ScoketOFFeON.receMessage(socket, protocal, handler);
+                                        ScoketOFFeON.receMessage(socket, handler);
                                     } catch (IOException e) {
                                         e.printStackTrace();
                                     }
@@ -259,7 +260,7 @@ public class MainActivity extends BaseBusNoSocllowActivity {
                             @Override
                             public void run() {
                                 try {
-                                    ScoketOFFeON.sendBlowingRate(socket, protocal, mac, hzNumeber);
+                                    ScoketOFFeON.sendBlowingRate(socket, mac, hzNumeber);
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
@@ -289,7 +290,7 @@ public class MainActivity extends BaseBusNoSocllowActivity {
                             @Override
                             public void run() {
                                 try {
-                                    ScoketOFFeON.sendBlowingRate(socket, protocal, mac, hzNumeber);
+                                    ScoketOFFeON.sendBlowingRate(socket, mac, hzNumeber);
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
@@ -410,14 +411,11 @@ public class MainActivity extends BaseBusNoSocllowActivity {
                 if (Utils.isFastClick()) {
                     selectorImageViews.get(0).toggle(!selectorImageViews.get(0).isChecked());
                     isOff = true;
-                    if (protocal == null) {
-                        protocal = new Protocal();
-                    }
                     threadPoolUtils.execute(new Thread(new Runnable() {
                         @Override
                         public void run() {
                             try {
-                                ScoketOFFeON.sendMessage(socket, protocal, mac, selectorImageViews.get(0).isChecked());
+                                ScoketOFFeON.sendMessage(socket, mac, selectorImageViews.get(0).isChecked());
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -598,13 +596,14 @@ public class MainActivity extends BaseBusNoSocllowActivity {
         try {
             // 1.连接服务器
             socket = SocketSingle.getInstance(host, location, false);
+            Log.d("SocketSingle", host + "====" + location);
             Log.d("ConnectionManager", "AbsClient*****已经建立连接");
             protocal = Protocal.getInstance();
             ThreadPoolUtils threadPoolUtils = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 1);
             threadPoolUtils.execute(new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    ScoketOFFeON.receMessage(socket, protocal, handler);
+                    ScoketOFFeON.receMessage(socket, handler);
                 }
             }));
         } catch (Exception e) {
@@ -674,7 +673,7 @@ public class MainActivity extends BaseBusNoSocllowActivity {
                         @Override
                         public void run() {
                             try {
-                                ScoketOFFeON.sendMessage(socket, protocal, mac, selectorImageViews.get(0).isChecked());
+                                ScoketOFFeON.sendMessage(socket, mac, selectorImageViews.get(0).isChecked());
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -689,7 +688,7 @@ public class MainActivity extends BaseBusNoSocllowActivity {
                         @Override
                         public void run() {
                             try {
-                                ScoketOFFeON.sendMessage(socket, protocal, mac, selectorImageViews.get(0).isChecked());
+                                ScoketOFFeON.sendMessage(socket, mac, selectorImageViews.get(0).isChecked());
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -716,7 +715,7 @@ public class MainActivity extends BaseBusNoSocllowActivity {
                 isRevise = false;
             } else {
                 try {
-                    ScoketOFFeON.sendBlowingRate(socket, protocal, mac, hzNumeber);
+                    ScoketOFFeON.sendBlowingRate(socket, mac, hzNumeber);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

@@ -76,7 +76,7 @@ public class InformationComitActivity extends BaseBusActivity {
                         public void run() {
                             try {
                                 Log.d("ConnectionManager", "socketTWO");
-                                ScoketOFFeON.sendMessage(socket, protocal, dataServerBean, server_number, mac);
+                                ScoketOFFeON.sendMessage(socket, dataServerBean, server_number, mac);
                             } catch (Exception e) {
                                 Log.d("ConnectionManager", "socketTWOException");
                                 handler.sendEmptyMessage(StatisConstans.FAIL_TWO);
@@ -99,7 +99,7 @@ public class InformationComitActivity extends BaseBusActivity {
                                         Log.d("ConnectionManager", "socket");
                                         socket = new Socket(ip, port);
                                         Log.d("ConnectionManager", ip + "====" + port);
-                                        ScoketOFFeON.receMessage(socket, protocal, handler);
+                                        ScoketOFFeON.receMessage(socket, handler);
                                     } catch (Exception e) {
                                         Log.d("ConnectionManager", "socketException");
                                         e.printStackTrace();
@@ -357,14 +357,12 @@ public class InformationComitActivity extends BaseBusActivity {
         try {
             // 1.连接服务器
             socket = new Socket(host, location);
-            Log.d("ConnectionManager", host + "====" + location);
             Log.d("ConnectionManager", "AbsClient*****已经建立连接");
-            protocal = new Protocal();
             ThreadPoolUtils threadPoolUtils = new ThreadPoolUtils(ThreadPoolUtils.Type.CachedThread, 1);
             threadPoolUtils.execute(new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    ScoketOFFeON.receMessage(socket, protocal, handler);
+                    ScoketOFFeON.receMessage(socket, handler);
                 }
             }));
         } catch (Exception e) {

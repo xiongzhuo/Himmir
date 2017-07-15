@@ -212,7 +212,7 @@ public class FixedTimeActivity extends BaseBusActivity {
             @Override
             public void run() {
                 try {
-                    ScoketOFFeON.sendTimingCommand(socket, protocal, mac, timingMode, t1Switch, t2Switch, t3Switch, t1start, t1Stop, t2start, t2Stop, t3start, t3Stop);
+                    ScoketOFFeON.sendTimingCommand(socket, mac, timingMode, t1Switch, t2Switch, t3Switch, t1start, t1Stop, t2start, t2Stop, t3start, t3Stop);
                 } catch (Exception e) {
                     handler.sendEmptyMessage(StatisConstans.FAIL);
                     e.printStackTrace();
@@ -296,7 +296,7 @@ public class FixedTimeActivity extends BaseBusActivity {
             socket = SocketSingle.getInstance(host, location, false);
             Log.d("ConnectionManager", "AbsClient*****已经建立连接");
             protocal = Protocal.getInstance();
-            ScoketOFFeON.sendMessage(socket, protocal, mac);
+            ScoketOFFeON.sendMessage(socket, mac);
         } catch (Exception e) {
             e.printStackTrace();
         }

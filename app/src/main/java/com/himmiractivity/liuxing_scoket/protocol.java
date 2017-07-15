@@ -895,6 +895,7 @@ public class Protocol {
         switch (cmd) {
             case MsgType.DEV_SERVER_CMD_LOGIN:
                 DataOutputStream out;
+
                 try {
                     out = new DataOutputStream(devSocket.getOutputStream());
                     byte[] time_stamp = new byte[4];

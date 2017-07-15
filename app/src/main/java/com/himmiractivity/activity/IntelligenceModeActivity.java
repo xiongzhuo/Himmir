@@ -160,7 +160,7 @@ public class IntelligenceModeActivity extends BaseBusActivity {
             @Override
             public void run() {
                 try {
-                    ScoketOFFeON.sendNoopsycheMode(socket, protocal, mac, muteMode, coMode, pmMode, coNumber, pmNumber);
+                    ScoketOFFeON.sendNoopsycheMode(socket, mac, muteMode, coMode, pmMode, coNumber, pmNumber);
                 } catch (Exception e) {
                     handler.sendEmptyMessage(StatisConstans.FAIL);
                     e.printStackTrace();
@@ -309,7 +309,7 @@ public class IntelligenceModeActivity extends BaseBusActivity {
             // 1.连接服务器
             socket = SocketSingle.getInstance(host, location, false);
             protocal = Protocal.getInstance();
-            ScoketOFFeON.sendMessage(socket, protocal, mac);
+            ScoketOFFeON.sendMessage(socket, mac);
         } catch (Exception e) {
             request(host, location);
             e.printStackTrace();

@@ -86,7 +86,7 @@ public class FacilityInformationActivity extends BaseBusActivity implements Supe
                         public void run() {
                             try {
                                 Thread.sleep(1000);
-                                ScoketOFFeON.sendMessage(socket, protocal, mac);
+                                ScoketOFFeON.sendMessage(socket, mac);
                             } catch (Exception e) {
                                 handler.sendEmptyMessage(StatisConstans.FAIL_TWO);
                                 e.printStackTrace();
@@ -106,7 +106,7 @@ public class FacilityInformationActivity extends BaseBusActivity implements Supe
                                             socket = null;
                                         }
                                         socket = SocketSingle.getInstance(ip, Integer.parseInt(port), true);
-                                        ScoketOFFeON.receMessage(socket, protocal, handler);
+                                        ScoketOFFeON.receMessage(socket, handler);
                                     } catch (IOException e) {
                                         e.printStackTrace();
                                     }
@@ -123,7 +123,7 @@ public class FacilityInformationActivity extends BaseBusActivity implements Supe
                         @Override
                         public void run() {
                             try {
-                                ScoketOFFeON.sendMessage(socket, protocal, mac);
+                                ScoketOFFeON.sendMessage(socket, mac);
                             } catch (Exception e) {
                                 handler.sendEmptyMessage(StatisConstans.FAIL_TWO);
                                 e.printStackTrace();
@@ -224,7 +224,7 @@ public class FacilityInformationActivity extends BaseBusActivity implements Supe
             threadPoolUtils.execute(new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    ScoketOFFeON.receMessage(socket, protocal, handler);
+                    ScoketOFFeON.receMessage(socket, handler);
                 }
             }));
         } catch (Exception e) {
@@ -249,7 +249,7 @@ public class FacilityInformationActivity extends BaseBusActivity implements Supe
                     @Override
                     public void run() {
                         try {
-                            ScoketOFFeON.sendMessage(socket, protocal, mac);
+                            ScoketOFFeON.sendMessage(socket, mac);
                         } catch (Exception e) {
                             handler.sendEmptyMessage(StatisConstans.FAIL_TWO);
                             e.printStackTrace();

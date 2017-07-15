@@ -169,7 +169,7 @@ public class QquipManager extends BaseBusActivity implements AlxRefreshLoadMoreR
                 @Override
                 public void run() {
                     try {
-                        ScoketOFFeON.sendMessage(socket, protocal, allUserDerviceBaen.getSpace().get(onLinePos).getDevice().getDevice_mac());
+                        ScoketOFFeON.sendMessage(socket, allUserDerviceBaen.getSpace().get(onLinePos).getDevice().getDevice_mac());
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -223,7 +223,7 @@ public class QquipManager extends BaseBusActivity implements AlxRefreshLoadMoreR
                         @Override
                         public void run() {
                             try {
-                                ScoketOFFeON.sendTimingMessage(socket, protocal, mac);
+                                ScoketOFFeON.sendTimingMessage(socket, mac);
                             } catch (Exception e) {
                                 mHandler.sendEmptyMessage(StatisConstans.FAIL);
                                 e.printStackTrace();
@@ -448,7 +448,7 @@ public class QquipManager extends BaseBusActivity implements AlxRefreshLoadMoreR
             threadPoolUtils.execute(new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    ScoketOFFeON.receMessage(socket, protocal, mHandler);
+                    ScoketOFFeON.receMessage(socket, mHandler);
                 }
             }));
         } catch (Exception e) {
@@ -461,7 +461,7 @@ public class QquipManager extends BaseBusActivity implements AlxRefreshLoadMoreR
             @Override
             public void run() {
                 try {
-                    ScoketOFFeON.sendMessage(socket, protocal, allUserDerviceBaen.getSpace().get(onLinePos).getDevice().getDevice_mac());
+                    ScoketOFFeON.sendMessage(socket, allUserDerviceBaen.getSpace().get(onLinePos).getDevice().getDevice_mac());
                 } catch (Exception e) {
                     if (Utils.isNetworkAvailable(QquipManager.this)) {
                         try {
@@ -471,10 +471,10 @@ public class QquipManager extends BaseBusActivity implements AlxRefreshLoadMoreR
                             threadPoolUtils.execute(new Thread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    ScoketOFFeON.receMessage(socket, protocal, mHandler);
+                                    ScoketOFFeON.receMessage(socket, mHandler);
                                 }
                             }));
-                            ScoketOFFeON.sendMessage(socket, protocal, allUserDerviceBaen.getSpace().get(onLinePos).getDevice().getDevice_mac());
+                            ScoketOFFeON.sendMessage(socket, allUserDerviceBaen.getSpace().get(onLinePos).getDevice().getDevice_mac());
                         } catch (Exception e1) {
                             e1.printStackTrace();
                         }

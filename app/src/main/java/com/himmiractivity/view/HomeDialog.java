@@ -67,14 +67,14 @@ public class HomeDialog extends Dialog {
         public DialogView(Context context, int style) {
             super(context, style);
             this.context = context;
-            this.setCanceledOnTouchOutside(false);
+            this.setCancelable(false);
+//            this.setCanceledOnTouchOutside(false);
         }
 
         @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.dialog_loading);
-
             textView = (TextView) findViewById(R.id.text_message);
         }
 

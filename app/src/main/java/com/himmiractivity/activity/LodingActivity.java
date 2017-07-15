@@ -84,7 +84,7 @@ public class LodingActivity extends BaseBusNoSocllowActivity implements LoginVie
         if (null == dialogView) {
             dialogView = new HomeDialog.DialogView(LodingActivity.this);
             dialogView.show();
-            dialogView.setMessage("加载中");
+            dialogView.setMessage("登录中");
         }
     }
 

@@ -27,15 +27,27 @@ public class Protocal {
     /**
      * 单例对象实例
      */
-    private static Protocal instance = null;
-
-    public static Protocal getInstance() {
-        if (instance == null) {                              //line 12
-            instance = new Protocal();          //line 13
-
+//    private static Protocal instance = null;
+//
+//    public static Protocal getInstance() {
+//        if (instance == null) {                              //line 12
+//            instance = new Protocal();          //line 13
+//
+//        }
+//        return instance;
+//
+//    }
+    private volatile static Protocal instance;
+    //将默认的构造函数私有化，防止其他类手动new
+    private Protocal(){};
+    public static Protocal getInstance(){
+        if(instance==null){
+            synchronized (Protocal.class){
+                if(instance==null)
+                    instance=new Protocal();
+            }
         }
         return instance;
-
     }
 
     public void sendRequest(OutputStream out, String mac, boolean isoff) throws Exception {

@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/edittext_bg"
+    android:background="@drawable/lodingview_bg"
     android:orientation="vertical">
 
     <TextView
@@ -13,7 +13,7 @@
         android:layout_margin="15dp"
         android:text=""
         android:textColor="@color/black"
-        android:textSize="@dimen/x15" />
+        android:textSize="@dimen/x13" />
 
     <TextView
         android:id="@+id/tv_hint"
@@ -22,7 +22,7 @@
         android:layout_gravity="center_horizontal"
         android:text=""
         android:textColor="@android:color/darker_gray"
-        android:textSize="@dimen/x12"
+        android:textSize="@dimen/x11"
         android:visibility="gone" />
 
     <EditText
@@ -57,7 +57,7 @@
             android:padding="10dp"
             android:text="@android:string/no"
             android:textColor="@color/royalblue"
-            android:textSize="@dimen/x18" />
+            android:textSize="@dimen/x16" />
 
         <View
             android:layout_width="0.5dp"
@@ -74,7 +74,7 @@
             android:padding="10dp"
             android:text="@android:string/yes"
             android:textColor="@color/royalblue"
-            android:textSize="@dimen/x18" />
+            android:textSize="@dimen/x16" />
 
     </LinearLayout>
 </LinearLayout>

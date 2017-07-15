@@ -97,7 +97,7 @@ public class UserFaclitiyActivity extends BaseBusActivity implements AlxRefreshL
             @Override
             public void run() {
                 try {
-                    ScoketOFFeON.sendMessage(socket, protocal, userDerviceBean.getShareUserDevList().get(onLinePos).getDevice_mac());
+                    ScoketOFFeON.sendMessage(socket, userDerviceBean.getShareUserDevList().get(onLinePos).getDevice_mac());
                 } catch (Exception e) {
                     if (Utils.isNetworkAvailable(UserFaclitiyActivity.this)) {
                         try {
@@ -107,10 +107,10 @@ public class UserFaclitiyActivity extends BaseBusActivity implements AlxRefreshL
                             threadPoolUtils.execute(new Thread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    ScoketOFFeON.receMessage(socket, protocal, mHandler);
+                                    ScoketOFFeON.receMessage(socket, mHandler);
                                 }
                             }));
-                            ScoketOFFeON.sendMessage(socket, protocal, userDerviceBean.getShareUserDevList().get(onLinePos).getDevice_mac());
+                            ScoketOFFeON.sendMessage(socket, userDerviceBean.getShareUserDevList().get(onLinePos).getDevice_mac());
                         } catch (Exception e1) {
                             e1.printStackTrace();
                         }
@@ -195,7 +195,7 @@ public class UserFaclitiyActivity extends BaseBusActivity implements AlxRefreshL
                 @Override
                 public void run() {
                     try {
-                        ScoketOFFeON.sendMessage(socket, protocal, userDerviceBean.getShareUserDevList().get(onLinePos).getDevice_mac());
+                        ScoketOFFeON.sendMessage(socket, userDerviceBean.getShareUserDevList().get(onLinePos).getDevice_mac());
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
