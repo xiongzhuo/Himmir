@@ -61,6 +61,7 @@ public interface StatisConstans {
     // 成功
     int MSG_FAIL_PM = 129;
     int LOCATION = 120;
+    int LOCATION_UPDATA = 121;
 
     /**
      * 注册成功

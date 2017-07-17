@@ -118,6 +118,16 @@ public class MainActivity extends BaseBusNoSocllowActivity {
                 case StatisConstans.LOCATION:
                     Toast.makeText(MainActivity.this, "定位失败", Toast.LENGTH_LONG).show();
                     break;
+                case StatisConstans.LOCATION_UPDATA:
+                    try {
+                        String string = (String) msg.obj;
+                        textViews.get(3).setText(string);
+                        OutdoorPMRequest outdoorPMRequest = new OutdoorPMRequest(MainActivity.this, sharedPreferencesDB, string, handler);
+                        outdoorPMRequest.requestCode();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    break;
                 case StatisConstans.MSG_CYCLIC_TRANSMISSION:
                     threadPoolUtils.execute(new Thread(new Runnable() {
                         @Override
@@ -440,18 +450,13 @@ public class MainActivity extends BaseBusNoSocllowActivity {
             mlocation = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
         }
         if (GpsUtils.isGpsEnable(this)) {
-            threadPoolUtils.execute(new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    GPSLocation();
-                }
-            }));
+            getAddrs();
         } else {
             Intent callGPSSettingIntent = new Intent(
                     Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-            this.startActivity(callGPSSettingIntent);
+            this.startActivityForResult(callGPSSettingIntent,110);
         }
-        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 0, mLocationListener);
+        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, mLocationListener);
         return mlocation;
     }
 
@@ -468,8 +473,11 @@ public class MainActivity extends BaseBusNoSocllowActivity {
         @Override
         public void onProviderEnabled(String provider) {
             try {
+                if (mlocation != null){
+                    mlocation.removeAltitude();
+                    mlocation = null;
+                }
                 mlocation = getLocation();
-//                GPSLocation();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -511,6 +519,16 @@ public class MainActivity extends BaseBusNoSocllowActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == StatisConstans.MSG_IMAGE_REQUEST && resultCode == Activity.RESULT_OK) {
             LodingRequest();
+        }else if(requestCode == 110){
+            try {
+                if (mlocation != null){
+                    mlocation.removeAltitude();
+                    mlocation = null;
+                }
+                mlocation = getLocation();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -529,9 +547,7 @@ public class MainActivity extends BaseBusNoSocllowActivity {
             if (addresses.size() > 0) {
                 Address address = addresses.get(0);
                 if (!TextUtils.isEmpty(address.getLocality())) {
-                    textViews.get(3).setText(address.getLocality().substring(0, address.getLocality().length() - 1));
-                    OutdoorPMRequest outdoorPMRequest = new OutdoorPMRequest(MainActivity.this, sharedPreferencesDB, textViews.get(3).getText().toString().trim(), handler);
-                    outdoorPMRequest.requestCode();
+                    handler.sendMessage(handler.obtainMessage(StatisConstans.LOCATION_UPDATA,address.getLocality().substring(0, address.getLocality().length() - 1)));
                     sharedPreferencesDB.setString(StatisConstans.PROVINCE, address.getAdminArea().substring(0, address.getLocality().length() - 1));
                     sharedPreferencesDB.setString(StatisConstans.CITY, address.getLocality().substring(0, address.getLocality().length() - 1));
                     sharedPreferencesDB.setString(StatisConstans.AREA, address.getSubLocality());
@@ -648,6 +664,7 @@ public class MainActivity extends BaseBusNoSocllowActivity {
             e.printStackTrace();
         }
         handler.removeCallbacksAndMessages(null);
+        mLocationManager.removeUpdates(mLocationListener);
         super.onDestroy();
     }
 
@@ -761,4 +778,14 @@ public class MainActivity extends BaseBusNoSocllowActivity {
             System.exit(0);
         }
     }
+
+    public void getAddrs() {
+        threadPoolUtils.execute(new Thread(new Runnable() {
+            @Override
+            public void run() {
+                GPSLocation();
+            }
+        }));
+    }
+
 }
