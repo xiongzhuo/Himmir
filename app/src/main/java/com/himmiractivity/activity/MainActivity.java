@@ -454,7 +454,7 @@ public class MainActivity extends BaseBusNoSocllowActivity {
         } else {
             Intent callGPSSettingIntent = new Intent(
                     Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-            this.startActivityForResult(callGPSSettingIntent,110);
+            this.startActivityForResult(callGPSSettingIntent, 110);
         }
         mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, mLocationListener);
         return mlocation;
@@ -473,7 +473,7 @@ public class MainActivity extends BaseBusNoSocllowActivity {
         @Override
         public void onProviderEnabled(String provider) {
             try {
-                if (mlocation != null){
+                if (mlocation != null) {
                     mlocation.removeAltitude();
                     mlocation = null;
                 }
@@ -519,9 +519,9 @@ public class MainActivity extends BaseBusNoSocllowActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == StatisConstans.MSG_IMAGE_REQUEST && resultCode == Activity.RESULT_OK) {
             LodingRequest();
-        }else if(requestCode == 110){
+        } else if (requestCode == 110) {
             try {
-                if (mlocation != null){
+                if (mlocation != null) {
                     mlocation.removeAltitude();
                     mlocation = null;
                 }
@@ -547,7 +547,7 @@ public class MainActivity extends BaseBusNoSocllowActivity {
             if (addresses.size() > 0) {
                 Address address = addresses.get(0);
                 if (!TextUtils.isEmpty(address.getLocality())) {
-                    handler.sendMessage(handler.obtainMessage(StatisConstans.LOCATION_UPDATA,address.getLocality().substring(0, address.getLocality().length() - 1)));
+                    handler.sendMessage(handler.obtainMessage(StatisConstans.LOCATION_UPDATA, address.getLocality().substring(0, address.getLocality().length() - 1)));
                     sharedPreferencesDB.setString(StatisConstans.PROVINCE, address.getAdminArea().substring(0, address.getLocality().length() - 1));
                     sharedPreferencesDB.setString(StatisConstans.CITY, address.getLocality().substring(0, address.getLocality().length() - 1));
                     sharedPreferencesDB.setString(StatisConstans.AREA, address.getSubLocality());
@@ -664,6 +664,9 @@ public class MainActivity extends BaseBusNoSocllowActivity {
             e.printStackTrace();
         }
         handler.removeCallbacksAndMessages(null);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
         mLocationManager.removeUpdates(mLocationListener);
         super.onDestroy();
     }
