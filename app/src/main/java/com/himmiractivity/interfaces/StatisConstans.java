@@ -54,7 +54,6 @@ public interface StatisConstans {
     int TIME_ONE_REQUEST = 101;
     int TIME_TWO_REQUEST = 102;
     int TIME_THREE_REQUEST = 103;
-
     String KEY_SAVE_LABLE = "dafalut_user_room";
     // 成功
     int MSG_OUTDOOR_PM = 122;

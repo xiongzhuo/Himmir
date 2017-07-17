@@ -105,7 +105,6 @@ public class MainActivity extends BaseBusNoSocllowActivity {
     int hzNumeber;
     boolean isRevise = false;
     boolean isOff = false;
-    //    boolean isFrist = true;
     private Timer mTimer = null;
     String host;
     int location = 0;
