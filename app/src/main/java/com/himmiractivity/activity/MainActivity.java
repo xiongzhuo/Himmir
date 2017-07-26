@@ -72,7 +72,8 @@ import activity.hamir.com.himmir.R;
 import butterknife.BindView;
 import butterknife.BindViews;
 import de.greenrobot.event.EventBus;
-
+//个人博客
+//http://blog.sina.com.cn/u/5773558622
 public class MainActivity extends BaseBusNoSocllowActivity {
     private long exitTime = 0;
     @BindView(R.id.progress)

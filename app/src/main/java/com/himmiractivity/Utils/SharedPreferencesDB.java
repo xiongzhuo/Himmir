@@ -56,14 +56,15 @@ public class SharedPreferencesDB {
         return preferences.getString(param, defvalue);
     }
 
-    // public void setInt(String param,int value){
-    // SharedPreferences.Editor editor = preferences.edit();
-    // editor.putInt(param, value);
-    // editor.commit();
-    // }
-    // public int getInt(String parm, int defvalue ){
-    // return preferences.getInt(parm, defvalue);
-    // }
+    public void setInt(String param, int value) {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putInt(param, value);
+        editor.commit();
+    }
+
+    public int getInt(String parm, int defvalue) {
+        return preferences.getInt(parm, defvalue);
+    }
 
     public void setFloat(String param, float value) {
         SharedPreferences.Editor editor = preferences.edit();
